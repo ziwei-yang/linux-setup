@@ -46,7 +46,7 @@ sudo yum -y install VirtualBox-5.0
 
 # Check kernel headers could be found.
 kernelVer=$( uname -r )
-if [[ -f /usr/src/kernels/$kernelVer ]]; then
+if [[ -d /usr/src/kernels/$kernelVer ]]; then
 	echo "Kernel header $kernelVer could be found."
 	export KERN_DIR=/usr/src/kernels/`uname -r`
 else
