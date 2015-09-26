@@ -23,6 +23,11 @@ if [[ $os != CentOS* ]]; then
 	exit -1
 fi
 
+# Turnoff SELINUX
+sudo cp /etc/sysconfig/selinux /etc/sysconfig/selinux.bk
+sudo echo 'SELINUX=disabled' > /etc/sysconfig/selinux
+sudo echo 'SELINUXTYPE=targeted' >> /etc/sysconfig/selinux
+
 # Install essential tools.
 yum install wget net-tools links httpd php nmap -y
 yum update -y && yum upgrade -y
