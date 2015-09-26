@@ -33,9 +33,10 @@ sudo yum update
 
 # Install dependency.
 sudo yum -y groupinstall 'Development Tools' SDL kernel-devel kernel-headers dkms
-sudo yum -y install binutils gcc make patch libgomp glibc-headers glibc-devel kernel-headers kernel-devel kernel-PAE-devel dkms
+sudo yum -y install binutils gcc make patch libgomp glibc-headers glibc-devel kernel-headers kernel-devel dkms
 
 # Install
+sudo yum update
 sudo yum -y install VirtualBox-5.0
 # Download and install Virtualbox extension pack.
 cd $HOME/tmp

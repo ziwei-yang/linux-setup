@@ -24,15 +24,14 @@ if [[ $os != CentOS* ]]; then
 fi
 
 # Install essential tools.
-yum install net-tools ping links httpd php nmap -y
+yum install net-tools links httpd php nmap -y
 yum update -y && yum upgrade -y
 
 # Configure Network with Static IP Address
-netstatus=$( ip addr show )
 echo "========================================="
 echo "CURRENT NETWORK STATUS:"
 echo "========================================="
-echo $netstatus
+ip addr show
 echo "========================================="
 echo "Change it according to sample/ifcg-em1 if you want."
 echo "========================================="
