@@ -24,7 +24,7 @@ if [[ $os != CentOS* ]]; then
 fi
 
 # Install essential tools.
-yum install net-tools links httpd php nmap -y
+yum install wget net-tools links httpd php nmap -y
 yum update -y && yum upgrade -y
 
 # Configure Network with Static IP Address
