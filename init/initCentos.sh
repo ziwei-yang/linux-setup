@@ -27,6 +27,7 @@ fi
 sudo cp /etc/sysconfig/selinux /etc/sysconfig/selinux.bk
 sudo bash -c " echo 'SELINUX=disabled' > /etc/sysconfig/selinux "
 sudo bash -c " echo 'SELINUXTYPE=targeted' >> /etc/sysconfig/selinux "
+echo "Need to reboot to disable SELinux."
 
 # Install essential tools.
 yum install wget net-tools links httpd php nmap -y
@@ -62,3 +63,4 @@ fi
 
 # Enable Third Party Repositories
 yum install epel-release -y
+
