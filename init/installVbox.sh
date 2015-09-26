@@ -57,7 +57,7 @@ fi
 # Setup
 sudo /etc/init.d/vboxdrv setup
 
-# Add user to vboxusers Group
+# Add user to vboxusers Group for web interface.
 user='vbox'
 sudo useradd $user
 echo "=========================="
@@ -85,6 +85,7 @@ read -s vboxPswd
 echo
 sed s/username\ =\ \'vbox\'/username\ =\ \'$user\'/g ./phpvirtualbox-5.0-3/config.php-example > phpvirtualbox-5.0-3/config.php.1
 sed s/password\ =\ \'pass\'/password\ =\ \'$vboxPswd\'/g ./phpvirtualbox-5.0-3/config.php.1 > phpvirtualbox-5.0-3/config.php
+echo 'var $noAuth = true;' >> phpvirtualbox-5.0-3/config.php
 # Install web gui.
 sudo cp -r phpvirtualbox-5.0-3 /var/www/html
 sudo chown -R apache /var/www/html/phpvirtualbox-5.0-3
