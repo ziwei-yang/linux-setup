@@ -1,0 +1,22 @@
+# CentOS 6/7
+# /etc/sysconfig/network-scripts/ifcfg-em1
+# After changed, run:
+# service network restart
+
+DEVICE="em1"
+BOOTPROTO=none
+NM_CONTROLLED="yes"
+ONBOOT="yes"
+TYPE="Ethernet"
+UUID="10c1af69-e0e2-4b7b-8c4e-55fade60fbe2"
+IPADDR=192.168.1.14
+PREFIX=24
+GATEWAY=192.168.1.1
+DNS1=210.0.128.150
+DNS2=8.8.8.8
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=yes
+IPV6INIT=no
+NAME="System em1"
+HWADDR=00:A0:D1:EA:AA:24
+LAST_CONNECT=1422948402

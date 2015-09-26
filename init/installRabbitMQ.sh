@@ -1,0 +1,41 @@
+# Check and set environment before every scripts. Golbal vars should be not affect others.
+SOURCE="${BASH_SOURCE[0]}"
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+source $DIR/../util/util.sh
+assertBinPath "echo"
+assertBinPath "sudo"
+assertBinPath "yum"
+assertBinPath "cp"
+assertBinPath "wc"
+
+checkBinPath "rabbitmq-server"
+ret=$?
+if [ $ret == "0" ]; then
+	echoBlue "Skip installing rabbitMQ..."
+else
+	# Install EPEL repo.
+	sudo rpm -Uvh "http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm"
+	
+	# Install erlang.
+	sudo yum -y install erlang
+	
+	# Install rabbit mq.
+	sudo rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc
+	sudo yum -y install "https://www.rabbitmq.com/releases/rabbitmq-server/v3.4.3/rabbitmq-server-3.4.3-1.noarch.rpm"
+fi
+
+echo "Make rabbitMQ start with power on."
+sudo chkconfig --level 2345 rabbitmq-server on
+
+echo "Starting rabbitMQ."
+sudo service rabbitmq-server start
+
+echo "Setting up user privilege."
+sudo rabbitmqctl add_user bigdata changeit
+sudo rabbitmqctl change_password bigdata x
+sudo rabbitmqctl set_user_tags bigdata administrator
+sudo rabbitmqctl set_permissions -p / bigdata ".*" ".*" ".*"
+
+echo "Enabling web management UI."
+sudo rabbitmq-plugins enable rabbitmq_management

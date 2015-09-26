@@ -1,0 +1,41 @@
+Server A:
+--------------------
+change my.conf
+[mysqld]
+#Replication
+server-id=1
+log_bin=mysql-bin
+binlog_do_db=bigdata
+binlog_do_db=bigdata_repo
+
+restart mysql
+mysql>
+create user 'replicator'@'%' identified by 'replicator_bitex';
+grant replication slave on *.* to 'replicator'@'%';
+show master status;
+
+Server B:
+--------------------
+change my.conf
+[mysqld]
+#Replication
+server-id=2
+log_bin=mysql-bin
+binlog_do_db=bigdata
+
+restart mysql
+mysql>
+create user 'replicator'@'%' identified by 'replicator_bitex';
+grant replication slave on *.* to 'replicator'@'%';
+stop slave;
+change master to master_host='192.168.1.14', master_user='replicator', master_password='replicator_bitex', master_log_file='mysql-bin.000002', master_log_pos=120;
+start slave;
+show master status;
+
+Server A:
+--------------------
+mysql>
+stop slave;
+change master to master_host='192.168.1.15', master_user='replicator', master_password='replicator_bitex', master_log_file='mysql-bin.000002', master_log_pos=120;
+start slave;
+show master status;

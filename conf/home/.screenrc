@@ -1,0 +1,74 @@
+## ~/.screenrc
+#
+## ==============================================================================
+## SCREEN SETTINGS
+## ==============================================================================
+#
+
+shell bash
+
+# define a bigger scrollback, default is 100 lines
+defscrollback 10000
+
+hardstatus alwayslastline 
+# %{xxx} is the formatter, %{= G} is set color to green, %{+b} is set bold font.
+hardstatus string '%{= dd}%l;%{= R}%c:%s@%M%d;%{= dd}%-w%{= R}%n %t%{-}%+w;%{= b }F9/F10:switch region. %=%{= dW}%h%{-}%20`%10`'
+#hardstatus string '%{rw}%l%{rw}|%c:%s|%M%d|%?%-Lw%?%{rw}%n*%f %t%?(%u)%?%{rw}%?%+Lw%?'
+#hardstatus string '%{= dd}%-w%{+b}%n %t%{-}%+w %=%{= dW}%h%{-}%20`%10`'
+#hardstatus string '%{rw}%H%{rw}|%c:%s|%M%d|%?%-Lw%?%{rw}%n*%f %t%?(%u)%?%{rw}%?%+Lw%?'
+#hardstatus string '%{= kG}%-Lw%{= kW}%50> %n%f* %t%{= kG}%+Lw%< %{= kG}%-=%c:%s%{-}'
+#hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g}]'
+#caption always '%{= dg} %H %{G}| %{B}%l %{G}|%=%?%{d}%-w%?%{r}(%{d}%n %t%? {%u} %?%{r})%{d}%?%+w%?%=%{G}| %{B}%M %d %c:%s '
+
+# Color table:
+# # 0 Black             .    leave color unchanged
+# # 1 Red               b    blue
+# # 2 Green             c    cyan
+# # 3 Brown / yellow    d    default color
+# # 4 Blue              g    green           b    bold
+# # 5 Purple            k    blacK           B    blinking
+# # 6 Cyan              m    magenta         d    dim
+# # 7 White             r    red             r    reverse
+# # 8 unused/illegal    w    white           s    standout
+# # 9 transparent       y    yellow          u    underline
+# #
+# use shift+pgup/down to scroll the history
+altscreen on
+#turn visual bell off
+vbell off
+startup_message off
+
+#     KEYBOARD SHORTCUTS    #
+#     # execute 'cat > /dev/null' to see the character codes
+#bind F7/F8 to select pre/next window
+bindkey -k k7 prev
+bindkey -k k8 next
+#bind F9 to select next region
+# bindkey -k k9 focus next
+# bindkey -k k; focus prev
+bindkey -k k9 focus up
+bindkey -k k; focus down
+#bind ctrl+arrow to select pre/next window
+bindkey ^[[1;5D focus next
+bindkey ^[[1;5C focus prev
+#bind option+arrow to select pre/next window
+bindkey ^[[D focus up
+bindkey ^[[C focus down
+
+#set default title
+#screen -t a
+#select 0
+
+#configure C-a Shift+0 through 9 to select windows 10 through 19
+bind  ! select 11
+bind  @ select 12
+bind \# select 13
+bind  $ select 14
+bind  % select 15
+bind \^ select 16
+bind  & select 17
+bind  * select 18
+bind  ( select 19
+bind  ) select 10
+
+
