@@ -30,10 +30,10 @@ sudo bash -c " echo 'SELINUX=disabled' > /etc/sysconfig/selinux "
 # Download yum repo.
 mkdir -p $HOME/tmp
 cd $HOME/tmp
-wget https://www.virtualbox.org/download/oracle_vbox.asc
+wget -N https://www.virtualbox.org/download/oracle_vbox.asc
 sudo rpm --import oracle_vbox.asc
 cd /etc/yum.repos.d
-sudo wget http://download.virtualbox.org/virtualbox/rpm/el/virtualbox.repo
+sudo wget -N http://download.virtualbox.org/virtualbox/rpm/el/virtualbox.repo
 sudo yum update
 
 # Install dependency.
@@ -68,12 +68,12 @@ sudo usermod -a -G vboxusers $user
 
 # Download and install Virtualbox extension pack.
 cd $HOME/tmp
-wget http://download.virtualbox.org/virtualbox/5.0.4/Oracle_VM_VirtualBox_Extension_Pack-5.0.4-102546.vbox-extpack
+wget -N http://download.virtualbox.org/virtualbox/5.0.4/Oracle_VM_VirtualBox_Extension_Pack-5.0.4-102546.vbox-extpack
 sudo VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-5.0.4-102546.vbox-extpack
 
 # Download VBox web interface.
 sudo yum -y install httpd php php-devel php-common php-soap php-gd
-wget http://nchc.dl.sourceforge.net/project/phpvirtualbox/phpvirtualbox-5.0-3.zip
+wget -N http://nchc.dl.sourceforge.net/project/phpvirtualbox/phpvirtualbox-5.0-3.zip
 unzip phpvirtualbox-5.0-3.zip > /dev/null
 # Change vboxuser credential here.
 echo "=========================="
