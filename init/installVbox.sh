@@ -25,7 +25,7 @@ fi
 
 # Turnoff SELINUX
 sudo cp /etc/sysconfig/selinux /etc/sysconfig/selinux.bk
-sudo echo 'SELINUX=disabled' > /etc/sysconfig/selinux
+sudo bash -c " echo 'SELINUX=disabled' > /etc/sysconfig/selinux "
 
 # Download yum repo.
 mkdir -p $HOME/tmp

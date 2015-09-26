@@ -25,8 +25,8 @@ fi
 
 # Turnoff SELINUX
 sudo cp /etc/sysconfig/selinux /etc/sysconfig/selinux.bk
-sudo echo 'SELINUX=disabled' > /etc/sysconfig/selinux
-sudo echo 'SELINUXTYPE=targeted' >> /etc/sysconfig/selinux
+sudo bash -c " echo 'SELINUX=disabled' > /etc/sysconfig/selinux "
+sudo bash -c " echo 'SELINUXTYPE=targeted' >> /etc/sysconfig/selinux "
 
 # Install essential tools.
 yum install wget net-tools links httpd php nmap -y
