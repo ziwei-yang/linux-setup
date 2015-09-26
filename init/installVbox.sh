@@ -96,4 +96,4 @@ sudo chmod -R 755 /var/www/html/phpvirtualbox-5.0-3
 sudo /etc/init.d/vboxautostart-service start
 sudo /etc/init.d/vboxballoonctrl-service start
 sudo /etc/init.d/vboxweb-service start
-sudo service httpd restart
+sudo systemctl restart httpd.service
