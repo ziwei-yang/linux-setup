@@ -64,6 +64,10 @@ echo "=========================="
 sudo passwd $user
 sudo usermod -a -G vboxusers $user
 
+# Create the file /etc/default/virtualbox and put the line VBOXWEB_USER=vbox in it
+# (so that the VirtualBox SOAP API which is called vboxwebsrv runs as the user vbox):
+sudo bash -c " echo 'VBOXWEB_USER=$user' > /etc/default/virtualbox "
+
 # Download and install Virtualbox extension pack.
 cd $HOME/tmp
 wget -N http://download.virtualbox.org/virtualbox/5.0.4/Oracle_VM_VirtualBox_Extension_Pack-5.0.4-102546.vbox-extpack
