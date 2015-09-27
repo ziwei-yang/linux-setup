@@ -91,9 +91,9 @@ sudo chgrp -R apache /var/www/html/phpvirtualbox-5.0-3
 sudo chmod -R 755 /var/www/html/phpvirtualbox-5.0-3
 
 # Start service
-sudo /etc/init.d/vboxautostart-service restart
-sudo /etc/init.d/vboxballoonctrl-service restart
-sudo /etc/init.d/vboxweb-service restart
+sudo /etc/init.d/vboxautostart-service start
+sudo /etc/init.d/vboxballoonctrl-service start
+sudo /etc/init.d/vboxweb-service start
 if [[ $os == "CentOS release 6"* ]]; then
 	sudo /etc/init.d/httpd restart
 elif [[ $os == "CentOS Linux release 7"* ]]; then
