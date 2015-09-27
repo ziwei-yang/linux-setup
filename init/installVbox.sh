@@ -34,14 +34,12 @@ wget -N https://www.virtualbox.org/download/oracle_vbox.asc
 sudo rpm --import oracle_vbox.asc
 cd /etc/yum.repos.d
 sudo wget -N http://download.virtualbox.org/virtualbox/rpm/el/virtualbox.repo
-sudo yum update
 
 # Install dependency.
 sudo yum -y groupinstall 'Development Tools' SDL kernel-devel kernel-headers dkms
 sudo yum -y install binutils gcc make patch libgomp glibc-headers glibc-devel kernel-headers kernel-devel dkms
 
 # Install
-sudo yum update
 sudo yum -y install VirtualBox-5.0
 
 # Check kernel headers could be found.
@@ -93,7 +91,14 @@ sudo chgrp -R apache /var/www/html/phpvirtualbox-5.0-3
 sudo chmod -R 755 /var/www/html/phpvirtualbox-5.0-3
 
 # Start service
-sudo /etc/init.d/vboxautostart-service start
-sudo /etc/init.d/vboxballoonctrl-service start
-sudo /etc/init.d/vboxweb-service start
-sudo systemctl restart httpd.service
+sudo /etc/init.d/vboxautostart-service restart
+sudo /etc/init.d/vboxballoonctrl-service restart
+sudo /etc/init.d/vboxweb-service restart
+if [[ $os == "CentOS release 6"* ]]; then
+	sudo /etc/init.d/httpd restart
+elif [[ $os == "CentOS Linux release 7"* ]]; then
+	sudo systemctl restart httpd.service
+else
+	echo "Unsupport OS $os"
+	exit -1
+fi
