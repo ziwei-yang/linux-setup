@@ -95,9 +95,9 @@ if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
 	fi
 	# Other library.
 	if [[ $os == CentOS* ]]; then
-		sudo yum -y install lapack lapack-devel blas blas-devel libxslt-devel libxslt libxml2-devel libxml2 ImageMagick ImageMagick-devel libpng-devel libcurl libcurl-devel
+		sudo yum -y install lapack lapack-devel blas blas-devel libxslt-devel libxslt libxml2-devel libxml2 ImageMagick ImageMagick-devel libpng-devel libcurl libcurl-devel gd gd-devel php-gd
 	elif [[ $os == Ubuntu* ]]; then
-		sudo apt-get -y install liblapack3gf liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 libxml2-dev libxml2 gfortran imagemagick imagemagick-dev libpng-dev curl libcurl3 libcurl3-dev php5-curl
+		sudo apt-get -y install liblapack3gf liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 libxml2-dev libxml2 gfortran imagemagick imagemagick-dev libpng-dev curl libcurl3 libcurl3-dev php5-curl php5-gd
 	elif [[ $os == "Darwin" ]]; then
 		brew tap homebrew/science
 		brew tap homebrew/python
