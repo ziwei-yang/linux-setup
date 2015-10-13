@@ -10,9 +10,6 @@ uname=$( uname )
 source $DIR/../util/util.sh
 checkBinPath "wget"
 
-rm -v `ls $DIR | grep -v download.sh`
-
-
 #btsyncURL="http://download.getsyncapp.com/endpoint/btsync/os/linux-x64/track/stable/bittorrent_sync_x64.tar.gz"
 #wget -N $btsyncURL
 
