@@ -171,7 +171,7 @@ assertBinPath "redis-commander"
 
 PYTHON_VER="2.7"
 echoGreen "-------- Installing Python --------"
-if [ $os != "Darwin" ]; then
+if [[ $os != "Darwin" ]]; then
 	filename=$(basename $( ls $DIR/archived/Python-* ))
 	checkExactBinPath "python" $USER_INSTALL/bin/python
 	ret=$?
@@ -195,7 +195,7 @@ checkBinVersion "python" $PYTHON_VER
 
 # Install PIP
 echoGreen "-------- Installing PIP and Py lib --------"
-if [ $os != "Darwin" ]; then
+if [[ $os != "Darwin" ]]; then
 	checkExactBinPath "pip" $USER_INSTALL/bin/pip
 	ret=$?
 	if [ $ret == "0" ]; then
