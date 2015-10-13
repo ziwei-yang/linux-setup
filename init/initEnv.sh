@@ -62,7 +62,7 @@ if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
 			echoBlue "Skip Development tools"
 		fi
 	fi
-	for app in screen git curl wget basename tput gpg tree finger nload 
+	for app in tmux screen git curl wget basename tput gpg tree finger nload 
 	do
 		checkBinPath $app
 		ret=$?
