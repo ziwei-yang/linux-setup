@@ -49,6 +49,10 @@ cp -v $DIR/conf/home/tmux_dev.sh $HOME/
 cp -v $DIR/conf/home/.profile $HOME/
 # Do not copy other files for safety.
 
+echoGreen "-------- Refresh bash enviroment -------"
+source $HOME/.bash_profile
+source $HOME/.bashrc
+
 if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
 	echoGreen "-------- Installing system tools --------"
 	if [[ $os == CentOS* ]]; then
