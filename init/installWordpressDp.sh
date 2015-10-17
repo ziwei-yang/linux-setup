@@ -35,7 +35,7 @@ fi
 
 # Wordpress dependency.
 if [[ $os == CentOS* ]]; then
-	sudo yum -y install php-mysql libxml2-devel libxml2 ImageMagick ImageMagick-devel libpng-devel libcurl libcurl-devel gd gd-devel php-gd
+	sudo yum -y install httpd php php-mysql libxml2-devel libxml2 ImageMagick ImageMagick-devel libpng-devel libcurl libcurl-devel gd gd-devel php-gd
 elif [[ $os == Ubuntu* ]]; then
 	sudo apt-get -y install llibxml2-dev libxml2 gfortran imagemagick imagemagick-dev libpng-dev curl libcurl3 libcurl3-dev php5-curl php5-gd
 else

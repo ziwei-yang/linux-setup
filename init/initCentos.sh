@@ -30,7 +30,7 @@ bash -c " echo 'SELINUXTYPE=targeted' >> /etc/sysconfig/selinux "
 echo "Need to reboot to disable SELinux."
 
 # Install essential tools.
-yum install wget net-tools links httpd php nmap -y
+yum install man wget net-tools w3m nmap -y
 yum update -y && yum upgrade -y
 
 # Configure Network with Static IP Address
