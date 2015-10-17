@@ -1,6 +1,5 @@
 #! /bin/bash
 # Check and set environment before every scripts. Golbal vars should be not affect others.
-os=$( osinfo )
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
@@ -10,6 +9,7 @@ cd $DIR
 
 source $DIR/util/util.sh
 setupBasicEnv
+os=$( osinfo )
 
 if [[ $os == 'Darwin' ]]; then
 	MAKE_CORE_NUM=4
