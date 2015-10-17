@@ -137,7 +137,7 @@ if [ $ret == "0" ]; then
 else
 	# Change rvm image to taobao for China.
 	if [ $GFWFucked == "1" ]; then
-		sed -i.bak 's!cache.ruby-lang.org/pub/ruby!ruby.taobao.org/mirrors/ruby!' $HOME/.rvm/config/db
+		sed -i.bak 's!http://cache.ruby-lang.org/pub/ruby!https://ruby.taobao.org/mirrors/ruby!' $HOME/.rvm/config/db
 	fi
 	echoBlue "rvm install $RUBY_VER"
 	rvm install $RUBY_VER
