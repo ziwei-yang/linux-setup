@@ -94,7 +94,8 @@ function externalIP {
 
 function isGFWFucked {
 	country=$( curl http://ipinfo.io/ | jq '.country' )
-	if [ $country == '"CN"' ]; then
+	echoGreen "Country Code: $country"
+	if [[ $country == '"CN"' ]]; then
 		echoRed ' ============ OH NO, GFW sucks! =============='
 		return 1
 	else
