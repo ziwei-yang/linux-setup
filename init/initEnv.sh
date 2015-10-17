@@ -127,7 +127,7 @@ assertBinPath "rvm"
 isGFWFucked
 GFWFucked=$?
 
-RUBY_VER="2.1.4"
+RUBY_VER="2.1.2"
 rvm use $RUBY_VER
 echoGreen "-------- Installing Ruby $RUBY_VER --------"
 checkExactBinPath "ruby" $HOME/.rvm/rubies/ruby-$RUBY_VER/bin/ruby
