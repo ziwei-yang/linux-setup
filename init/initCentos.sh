@@ -24,9 +24,9 @@ if [[ $os != CentOS* ]]; then
 fi
 
 # Turnoff SELINUX
-sudo cp /etc/sysconfig/selinux /etc/sysconfig/selinux.bk
-sudo bash -c " echo 'SELINUX=disabled' > /etc/sysconfig/selinux "
-sudo bash -c " echo 'SELINUXTYPE=targeted' >> /etc/sysconfig/selinux "
+cp /etc/sysconfig/selinux /etc/sysconfig/selinux.bk
+bash -c " echo 'SELINUX=disabled' > /etc/sysconfig/selinux "
+bash -c " echo 'SELINUXTYPE=targeted' >> /etc/sysconfig/selinux "
 echo "Need to reboot to disable SELinux."
 
 # Install essential tools.

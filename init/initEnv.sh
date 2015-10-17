@@ -1,5 +1,6 @@
 #! /bin/bash
 # Check and set environment before every scripts. Golbal vars should be not affect others.
+os=$( osinfo )
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
@@ -9,8 +10,6 @@ cd $DIR
 
 source $DIR/util/util.sh
 setupBasicEnv
-
-os=$( osinfo )
 
 if [[ $os == 'Darwin' ]]; then
 	MAKE_CORE_NUM=4
@@ -159,16 +158,6 @@ fi
 assertBinPath "node"
 assertBinPath "npm"
 
-echoGreen "-------- Installing redis-commander --------"
-checkExactBinPath "redis-commander" $USER_INSTALL/bin/redis-commander
-ret=$?
-if [ $ret == "0" ]; then
-	echoBlue "Skip redis-commander."
-else
-	npm install -g redis-commander
-fi
-assertBinPath "redis-commander"
-
 PYTHON_VER="2.7"
 echoGreen "-------- Installing Python --------"
 if [[ $os != "Darwin" ]]; then
@@ -207,51 +196,6 @@ if [[ $os != "Darwin" ]]; then
 else
 	echoBlue "Skip pip."
 fi
-# Install beautifulsoup4
-checkPyLibVersion "beautifulsoup4" "4.1.3"
-ret=$?
-if [ $ret == "0" ]; then
-	echoBlue "Skip python lib beautifulsoup4 4.1.3"
-else
-	echoBlue "pip install 'http://www.crummy.com/software/BeautifulSoup/bs4/download/4.1/beautifulsoup4-4.1.3.tar.gz'"
-	pip install "http://www.crummy.com/software/BeautifulSoup/bs4/download/4.1/beautifulsoup4-4.1.3.tar.gz"
-fi
-# Install feedparser5.2.0
-checkPyLibVersion "feedparser" "5.2.0"
-ret=$?
-if [ $ret == "0" ]; then
-	echoBlue "Skip python lib feedparser 5.2.0"
-else
-	echo 'pip install "https://pypi.python.org/packages/source/f/feedparser/feedparser-5.2.0.post1.tar.gz"'
-	pip install "https://pypi.python.org/packages/source/f/feedparser/feedparser-5.2.0.post1.tar.gz"
-fi
-# Install official lib
-for pylib in numpy scipy scikit-learn matplotlib jieba redis pika pyquery cssselect xlrd MySQL-python; do
-	checkPyLibVersion $pylib
-	ret=$?
-	if [ $ret == "0" ]; then
-		echoBlue "Skip python lib $pylib"
-	else
-		pip install $pylib
-	fi
-done
-
-echoGreen "-------- Installing Redis -------"
-checkExactBinPath "redis-server" $USER_INSTALL/bin/redis-server
-ret=$?
-if [ $ret == "0" ]; then
-	echoBlue "Skip redis."
-else
-	filename=$(basename $( ls $DIR/archived/redis-* ))
-	cp -v $DIR/archived/$filename $USER_ARCHIVED/
-	cd $USER_ARCHIVED
-	tar -xf $filename
-	dirname=${filename%.tar.gz}
-	cd $USER_ARCHIVED/$dirname
-	echoBlue "make PREFIX=$USER_INSTALL install -j $MAKE_CORE_NUM > /dev/null"
-	make PREFIX=$USER_INSTALL install -j $MAKE_CORE_NUM > /dev/null || make PREFIX=$USER_INSTALL install > /dev/null
-fi
-assertBinPath "redis-server"
 
 echoGreen "-------- Installing Java 8 -------"
 javaVer=`java -version 2>&1 | grep 'java version'`
