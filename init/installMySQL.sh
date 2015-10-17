@@ -22,10 +22,10 @@ mkdir -p $HOME/tmp
 cd $HOME/tmp
 os=$( osinfo )
 if [[ $os == "CentOS release 6"* ]]; then
-	wget -N http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
+	wget -nc http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
 	sudo rpm -Uvh $HOME/tmp/mysql-community-release-el6-5.noarch.rpm
 elif [[ $os == "CentOS Linux release 7"* ]]; then
-	wget -N http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
+	wget -nc http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
 	sudo rpm -Uvh $HOME/tmp/mysql-community-release-el7-5.noarch.rpm
 else
 	echo "Unsupport OS $os"
