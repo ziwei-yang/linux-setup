@@ -135,12 +135,15 @@ ret=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip Ruby."
 else
-	# Change rvm image to taobao for China.
+	# Change rvm source code image to taobao for China.
 	if [ $GFWFucked == "1" ]; then
 		sed -i.bak 's!http://cache.ruby-lang.org/pub/ruby!https://ruby.taobao.org/mirrors/ruby!' $HOME/.rvm/config/db
+		echoBlue "rvm install $RUBY_VER --disable-binary"
+		rvm install $RUBY_VER --disable-binary
+	else
+		echoBlue "rvm install $RUBY_VER"
+		rvm install $RUBY_VER
 	fi
-	echoBlue "rvm install $RUBY_VER"
-	rvm install $RUBY_VER
 fi
 rvm use $RUBY_VER
 checkBinVersion "ruby" $RUBY_VER
