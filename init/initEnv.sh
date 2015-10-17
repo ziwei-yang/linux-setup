@@ -61,7 +61,7 @@ if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
 			echoBlue "Skip Development tools"
 		fi
 	fi
-	for app in man tmux screen git curl wget basename tput gpg tree finger nload telnet
+	for app in awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet
 	do
 		checkBinPath $app
 		ret=$?
@@ -117,14 +117,17 @@ if [ $ret == "0" ]; then
 else
 	gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
 	curl -sSL https://get.rvm.io | bash -s stable
-fi
-if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
-	echoBlue "source $HOME/.rvm/scripts/rvm"
-	source "$HOME/.rvm/scripts/rvm"
+	if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
+		echoBlue "source $HOME/.rvm/scripts/rvm"
+		source "$HOME/.rvm/scripts/rvm"
+	fi
 fi
 assertBinPath "rvm"
 
-RUBY_VER="2.1.2"
+isGFWFucked
+GFWFucked=$?
+
+RUBY_VER="2.1.4"
 rvm use $RUBY_VER
 echoGreen "-------- Installing Ruby $RUBY_VER --------"
 checkExactBinPath "ruby" $HOME/.rvm/rubies/ruby-$RUBY_VER/bin/ruby
@@ -132,11 +135,19 @@ ret=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip Ruby."
 else
+	# Change rvm image to taobao for China.
+	if [ $GFWFucked == "1" ]; then
+		sed -i .bak 's!cache.ruby-lang.org/pub/ruby!ruby.taobao.org/mirrors/ruby!' $HOME/.rvm/config/db
+	fi
 	echoBlue "rvm install $RUBY_VER"
 	rvm install $RUBY_VER
 fi
 rvm use $RUBY_VER
 checkBinVersion "ruby" $RUBY_VER
+# Change rvm image to taobao for China.
+if [ $GFWFucked == "1" ]; then
+	gem sources --add https://ruby.taobao.org/ --remove https://rubygems.org/
+fi
 
 echoGreen "-------- Installing Node.js --------"
 checkExactBinPath "node" $USER_INSTALL/bin/node

@@ -88,6 +88,20 @@ function osinfo {
 	fi
 }
 
+function externalIP {
+	curl 'http://ipinfo.io/ip'
+}
+
+function isGFWFucked {
+	country=$( curl http://ipinfo.io/ | jq '.country' )
+	if [ $country == '"CN"' ]; then
+		echoRed ' ============ OH NO, GFW sucks! =============='
+		return 1
+	else
+		return 0
+	fi
+}
+
 function setupBasicEnv {
 	echoGreen "-------- Checking environment. --------"
 	assertBinPath "echo"
