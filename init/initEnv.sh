@@ -61,7 +61,7 @@ if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
 			echoBlue "Skip Development tools"
 		fi
 	fi
-	for app in jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet
+	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet
 	do
 		checkBinPath $app
 		ret=$?
@@ -137,7 +137,7 @@ if [ $ret == "0" ]; then
 else
 	# Change rvm image to taobao for China.
 	if [ $GFWFucked == "1" ]; then
-		sed -i .bak 's!cache.ruby-lang.org/pub/ruby!ruby.taobao.org/mirrors/ruby!' $HOME/.rvm/config/db
+		sed -i.bak 's!cache.ruby-lang.org/pub/ruby!ruby.taobao.org/mirrors/ruby!' $HOME/.rvm/config/db
 	fi
 	echoBlue "rvm install $RUBY_VER"
 	rvm install $RUBY_VER
