@@ -63,6 +63,6 @@ alias memsum='sudo echo $(ps -axfm -o "rss" | cut -c 66-80 | awk "FNR>1" | awk -
 if [[ $uname == "Linux" ]]; then
 	alias WATCH_DB_IDX="sudo watch -n 1 'sudo ls -l /var/lib/mysql/bigdata/share_hold_data.MY[ID] /var/lib/mysql/bigdata/*sql-*.MY[ID] '"
 elif [[ $uname == "Darwin" ]]; then
-	alias RAM_DISK="diskutil erasevolume HFS+ 'RAM Disk' `hdiutil attach -nomount ram://1048576`"
+	alias RAM_DISK="diskutil erasevolume HFS+ 'RAM Disk' \`hdiutil attach -nomount ram://1048576\`"
 fi
 
