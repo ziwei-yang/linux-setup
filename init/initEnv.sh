@@ -222,6 +222,7 @@ else
 	cp -v $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	tar -xf $filename
+	rm $filename
 fi
 
 echoGreen "-----------------------------------------------"
