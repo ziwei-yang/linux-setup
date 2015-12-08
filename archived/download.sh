@@ -26,7 +26,7 @@ fi
 nodejsURL="http://nodejs.org/dist/v0.12.7/node-v0.12.7.tar.gz"
 wget -nc $nodejsURL
 
-redisURL="http://download.redis.io/releases/redis-2.8.21.tar.gz"
+redisURL="http://download.redis.io/releases/redis-3.0.5.tar.gz"
 wget -nc $redisURL
 
 cd $PWD

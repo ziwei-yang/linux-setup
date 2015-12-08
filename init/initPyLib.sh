@@ -1,6 +1,11 @@
+PWD=$(pwd)
+SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 DIR=$DIR/../
-source $DIR/init/initEnv.sh
+cd $DIR
+
+source $DIR/util/util.sh
+setupBasicEnv
 
 # Install beautifulsoup4
 checkPyLibVersion "beautifulsoup4" "4.1.3"

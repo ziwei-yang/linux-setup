@@ -1,6 +1,11 @@
+PWD=$(pwd)
+SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 DIR=$DIR/../
-source $DIR/init/initEnv.sh
+cd $DIR
+
+source $DIR/util/util.sh
+setupBasicEnv
 
 echoGreen "-------- Installing Redis -------"
 checkExactBinPath "redis-server" $USER_INSTALL/bin/redis-server

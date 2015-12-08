@@ -2,6 +2,7 @@ PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 DIR=$DIR/../
+cd $DIR
 
 source $DIR/util/util.sh
 setupBasicEnv
