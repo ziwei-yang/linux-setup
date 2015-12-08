@@ -109,6 +109,9 @@ else
 	echoRed "-------- Skip installing system tools --------"
 fi
 
+# Basic settings.
+git config --global color.ui auto
+
 echoGreen "-------- Installing RVM --------"
 checkExactBinPath "rvm" $HOME/.rvm/bin/rvm
 ret=$?
