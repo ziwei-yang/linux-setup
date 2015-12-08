@@ -1,4 +1,5 @@
 source $HOME/.bashrc
+USER_ARCHIVED="$HOME/archived"
 
 # Internal functions.
 function echoRed {
