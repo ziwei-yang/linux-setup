@@ -1,5 +1,6 @@
 source $HOME/.bashrc
 USER_ARCHIVED="$HOME/archived"
+USER_INSTALL="$HOME/install"
 
 # Internal functions.
 function echoRed {
