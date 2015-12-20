@@ -54,6 +54,7 @@ alias grep=" grep -a "
 alias make=" make -j 6 "
 alias wget=' wget --no-check-certificate'
 alias less=' less -R '
+alias tree=' tree -C '
 
 # More fancy aliases.
 alias HTTP_SEVER=' python -m SimpleHTTPServer'
