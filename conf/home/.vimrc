@@ -169,3 +169,7 @@ hi StatusLine ctermbg=darkgrey ctermfg=grey
 set statusline=%<%F\%h%m%r%k\ Encoding:[%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}]%=\%-14.(%l/%L,%c%V%)\ %P
 set laststatus=2   " Always show the status line - use 2 lines for the status bar
 
+
+let @b = '0i# j'
+let @c = '0i//j'
+let @x = '0xxj'
