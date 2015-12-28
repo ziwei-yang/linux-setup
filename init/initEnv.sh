@@ -43,7 +43,7 @@ mkdir -p $HOME/bin
 mkdir -p $HOME/conf
 cp -v $DIR/conf/home/.bash* $HOME/
 cp -v $DIR/conf/home/.*rc $HOME/
-cp -v $DIR/conf/home/.tmux.conf $HOME/
+cp -v $DIR/conf/home/.tmux*.conf $HOME/
 cp -v $DIR/conf/home/tmux_dev.sh $HOME/
 cp -v $DIR/conf/home/.profile $HOME/
 # Do not copy other files for safety.
