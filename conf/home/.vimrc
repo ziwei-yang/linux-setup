@@ -173,3 +173,4 @@ set laststatus=2   " Always show the status line - use 2 lines for the status ba
 let @b = '0i# j'
 let @c = '0i//j'
 let @x = '0xxj'
+let @d = '0xj'
