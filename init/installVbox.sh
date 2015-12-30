@@ -14,34 +14,30 @@ if [ $ret == "a" ]; then
 	echoBlue "User has sudo privilege without password."
 	sudoAllowed="1"
 else
-	echoRed "Error: User has no sudo privilege without password. Change /etc/sudoers first."
-	exit -1
+	abort "Error: User has no sudo privilege without password. Change /etc/sudoers first."
 fi
 
 os=$( osinfo )
 if [[ $os != CentOS* ]]; then
-	echo "Unsupport OS $os"
-	exit -1
+	abort "Unsupport OS $os"
 fi
-
-# Turnoff SELINUX
-sudo cp /etc/sysconfig/selinux /etc/sysconfig/selinux.bk
-sudo bash -c " echo 'SELINUX=disabled' > /etc/sysconfig/selinux "
 
 # Download yum repo.
 mkdir -p $HOME/tmp
 cd $HOME/tmp
-wget -nc https://www.virtualbox.org/download/oracle_vbox.asc
+wget -nc https://www.virtualbox.org/download/oracle_vbox.asc || abort 'Error when downloading oracle_vbox.asc'
 sudo rpm --import oracle_vbox.asc
 cd /etc/yum.repos.d
-sudo wget -nc http://download.virtualbox.org/virtualbox/rpm/el/virtualbox.repo
+sudo wget -nc http://download.virtualbox.org/virtualbox/rpm/el/virtualbox.repo || abort 'Error when downloading vbox.repo'
+cd $DIR
 
 # Install dependency.
 sudo yum -y groupinstall 'Development Tools' SDL kernel-devel kernel-headers dkms
 sudo yum -y install binutils gcc make patch libgomp glibc-headers glibc-devel kernel-headers kernel-devel dkms
 
-# Install
-sudo yum -y install VirtualBox-5.0
+# Install latest version
+latest_ver=$( yum search VirtualBox | grep ^VirtualBox | tail -n1 | cut -d ' ' -f 1 )
+sudo yum -y install $latest_ver
 
 # Check kernel headers could be found.
 kernelVer=$( uname -r )
@@ -49,52 +45,58 @@ if [[ -d /usr/src/kernels/$kernelVer ]]; then
 	echo "Kernel header $kernelVer could be found."
 	export KERN_DIR=/usr/src/kernels/`uname -r`
 else
-	echo "Kernel header $kernelVer could not be found, should reboot then retry."
-	exit -1
+	abort "Kernel header $kernelVer could not be found, should reboot then retry."
 fi
 
 # Setup
-sudo /etc/init.d/vboxdrv setup
+sudo /etc/init.d/vboxdrv setup || abort 'Error in vboxdrv setup'
 
 # Add user to vboxusers Group for web interface.
 user='vbox'
-sudo useradd $user
-echo "=========================="
-echo "Set user($user) passwd here"
-echo "=========================="
-sudo passwd $user
+sudo useradd $user || echoRed  "Error in adding user $user, it might be existed."
+# echo "=========================="
+# echo "Set user($user) passwd here"
+# echo "=========================="
+# sudo passwd $user
 sudo usermod -a -G vboxusers $user
 
 # Create the file /etc/default/virtualbox and put the line VBOXWEB_USER=vbox in it
 # (so that the VirtualBox SOAP API which is called vboxwebsrv runs as the user vbox):
-sudo bash -c " echo 'VBOXWEB_USER=$user' > /etc/default/virtualbox "
+sudo bash -c " echo 'VBOXWEB_USER=$user' > /etc/default/virtualbox " || abort "Error in modifying /etc/default/virtualbox"
 
-# Download and install Virtualbox extension pack.
+latest_ext_ver=$( curl 'http://download.virtualbox.org/virtualbox/LATEST.TXT' )
+latest_ext_file=$( curl -s 'http://download.virtualbox.org/virtualbox/5.0.12/' | grep extpack | head -n1 | cut -d '"' -f 2 )
+target_url="http://download.virtualbox.org/virtualbox/$latest_ext_ver/$latest_ext_file"
+echo "Download and install latest Virtualbox extension pack:$target_url"
 cd $HOME/tmp
-wget -nc http://download.virtualbox.org/virtualbox/5.0.4/Oracle_VM_VirtualBox_Extension_Pack-5.0.4-102546.vbox-extpack
-sudo VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-5.0.4-102546.vbox-extpack
+wget -nc $target_url || abort "Error in downloading $target_url"
+sudo VBoxManage extpack install $latest_ext_file
 
 # Download VBox web interface.
 sudo yum -y install httpd php php-devel php-common php-soap php-gd
-wget -nc http://nchc.dl.sourceforge.net/project/phpvirtualbox/phpvirtualbox-5.0-3.zip
-unzip phpvirtualbox-5.0-3.zip > /dev/null
+rm -rf phpvirtualbox_latest.zip phpvirtualbox_latest_dir
+wget -nc 'http://sourceforge.net/projects/phpvirtualbox/files/latest/download' -O phpvirtualbox_latest.zip || abort "Error in downloading phpvirtualbox"
+unzip phpvirtualbox_latest.zip -d phpvirtualbox_latest_dir > /dev/null
+mv phpvirtualbox_latest_dir/phpvirtualbox* phpvirtualbox_latest
+rm -rf phpvirtualbox_latest_dir
 # Change vboxuser credential here.
 echo "=========================="
-echo "Retype user($user) passwd here"
+echo "Retype webgui-user($user) passwd here"
 echo "=========================="
 # Read Password
 echo -n Password: 
 read -s vboxPswd
 echo
-sed s/username\ =\ \'vbox\'/username\ =\ \'$user\'/g ./phpvirtualbox-5.0-3/config.php-example > phpvirtualbox-5.0-3/config.php.1
-sed s/password\ =\ \'pass\'/password\ =\ \'$vboxPswd\'/g ./phpvirtualbox-5.0-3/config.php.1 > phpvirtualbox-5.0-3/config.php.2
-sed s/\#var\ \$noAuth\ =\ true/var\ \$noAuth\ =\ true/g ./phpvirtualbox-5.0-3/config.php.2 > phpvirtualbox-5.0-3/config.php
+sed s/username\ =\ \'vbox\'/username\ =\ \'$user\'/g ./phpvirtualbox_latest/config.php-example > phpvirtualbox_latest/config.php.1
+sed s/password\ =\ \'pass\'/password\ =\ \'$vboxPswd\'/g ./phpvirtualbox_latest/config.php.1 > phpvirtualbox_latest/config.php.2
+sed s/\#var\ \$noAuth\ =\ true/var\ \$noAuth\ =\ true/g ./phpvirtualbox_latest/config.php.2 > phpvirtualbox_latest/config.php
 # Install web gui.
-sudo cp -r phpvirtualbox-5.0-3 /var/www/html
-sudo chown -R apache /var/www/html/phpvirtualbox-5.0-3
-sudo chgrp -R apache /var/www/html/phpvirtualbox-5.0-3
-sudo chmod -R 755 /var/www/html/phpvirtualbox-5.0-3
+sudo cp -r phpvirtualbox_latest /var/www/html
+sudo chown -R apache /var/www/html/phpvirtualbox_latest
+sudo chgrp -R apache /var/www/html/phpvirtualbox_latest
+sudo chmod -R 755 /var/www/html/phpvirtualbox_latest
 
+cd $DIR
 # Start service
 sudo /etc/init.d/vboxautostart-service stop
 sudo /etc/init.d/vboxautostart-service start
@@ -105,6 +107,5 @@ if [[ $os == "CentOS release 6"* ]]; then
 elif [[ $os == "CentOS Linux release 7"* ]]; then
 	sudo systemctl restart httpd.service
 else
-	echo "Unsupport OS $os"
-	exit -1
+	abort "Unsupport OS $os"
 fi

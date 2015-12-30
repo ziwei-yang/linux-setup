@@ -139,3 +139,7 @@ function setupBasicEnv {
 	fi
 }
 
+function abort() {
+	echoRed "Script execution abort, reason: $@"
+	exit -1
+}
