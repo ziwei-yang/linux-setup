@@ -81,7 +81,7 @@ mv phpvirtualbox_latest_dir/phpvirtualbox* phpvirtualbox_latest
 rm -rf phpvirtualbox_latest_dir
 # Change vboxuser credential here.
 echo "=========================="
-echo "Retype webgui-user($user) passwd here"
+echo "Type linux-user($user) passwd here"
 echo "=========================="
 # Read Password
 echo -n Password: 
@@ -89,7 +89,8 @@ read -s vboxPswd
 echo
 sed s/username\ =\ \'vbox\'/username\ =\ \'$user\'/g ./phpvirtualbox_latest/config.php-example > phpvirtualbox_latest/config.php.1
 sed s/password\ =\ \'pass\'/password\ =\ \'$vboxPswd\'/g ./phpvirtualbox_latest/config.php.1 > phpvirtualbox_latest/config.php.2
-sed s/\#var\ \$noAuth\ =\ true/var\ \$noAuth\ =\ true/g ./phpvirtualbox_latest/config.php.2 > phpvirtualbox_latest/config.php
+# Disable auth if you like.
+# sed s/\#var\ \$noAuth\ =\ true/var\ \$noAuth\ =\ true/g ./phpvirtualbox_latest/config.php.2 > phpvirtualbox_latest/config.php
 # Install web gui.
 sudo cp -r phpvirtualbox_latest /var/www/html
 sudo chown -R apache /var/www/html/phpvirtualbox_latest
