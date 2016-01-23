@@ -26,7 +26,7 @@ else
 	pip install "https://pypi.python.org/packages/source/f/feedparser/feedparser-5.2.0.post1.tar.gz"
 fi
 # Install official lib
-for pylib in simplejson chardet lxml numpy scipy scikit-learn matplotlib jieba redis pika pyquery request thrift cssselect xlrd MySQL-python readability-lxml; do
+for pylib in simplejson chardet lxml numpy scipy scikit-learn matplotlib jieba redis pika pyquery request requests thrift cssselect xlrd MySQL-python readability-lxml; do
 	checkPyLibVersion $pylib
 	ret=$?
 	if [ $ret == "0" ]; then
