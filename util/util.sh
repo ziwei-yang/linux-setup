@@ -65,13 +65,13 @@ function checkPyLibVersion {
 	libName=$1
 	libVer=$2
 	sysLibVer=`pip freeze | grep "$libName=="`
-	if [ -z $sysLibVer ]; then
+	if [[ -z $sysLibVer ]]; then
 		echoRed "Python lib $1 not exist."
 		return 1
-	elif [ -z $2 ]; then
+	elif [[ -z $2 ]]; then
 		# Check lib existence is enough.
 		:
-	elif [ "$sysLibVer" == "$libName==$libVer" ]; then
+	elif [[ "$sysLibVer" == "$libName==$libVer" ]]; then
 		:
 	else
 		echoRed "[$libName] version [$sysLibVer] not match [$libVer]."
@@ -81,9 +81,9 @@ function checkPyLibVersion {
 }
 
 function osinfo {
-	if [ -f /etc/redhat-release ]; then
+	if [[ -f /etc/redhat-release ]]; then
 		head -n1 /etc/redhat-release
-	elif [ -f /etc/issue ]; then
+	elif [[ -f /etc/issue ]]; then
 		head -n1 /etc/issue
 	else
 		uname
@@ -127,7 +127,7 @@ function setupBasicEnv {
 		echoBlue "Current OS: Darwin/MacOSX"
 		checkBinPath "brew"
 		ret=$?
-		if [ $ret == "0" ]; then
+		if [[ $ret == "0" ]]; then
 			echoBlue "Skip install brew."
 		else
 			echoBlue "Installing brew."
