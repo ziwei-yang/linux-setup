@@ -29,4 +29,7 @@ wget -nc $nodejsURL
 redisURL="http://download.redis.io/releases/redis-3.0.5.tar.gz"
 wget -nc $redisURL
 
+phantomjsURL="http://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2"
+wget -nc $phantomjsURL
+
 cd $PWD

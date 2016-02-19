@@ -175,6 +175,23 @@ fi
 assertBinPath "node"
 assertBinPath "npm"
 
+echoGreen "-------- Installing PhantomJS --------"
+checkExactBinPath "phantomjs" $USER_INSTALL/bin/phantomjs
+ret=$?
+if [ $ret == "0" ]; then
+	echoBlue "Skip PhantomJS"
+else
+	filename=$(basename $( ls $DIR/archived/phantomjs-* ))
+	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+	cd $USER_ARCHIVED
+	tar -xf $filename
+	dirname=${filename%.tar.bz2}
+	cd $USER_ARCHIVED/$dirname
+	echoBlue "cp -v bin/phantomjs $USER_INSTALL/bin/phantomjs"
+	cp -v bin/phantomjs $USER_INSTALL/bin/phantomjs
+fi
+assertBinPath "phantomjs"
+
 PYTHON_VER="2.7"
 echoGreen "-------- Installing Python --------"
 if [[ $os != "Darwin" ]]; then
