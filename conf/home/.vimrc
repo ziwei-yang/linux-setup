@@ -178,6 +178,6 @@ let @d = '0xj'
 " Automatic indentation for different languange.
 autocmd FileType html setlocal shiftwidth=2 tabstop=2
 autocmd FileType ruby setlocal shiftwidth=2 tabstop=2
-autocmd Filetype javascript setlocal ts=4 sw=4 sts=0 expandtab
-autocmd Filetype coffeescript setlocal ts=4 sw=4 sts=0 expandtab
-autocmd Filetype jade setlocal ts=4 sw=4 sts=0 expandtab
+autocmd Filetype javascript setlocal ts=4 sw=4 sts=0
+autocmd Filetype coffeescript setlocal ts=4 sw=4 sts=0
+autocmd Filetype jade setlocal ts=4 sw=4 sts=0
