@@ -248,7 +248,7 @@ fi
 MVN_VER="3.3"
 echoGreen "-------- Installing Maven --------"
 filename=$(basename $( ls $DIR/archived/apache-maven-* ))
-checkExactBinPath "mvn" $USER_INSTALL/bin/python
+checkBinVersion "mvn" $MVN_VER
 ret=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip maven"
