@@ -245,6 +245,21 @@ else
 	rm $filename
 fi
 
+MVN_VER="3.3"
+echoGreen "-------- Installing Maven --------"
+filename=$(basename $( ls $DIR/archived/apache-maven-* ))
+checkExactBinPath "mvn" $USER_INSTALL/bin/python
+ret=$?
+if [ $ret == "0" ]; then
+	echoBlue "Skip maven"
+else
+	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+	cd $USER_ARCHIVED
+	tar -xf $filename
+	rm $filename
+fi
+checkBinVersion "mvn" $MVN_VER
+
 echoGreen "-----------------------------------------------"
 echoGreen "Environment set up, reopen bash to take effect."
 

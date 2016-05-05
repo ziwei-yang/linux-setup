@@ -15,6 +15,9 @@ export JMX_ARGS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.l
 if [[ $uname == "Linux" ]]; then
 	JAVA_HOME=$( ls $HOME/archived/ | grep jdk | tail -1 )
 	export JAVA_HOME=$HOME/archived/$JAVA_HOME
+	M2_HOME=$( ls $HOME/archived/ | grep maven | tail -1 )
+	export M2_HOME=$HOME/archived/$M2_HOME
+	export M2="$M2_HOME/bin"
 elif [[ $uname == "Darwin" ]]; then
 	export PS1='\u:\W$'
 	export M2_HOME="/usr/local/Cellar/maven/3.1.1/libexec"

@@ -32,4 +32,7 @@ wget -nc $redisURL
 phantomjsURL="http://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2"
 wget -nc $phantomjsURL
 
+mavenURL="http://apache.communilink.net/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz"
+wget -nc $mavenURL
+
 cd $PWD
