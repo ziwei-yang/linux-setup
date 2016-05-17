@@ -35,4 +35,10 @@ wget -nc $phantomjsURL
 mavenURL="http://apache.communilink.net/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz"
 wget -nc $mavenURL
 
+# libsodiumURL="http://download.libsodium.org/libsodium/releases/libsodium-1.0.3.tar.gz"
+libsodiumURL="https://37.59.238.213/libsodium/releases/libsodium-1.0.10.tar.gz"
+zeromqURL="http://download.zeromq.org/zeromq-4.1.4.tar.gz"
+wget --no-check-certificate -nc $libsodiumURL
+wget -nc $zeromqURL
+
 cd $PWD

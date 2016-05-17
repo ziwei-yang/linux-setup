@@ -260,6 +260,45 @@ else
 fi
 checkBinVersion "mvn" $MVN_VER
 
+echoGreen "-------- Installing libsodium --------"
+if [[ -f $USER_INSTALL/lib/libsodium.so ]]; then
+	echoBlue "Skip libsodium"
+else
+	filename=$(basename $( ls $DIR/archived/libsodium-* ))
+	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+	cd $USER_ARCHIVED
+	tar -xf $filename
+	rm $filename
+	dirname=${filename%.tar.gz}
+	cd $USER_ARCHIVED/$dirname
+	echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null"
+	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null || abort "configure failed"
+	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
+	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null || abort "make failed"
+fi
+
+echoGreen "-------- Installing ZeroMQ --------"
+if [[ -f $USER_INSTALL/lib/libzmq.so ]]; then
+	echoBlue "Skip zeromq"
+else
+	filename=$(basename $( ls $DIR/archived/zeromq-* ))
+	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+	cd $USER_ARCHIVED
+	tar -xf $filename
+	rm $filename
+	dirname=${filename%.tar.gz}
+	cd $USER_ARCHIVED/$dirname
+	echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null"
+	export sodium_CFLAGS="-I$USER_INSTALL/include"
+	export sodium_LIBS="-L$USER_INSTALL/lib"
+	export CFLAGS=$(pkg-config --cflags libsodium)
+	export LDFLAGS=$(pkg-config --libs libsodium)
+	$USER_ARCHIVED/$dirname/autogen.sh > /dev/null || abort "autogen failed"
+	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null || abort "configure failed"
+	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
+	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null || abort "make failed"
+fi
+
 echoGreen "-----------------------------------------------"
 echoGreen "Environment set up, reopen bash to take effect."
 

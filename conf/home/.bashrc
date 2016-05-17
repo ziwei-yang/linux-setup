@@ -29,8 +29,11 @@ fi
 
 # PATH
 export PATH=$M2:$JAVA_HOME/bin:$HOME/.rvm/bin:$HOME/install/bin:$PATH
+export CPATH=$HOME/install/include:$CPATH
+export LIBRARY_PATH=$HOME/install/lib:$LIBRARY_PATH
 export LD_LIBRARY_PATH=$HOME/install/lib:$LD_LIBRARY_PATH
-export LD_RUN_PATH=$LD_RUN_PATH
+export LD_RUN_PATH=$HOME/install/lib:$LD_RUN_PATH
+export PKG_CONFIG_PATH=$HOME/install/lib:$HOME/install/lib/pkgconfig:$PKG_CONFIG_PATH
 
 # RVM
 export rvm_path=$HOME/.rvm
