@@ -61,7 +61,7 @@ if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
 			echoBlue "Skip Development tools"
 		fi
 	fi
-	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet
+	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet cmake
 	do
 		checkBinPath $app
 		ret=$?
@@ -297,6 +297,34 @@ else
 	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null || abort "configure failed"
 	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
 	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null || abort "make failed"
+fi
+
+echoGreen "-------- Installing Nanomsg --------"
+checkBinPath "nanocat"
+ret=$?
+if [ $ret == "0" ]; then
+	echoBlue "Skip nanomsg"
+else
+	filename=$(basename $( ls $DIR/archived/nanomsg-* ))
+	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+	cd $USER_ARCHIVED
+	tar -xf $filename
+	rm $filename
+	dirname=${filename%.tar.gz}
+	cd $USER_ARCHIVED/$dirname
+	builddir=$USER_ARCHIVED/$dirname/build
+	mkdir $builddir
+	cd $builddir
+	cmake $USER_ARCHIVED/$dirname > /dev/null || abort "cmake configure failed"
+	echoBlue "cmake --build $builddir"
+	cmake --build $builddir > /dev/null || abort "cmake build failed"
+	echoBlue "ctest $builddir > /dev/null"
+	ctest $builddir > /dev/null || abort "ctest failed"
+	echoBlue "cmake -DCMAKE_INSTALL_PREFIX:PATH=$USER_INSTALL $builddir"
+	cmake -DCMAKE_INSTALL_PREFIX:PATH=$USER_INSTALL $builddir || abort "cmake install failed"
+	echoBlue "make all install"
+	make all install || abort "make install failed"
+	ln -v -sf $USER_INSTALL/lib64/libnanomsg* $USER_INSTALL/lib/
 fi
 
 echoGreen "-----------------------------------------------"

@@ -41,4 +41,7 @@ zeromqURL="http://download.zeromq.org/zeromq-4.1.4.tar.gz"
 wget --no-check-certificate -nc $libsodiumURL
 wget -nc $zeromqURL
 
+nanomqURL="https://github.com/nanomsg/nanomsg/archive/0.9-beta.tar.gz"
+wget -O nanomsg-0.9-beta.tar.gz -nc $nanomqURL
+
 cd $PWD
