@@ -1,5 +1,7 @@
 #! /bin/bash
 # Check and set environment before every scripts. Golbal vars should be not affect others.
+source $DIR/archived/download.sh
+
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
@@ -8,6 +10,7 @@ echo "cd $DIR"
 cd $DIR
 
 source $DIR/util/util.sh
+
 setupBasicEnv
 os=$( osinfo )
 
@@ -288,13 +291,35 @@ else
 	rm $filename
 	dirname=${filename%.tar.gz}
 	cd $USER_ARCHIVED/$dirname
-	echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null"
 	export sodium_CFLAGS="-I$USER_INSTALL/include"
 	export sodium_LIBS="-L$USER_INSTALL/lib"
 	export CFLAGS=$(pkg-config --cflags libsodium)
 	export LDFLAGS=$(pkg-config --libs libsodium)
+	echoBlue "$USER_ARCHIVED/$dirname/autogen.sh > /dev/null"
 	$USER_ARCHIVED/$dirname/autogen.sh > /dev/null || abort "autogen failed"
+	echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null"
 	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null || abort "configure failed"
+	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
+	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null || abort "make failed"
+fi
+
+echoGreen "-------- Installing jzmq --------"
+if [[ -f $USER_INSTALL/lib/libjzmq.so ]]; then
+	echoBlue "Skip jzmq"
+else
+	filename=$(basename $( ls $DIR/archived/jzmq-* ))
+	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+	cd $USER_ARCHIVED
+	unzip -o $filename
+	rm $filename
+	dirname=${filename%.zip}/jzmq-jni
+	cd $USER_ARCHIVED/$dirname
+	export CFLAGS=$(pkg-config --cflags libsodium)
+	export LDFLAGS=$(pkg-config --libs libsodium)
+	echoBlue "$USER_ARCHIVED/$dirname/autogen.sh > /dev/null"
+	$USER_ARCHIVED/$dirname/autogen.sh > /dev/null || abort "autogen failed"
+	echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL --with-zeromq=$USER_INSTALL > /dev/null"
+	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL --with-zeromq=$USER_INSTALL > /dev/null || abort "configure failed"
 	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
 	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null || abort "make failed"
 fi
