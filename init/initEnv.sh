@@ -251,7 +251,7 @@ fi
 MVN_VER="3.3"
 echoGreen "-------- Installing Maven --------"
 filename=$(basename $( ls $DIR/archived/apache-maven-* ))
-checkBinVersion "mvn" $MVN_VER
+checkBinPath "mvn" $MVN_VER
 ret=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip maven"
@@ -260,6 +260,7 @@ else
 	cd $USER_ARCHIVED
 	tar -xf $filename
 	rm $filename
+	source $HOME/.bashrc
 fi
 checkBinVersion "mvn" $MVN_VER
 
