@@ -41,3 +41,5 @@ elif [[ $os == Ubuntu* ]]; then
 else
 	echo "Unsupport OS:$os"
 fi
+
+echoBlue "Remeber to modify .htaccess to enable permalink on wordpress, Set 'All' to all 'AllowOverride' in /etc/apache/conf/httpd.conf"
