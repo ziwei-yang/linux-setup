@@ -13,9 +13,9 @@ export JMX_ARGS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.l
 
 # Platform specified aliases.
 if [[ $uname == "Linux" ]]; then
-	JAVA_HOME=$( ls $HOME/archived/ | grep jdk | tail -1 )
+	JAVA_HOME=$( ls $HOME/archived/ | grep jdk | grep -v .gz | tail -1 )
 	export JAVA_HOME=$HOME/archived/$JAVA_HOME
-	M2_HOME=$( ls $HOME/archived/ | grep maven | tail -1 )
+	M2_HOME=$( ls $HOME/archived/ | grep maven | grep -v .gz | tail -1 )
 	export M2_HOME=$HOME/archived/$M2_HOME
 	export M2="$M2_HOME/bin"
 elif [[ $uname == "Darwin" ]]; then

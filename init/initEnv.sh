@@ -1,11 +1,16 @@
 #! /bin/bash
 # Check and set environment before every scripts. Golbal vars should be not affect others.
-source $DIR/archived/download.sh
 
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 DIR=$DIR/../
+INIT_ENV_DIR=$DIR
+
+source $DIR/archived/download.sh
+
+# Avoid $DIR overwritten.
+DIR=$INIT_ENV_DIR
 echo "cd $DIR"
 cd $DIR
 
@@ -64,7 +69,7 @@ if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
 			echoBlue "Skip Development tools"
 		fi
 	fi
-	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet cmake
+	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet cmake dirmngr
 	do
 		checkBinPath $app
 		ret=$?
