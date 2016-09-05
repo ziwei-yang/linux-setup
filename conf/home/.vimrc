@@ -116,6 +116,9 @@ set directory=~/.vim/swapfiles,~/tmp,.
 " map <F12> to save
 nmap <F12> :w<CR>
 inoremap <F12> <Esc>:w<CR>
+" map Ctrl+p to save
+nmap <C-p> :w<CR>
+inoremap <C-p> <Esc>:w<CR>
 
 " map F3/F4 to switch windows 
 " nmap <F3> :wincmd h<CR>
