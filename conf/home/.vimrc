@@ -116,9 +116,9 @@ set directory=~/.vim/swapfiles,~/tmp,.
 " map <F12> to save
 nmap <F12> :w<CR>
 inoremap <F12> <Esc>:w<CR>
-" map Ctrl+i to save
-nmap <C-i> :w<CR>
-inoremap <C-i> <Esc>:w<CR>
+" map f to save in normal mode
+nmap f :w<CR>
+" inoremap <C-1> <Esc>:w<CR>
 
 " map F3/F4 to switch windows 
 " nmap <F3> :wincmd h<CR>
@@ -178,6 +178,7 @@ let @b = '0i# j'
 let @c = '0i//j'
 let @x = '0xxj'
 let @d = '0xj'
+let @t = '0i	j'
 
 " Automatic indentation for different languange.
 autocmd FileType html setlocal shiftwidth=2 tabstop=2
