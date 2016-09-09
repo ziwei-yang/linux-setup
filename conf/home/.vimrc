@@ -116,9 +116,9 @@ set directory=~/.vim/swapfiles,~/tmp,.
 " map <F12> to save
 nmap <F12> :w<CR>
 inoremap <F12> <Esc>:w<CR>
-" map Ctrl+p to save
-nmap <C-p> :w<CR>
-inoremap <C-p> <Esc>:w<CR>
+" map Ctrl+i to save
+nmap <C-i> :w<CR>
+inoremap <C-i> <Esc>:w<CR>
 
 " map F3/F4 to switch windows 
 " nmap <F3> :wincmd h<CR>
@@ -167,7 +167,8 @@ hi! link ShowMarksHLl DiffAdd
 hi! link ShowMarksHLu DiffChange
 
 " status line
-hi StatusLine ctermbg=darkgrey ctermfg=grey
+" hi StatusLine ctermbg=darkgrey ctermfg=grey
+hi StatusLine ctermbg=lightred ctermfg=white
 
 set statusline=%<%F\%h%m%r%k\ Encoding:[%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}]%=\%-14.(%l/%L,%c%V%)\ %P
 set laststatus=2   " Always show the status line - use 2 lines for the status bar
