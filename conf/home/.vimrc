@@ -149,7 +149,7 @@ match OverLength /\%81v.\+/
 
 " set default color scheme
 " colorscheme elflord
-colorscheme default
+# colorscheme default
 
 " set term=linux
 
