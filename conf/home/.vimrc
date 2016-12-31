@@ -136,6 +136,9 @@ nmap <C-k> :tabprevious<CR>
 inoremap <C-k> <Esc>:tabprevious<CR>
 nmap <C-j> :tabnext<CR>
 inoremap <C-j> <Esc>:tabnext<CR>
+" For some ios terminal: ctrl+j does not work
+nmap <C-h> :tabnext<CR>
+inoremap <C-h> <Esc>:tabnext<CR>
 
 " Display extra whitespace and tab
 " set list listchars=tab:»·,trail:·
