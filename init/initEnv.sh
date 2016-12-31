@@ -124,7 +124,8 @@ echoGreen "-------- Installing RVM --------"
 checkExactBinPath "rvm" $HOME/.rvm/bin/rvm
 ret=$?
 if [ $ret == "0" ]; then
-	echoBlue "Skip RVM."
+	echoBlue "Update RVM."
+	rvm get head
 else
 	gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
 	curl -sSL https://get.rvm.io | bash -s stable
