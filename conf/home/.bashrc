@@ -73,3 +73,4 @@ elif [[ $uname == "Darwin" ]]; then
 	alias RAM_DISK="diskutil erasevolume HFS+ 'RAM Disk' \`hdiutil attach -nomount ram://1048576\`"
 fi
 
+PATH="$GEM_HOME/bin:$HOME/.rvm/bin:$PATH"
