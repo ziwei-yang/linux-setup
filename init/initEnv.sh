@@ -183,6 +183,18 @@ else
 fi
 assertBinPath "node"
 assertBinPath "npm"
+echoGreen "-------- Installing npm utilities --------"
+for app in tmux-cpu tmux-mem
+do
+	checkBinPath $app
+	ret=$?
+	if [ $ret == "0" ]; then
+		echoBlue "Skip $app."
+	else
+		echoBlue "Installing $app."
+		npm install -g $app
+	fi
+done
 
 echoGreen "-------- Installing PhantomJS --------"
 checkExactBinPath "phantomjs" $USER_INSTALL/bin/phantomjs
