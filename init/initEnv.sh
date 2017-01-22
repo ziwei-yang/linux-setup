@@ -291,7 +291,9 @@ fi
 checkBinVersion "mvn" $MVN_VER || abort "Maven version is still not $MVN_VER"
 
 echoGreen "-------- Installing libsodium --------"
-if [[ -f $USER_INSTALL/lib/libsodium.so ]]; then
+if [[ -f $USER_INSTALL/lib/libsodium.dylib && $os == 'Darwin' ]]; then
+	echoBlue "Skip libsodium for macOS"
+elif [[ -f $USER_INSTALL/lib/libsodium.so ]]; then
 	echoBlue "Skip libsodium"
 else
 	filename=$(basename $( ls $DIR/archived/libsodium-* ))
@@ -308,7 +310,9 @@ else
 fi
 
 echoGreen "-------- Installing ZeroMQ --------"
-if [[ -f $USER_INSTALL/lib/libzmq.so ]]; then
+if [[ -f $USER_INSTALL/lib/libzmq.dylib && $os == 'Darwin' ]]; then
+	echoBlue "Skip zeromq for macOS"
+elif [[ -f $USER_INSTALL/lib/libzmq.so ]]; then
 	echoBlue "Skip zeromq"
 else
 	filename=$(basename $( ls $DIR/archived/zeromq-* ))
@@ -331,7 +335,9 @@ else
 fi
 
 echoGreen "-------- Installing jzmq --------"
-if [[ -f $USER_INSTALL/lib/libjzmq.so ]]; then
+if [[ -f $USER_INSTALL/lib/libjzmq.dylib && $os == 'Darwin' ]]; then
+	echoBlue "Skip jzmq for macOS"
+elif [[ -f $USER_INSTALL/lib/libjzmq.so ]]; then
 	echoBlue "Skip jzmq"
 else
 	filename=$(basename $( ls $DIR/archived/jzmq-* ))
