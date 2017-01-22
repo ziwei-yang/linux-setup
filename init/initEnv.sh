@@ -31,6 +31,8 @@ fi
 USER_INSTALL="$HOME/install"
 USER_ARCHIVED="$HOME/archived"
 mkdir -p $USER_INSTALL
+mkdir -p $USER_INSTALL/include
+mkdir -p $USER_INSTALL/lib
 mkdir -p $USER_ARCHIVED
 
 echoGreen "-------- Checking environment. --------"
@@ -125,7 +127,7 @@ checkExactBinPath "rvm" $HOME/.rvm/bin/rvm
 ret=$?
 if [ $ret == "0" ]; then
 	echoBlue "Update RVM."
-	rvm get head
+	rvm get stable
 else
 	gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
 	curl -sSL https://get.rvm.io | bash -s stable
