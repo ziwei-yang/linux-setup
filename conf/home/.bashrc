@@ -15,19 +15,17 @@ export JMX_ARGS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.l
 if [[ $uname == "Linux" ]]; then
 	JAVA_HOME=$( ls $HOME/archived/ | grep jdk | grep -v .gz | tail -1 )
 	export JAVA_HOME=$HOME/archived/$JAVA_HOME
-	M2_HOME=$( ls $HOME/archived/ | grep maven | grep -v .gz | tail -1 )
-	export M2_HOME=$HOME/archived/$M2_HOME
-	export M2="$M2_HOME/bin"
 elif [[ $uname == "Darwin" ]]; then
 	export PS1='\u:\W$'
-	export M2_HOME="/usr/local/Cellar/maven/3.1.1/libexec"
-	export M2="$M2_HOME/bin"
 	JAVA_HOME=$( ls "/Library/Java/JavaVirtualMachines/" | grep jdk | tail -1 )
 	export JAVA_HOME="/Library/Java/JavaVirtualMachines/$JAVA_HOME/Contents/Home"
 	export VIMRUNTIME="/usr/share/vim/vim74"
 fi
 
 # PATH
+M2_HOME=$( ls $HOME/archived/ | grep maven | grep -v .gz | tail -1 )
+export M2_HOME=$HOME/archived/$M2_HOME
+export M2="$M2_HOME/bin"
 export PATH=$M2:$JAVA_HOME/bin:$HOME/.rvm/bin:$HOME/install/bin:$PATH
 export CPATH=$HOME/install/include:$CPATH
 export LIBRARY_PATH=$HOME/install/lib:$LIBRARY_PATH
