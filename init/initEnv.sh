@@ -42,6 +42,8 @@ sudoAllowed="0"
 if [[ $ret == "a" ]] && [[ $os != "Darwin" ]]; then
 	echoBlue "User has sudo privilege without password."
 	sudoAllowed="1"
+elif [[ $os == 'Darwin' ]]; then
+	:
 else
 	echoRed "WARN: User has no sudo privilege without password. Change /etc/sudoers first."
 fi
