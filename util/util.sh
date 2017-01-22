@@ -54,10 +54,10 @@ function checkBinVersion {
 	sysVer=`"$bin" --version 2>&1`
 	ver=$2
 	if [[ $sysVer =~ $ver ]]; then
-		:
+		return 0
 	else
 		echoRed "[$bin] version [$sysVer] not match [$ver]."
-		exit -1
+		return 1
 	fi
 }
 

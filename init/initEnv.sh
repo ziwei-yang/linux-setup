@@ -162,7 +162,7 @@ else
 	fi
 fi
 rvm use $RUBY_VER
-checkBinVersion "ruby" $RUBY_VER
+checkBinVersion "ruby" $RUBY_VER || abort "Ruby version is still not $RUBY_VER"
 # Change rvm image to taobao for China.
 if [ $GFWFucked == "1" ]; then
 	gem sources --add https://ruby.taobao.org/ --remove https://rubygems.org/
@@ -239,7 +239,7 @@ if [[ $os != "Darwin" ]]; then
 else
 	echoBlue "Skip python."
 fi
-checkBinVersion "python" $PYTHON_VER
+checkBinVersion "python" $PYTHON_VER || abort "Python version is still not $PYTHON_VER"
 
 # Install PIP
 echoGreen "-------- Installing PIP and Py lib --------"
@@ -273,8 +273,12 @@ fi
 MVN_VER="3.3"
 echoGreen "-------- Installing Maven --------"
 filename=$(basename $( ls $DIR/archived/apache-maven-* ))
-checkBinPath "mvn" $MVN_VER
+checkBinPath "mvn"
 ret=$?
+if [ $ret == "0" ]; then
+	checkBinVersion "mvn" $MVN_VER
+	ret=$?
+fi
 if [ $ret == "0" ]; then
 	echoBlue "Skip maven"
 else
@@ -284,7 +288,7 @@ else
 	rm $filename
 	source $HOME/.bashrc
 fi
-checkBinVersion "mvn" $MVN_VER
+checkBinVersion "mvn" $MVN_VER || abort "Maven version is still not $MVN_VER"
 
 echoGreen "-------- Installing libsodium --------"
 if [[ -f $USER_INSTALL/lib/libsodium.so ]]; then
