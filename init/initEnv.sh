@@ -385,6 +385,16 @@ else
 	ln -v -sf $USER_INSTALL/lib64/libnanomsg* $USER_INSTALL/lib/
 fi
 
+echoGreen "-------- Installing wkhtmltox --------"
+checkBinPath "wkhtmltopdf"
+ret=$?
+if [ $ret == "0" ]; then
+	echoBlue "Skip wkhtmltox"
+else
+	filename=$(basename $( ls $DIR/archived/wkhtmltox-* ))
+	tar xf $DIR/archived/$filename -C $USER_INSTALL --strip 1 wkhtmltox/
+fi
+
 echoGreen "-----------------------------------------------"
 echoGreen "Environment set up, reopen bash to take effect."
 
