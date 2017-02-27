@@ -106,9 +106,9 @@ if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
 	fi
 	# Other library.
 	if [[ $os == CentOS* ]]; then
-		sudo yum -y install lapack lapack-devel blas blas-devel libxslt-devel libxslt libxml2-devel libxml2 ImageMagick ImageMagick-devel libpng-devel
+		sudo yum -y install lapack lapack-devel blas blas-devel libxslt-devel libxslt libxml2-devel libxml2 ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj libgcj-devel gcc-c++
 	elif [[ $os == Ubuntu* ]]; then
-		sudo apt-get -y install liblapack3gf liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 libxml2-dev libxml2 gfortran imagemagick imagemagick-dev libpng-dev
+		sudo apt-get -y install liblapack3gf liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 libxml2-dev libxml2 gfortran imagemagick imagemagick-dev libpng-dev pdftk
 	elif [[ $os == "Darwin" ]]; then
 		brew tap homebrew/science
 		brew tap homebrew/python
@@ -393,6 +393,25 @@ if [ $ret == "0" ]; then
 else
 	filename=$(basename $( ls $DIR/archived/wkhtmltox-* ))
 	tar xf $DIR/archived/$filename -C $USER_INSTALL --strip 1 wkhtmltox/
+fi
+
+echoGreen "-------- Installing pdftk --------"
+checkBinPath "pdftk"
+ret=$?
+if [ $ret == "0" ]; then
+	echoBlue "Skip pdftk"
+else
+	filename=$(basename $( ls $DIR/archived/pdftk-* ))
+	unzip $DIR/archived/$filename > /dev/null
+	dirname=$(basename $( ls $DIR/archived/pdftk-*-dist ))
+	cd $DIR/archived/$dirname/pdftk
+	if [[ $os == CentOS* ]]; then
+		echoBlue "make -f Makefile.Redhat"
+		make -f $DIR/archived/$dirname/pdftk/Makefile.Redhat > /dev/null || abort "Making pdftk failed"
+		cp $DIR/archived/$dirname/pdftk/pdftk $USER_INSTALL/
+	else
+		echoRed "Installing pdftk is not implemented on $os."
+	fi
 fi
 
 echoGreen "-----------------------------------------------"

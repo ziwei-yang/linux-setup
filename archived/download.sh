@@ -51,4 +51,7 @@ wget -O nanomsg-0.9-beta.tar.gz -nc $nanomqURL
 wkhtmlURL="http://download.gna.org/wkhtmltopdf/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz"
 wget -nc $wkhtmlURL
 
+pdftkURL="https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/pdftk-2.02-src.zip"
+wget -nc $pdftkURL
+
 cd $PWD
