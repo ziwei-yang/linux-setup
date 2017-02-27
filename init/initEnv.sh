@@ -412,7 +412,8 @@ else
 		echoBlue "make -f Makefile.Redhat"
 		cd $USER_ARCHIVED/$dirname/pdftk/
 		make -f $USER_ARCHIVED/$dirname/pdftk/Makefile.Redhat 2>&1 > /dev/null || abort "Making pdftk failed"
-		cp $USER_ARCHIVED/$dirname/pdftk/pdftk $USER_INSTALL/
+		echo "cp $USER_ARCHIVED/$dirname/pdftk/pdftk $USER_INSTALL/bin/"
+		cp $USER_ARCHIVED/$dirname/pdftk/pdftk $USER_INSTALL/bin/
 	else
 		echoRed "Installing pdftk is not implemented on $os."
 	fi
