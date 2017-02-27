@@ -128,8 +128,7 @@ echoGreen "-------- Installing RVM --------"
 checkExactBinPath "rvm" $HOME/.rvm/bin/rvm
 ret=$?
 if [ $ret == "0" ]; then
-	echoBlue "Update RVM."
-	rvm get stable
+	echoBlue "Skip RVM."
 else
 	gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
 	curl -sSL https://get.rvm.io | bash -s stable
@@ -146,11 +145,13 @@ GFWFucked=$?
 RUBY_VER="2.3"
 rvm use $RUBY_VER
 echoGreen "-------- Installing Ruby $RUBY_VER --------"
-checkExactBinPath "ruby" $HOME/.rvm/rubies/ruby-$RUBY_VER/bin/ruby
+checkExactBinPath "ruby" $HOME/.rvm/rubies/ruby-$RUBY_VER*/bin/ruby
 ret=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip Ruby."
 else
+	echoBlue "Update RVM before installing ruby."
+	rvm get stable
 	# Change rvm source code image to taobao for China.
 	if [ $GFWFucked == "1" ]; then
 		sed -i.bak 's!http://cache.ruby-lang.org/pub/ruby!https://ruby.taobao.org/mirrors/ruby!' $HOME/.rvm/config/db
@@ -402,13 +403,16 @@ if [ $ret == "0" ]; then
 	echoBlue "Skip pdftk"
 else
 	filename=$(basename $( ls $DIR/archived/pdftk-* ))
-	unzip $DIR/archived/$filename > /dev/null
-	dirname=$(basename $( ls $DIR/archived/pdftk-*-dist ))
+	cp $DIR/archived/$filename $USER_ARCHIVED/
+	cd $USER_ARCHIVED
+	unzip -o $USER_ARCHIVED/$filename > /dev/null || abort "Unzip pdftk failed"
+	dirname=$(basename $USER_ARCHIVED/pdftk-*-dist)
 	cd $DIR/archived/$dirname/pdftk
 	if [[ $os == CentOS* ]]; then
 		echoBlue "make -f Makefile.Redhat"
-		make -f $DIR/archived/$dirname/pdftk/Makefile.Redhat > /dev/null || abort "Making pdftk failed"
-		cp $DIR/archived/$dirname/pdftk/pdftk $USER_INSTALL/
+		cd $USER_ARCHIVED/$dirname/pdftk/
+		make -f $USER_ARCHIVED/$dirname/pdftk/Makefile.Redhat 2>&1 > /dev/null || abort "Making pdftk failed"
+		cp $USER_ARCHIVED/$dirname/pdftk/pdftk $USER_INSTALL/
 	else
 		echoRed "Installing pdftk is not implemented on $os."
 	fi
