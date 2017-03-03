@@ -31,6 +31,7 @@ fi
 USER_INSTALL="$HOME/install"
 USER_ARCHIVED="$HOME/archived/linux-steup"
 mkdir -p $USER_INSTALL
+mkdir -p $USER_INSTALL/bin
 mkdir -p $USER_INSTALL/include
 mkdir -p $USER_INSTALL/lib
 mkdir -p $USER_ARCHIVED
