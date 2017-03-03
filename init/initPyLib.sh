@@ -26,12 +26,12 @@ else
 	pip install "https://pypi.python.org/packages/source/f/feedparser/feedparser-5.2.0.post1.tar.gz"
 fi
 # Install official lib
-for pylib in pycurl simplejson chardet lxml numpy scipy scikit-learn matplotlib jieba redis pika pyquery request requests thrift cssselect xlrd MySQL-python readability-lxml; do
-	checkPyLibVersion $pylib
-	ret=$?
-	if [ $ret == "0" ]; then
-		echoBlue "Skip python lib $pylib"
-	else
-		pip install $pylib
-	fi
+for pylib in pycurl simplejson chardet lxml numpy scipy scikit-learn matplotlib jieba redis pika pyquery request requests thrift cssselect xlrd MySQL-python readability-lxml
+do
+	checkPyLibVersion $pylib && echoBlue "Skip python lib $pylib" && continue
+	echoBlue "Installing python lib $pylib"
+	pip install $pylib
 done
+# Copy system libs for python
+PYTHON_VER="2.7"
+ln -sf /usr/lib64/python*/lib-dynload/bz2.so $USER_INSTALL/lib/python$PYTHON_VER/

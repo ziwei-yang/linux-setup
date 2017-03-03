@@ -23,8 +23,19 @@ if [[ $uname == 'Linux' ]]; then
 	wget -nc $pyPipURL
 fi
 
-nodejsURL="http://nodejs.org/dist/v0.12.7/node-v0.12.7.tar.gz"
-wget -nc $nodejsURL
+# gppURL="http://ftp.tsukuba.wide.ad.jp/software/gcc/releases/gcc-6.3.0/gcc-6.3.0.tar.gz"
+# wget -nc $gppURL
+
+nodejs0_12URL="https://nodejs.org/dist/latest-v0.12.x/node-v0.12.18.tar.gz"
+wget -nc $nodejs0_12URL
+nodejs4URL="https://nodejs.org/dist/latest-v4.x/node-v4.8.0.tar.gz"
+wget -nc $nodejs4URL
+nodejs5URL="https://nodejs.org/dist/latest-v5.x/node-v5.12.0.tar.gz"
+wget -nc $nodejs5URL
+nodejs6URL="https://nodejs.org/dist/latest-v6.x/node-v6.10.0.tar.gz"
+wget -nc $nodejs6URL
+nodejs7URL="https://nodejs.org/dist/latest-v7.x/node-v7.7.1.tar.gz"
+wget -nc $nodejs7URL
 
 redisURL="http://download.redis.io/releases/redis-3.0.5.tar.gz"
 wget -nc $redisURL

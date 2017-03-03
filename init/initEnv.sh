@@ -29,11 +29,12 @@ else
 fi
 
 USER_INSTALL="$HOME/install"
-USER_ARCHIVED="$HOME/archived"
+USER_ARCHIVED="$HOME/archived/linux-steup"
 mkdir -p $USER_INSTALL
 mkdir -p $USER_INSTALL/include
 mkdir -p $USER_INSTALL/lib
 mkdir -p $USER_ARCHIVED
+rm -rf $USER_ARCHIVED/*
 
 echoGreen "-------- Checking environment. --------"
 # Check sudo privilege.
@@ -73,21 +74,16 @@ if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
 			echoBlue "Skip Development tools"
 		fi
 	fi
-	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet cmake dirmngr
+	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet cmake dirmngr clang
 	do
-		checkBinPath $app
-		ret=$?
-		if [ $ret == "0" ]; then
-			echoBlue "Skip $app."
-		else
-			echoBlue "Installing $app."
-			if [[ $os == CentOS* ]]; then
-				sudo yum -y install $app
-			elif [[ $os == Ubuntu* ]]; then
-				sudo apt-get -y install $app
-			elif [[ $os == "Darwin" ]]; then
-				brew install $app
-			fi
+		checkBinPath $app && echoBlue "Found $app" && continue
+		echoBlue "Installing $app."
+		if [[ $os == CentOS* ]]; then
+			sudo yum -y install $app
+		elif [[ $os == Ubuntu* ]]; then
+			sudo apt-get -y install $app
+		elif [[ $os == "Darwin" ]]; then
+			brew install $app
 		fi
 	done
 	# Check unbuffer.
@@ -106,9 +102,9 @@ if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
 	fi
 	# Other library.
 	if [[ $os == CentOS* ]]; then
-		sudo yum -y install lapack lapack-devel blas blas-devel libxslt-devel libxslt libxml2-devel libxml2 ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj libgcj-devel gcc-c++
+		sudo yum -y install lapack lapack-devel blas blas-devel libxslt-devel libxslt libxml2-devel libxml2 ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj libgcj-devel gcc-c++ bzip2-devel
 	elif [[ $os == Ubuntu* ]]; then
-		sudo apt-get -y install liblapack3gf liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 libxml2-dev libxml2 gfortran imagemagick imagemagick-dev libpng-dev pdftk
+		sudo apt-get -y install liblapack3gf liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 libxml2-dev libxml2 gfortran imagemagick imagemagick-dev libpng-dev pdftk libbz2-dev
 	elif [[ $os == "Darwin" ]]; then
 		brew tap homebrew/science
 		brew tap homebrew/python
@@ -120,6 +116,26 @@ if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
 else
 	echoRed "-------- Skip installing system tools --------"
 fi
+
+# G++ 6.3
+# echoGreen "-------- Checking G++ --------"
+# checkNewerBinVersion "g++" "g++ (GCC) 6."
+# ret=$?
+# if [ $ret == "0" ]; then
+# 	echoBlue "Skip G++"
+# else
+# 	echoBlue "Install G++"
+# 	filename=$(basename $( ls $DIR/archived/gcc-* ))
+# 	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+# 	cd $USER_ARCHIVED
+# 	tar -xf $filename
+# 	dirname=${filename%.tar.gz}
+# 	cd $USER_ARCHIVED/$dirname
+# 	echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL > /dev/null"
+# 	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL > /dev/null || abort "configure failed"
+# 	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
+# 	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null
+# fi
 
 # Basic settings.
 git config --global color.ui auto
@@ -169,38 +185,6 @@ if [ $GFWFucked == "1" ]; then
 	gem sources --add https://ruby.taobao.org/ --remove https://rubygems.org/
 fi
 
-echoGreen "-------- Installing Node.js --------"
-checkExactBinPath "node" $USER_INSTALL/bin/node
-ret=$?
-if [ $ret == "0" ]; then
-	echoBlue "Skip Nodejs."
-else
-	filename=$(basename $( ls $DIR/archived/node-* ))
-	cp -v $DIR/archived/$filename $USER_ARCHIVED/
-	cd $USER_ARCHIVED
-	tar -xf $filename
-	dirname=${filename%.tar.gz}
-	cd $USER_ARCHIVED/$dirname
-	echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL > /dev/null"
-	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL > /dev/null
-	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
-	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null
-fi
-assertBinPath "node"
-assertBinPath "npm"
-echoGreen "-------- Installing npm utilities --------"
-for app in tmux-cpu tmux-mem
-do
-	checkBinPath $app
-	ret=$?
-	if [ $ret == "0" ]; then
-		echoBlue "Skip $app."
-	else
-		echoBlue "Installing $app."
-		npm install -g $app
-	fi
-done
-
 echoGreen "-------- Installing PhantomJS --------"
 checkExactBinPath "phantomjs" $USER_INSTALL/bin/phantomjs
 ret=$?
@@ -233,9 +217,9 @@ if [[ $os != "Darwin" ]]; then
 		dirname=${filename%.tgz}
 		cd $USER_ARCHIVED/$dirname
 		echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null"
-		$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null
+		$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null || abort "configure failed"
 		echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
-		make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null
+		make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null || abort "Make python failed"
 	fi
 else
 	echoBlue "Skip python."
@@ -257,6 +241,53 @@ else
 	echoBlue "Skip pip."
 fi
 
+echoGreen "-------- Installing Node.js --------"
+checkExactBinPath "node" $USER_INSTALL/bin/node
+ret=$?
+if [ $ret == "0" ]; then
+	echoBlue "Skip Nodejs."
+else
+	# Copy system libs for python
+	ln -sf /usr/lib64/python*/lib-dynload/bz2.so $USER_INSTALL/lib/python$PYTHON_VER/
+	for filehead in node-v7 node-v6 node-v5 node-v4 node-v0
+	do
+		filename=$(basename $( ls $DIR/archived/$filehead* ))
+		echoBlue "Installing $filename"
+		cp -v $DIR/archived/$filename $USER_ARCHIVED/
+		cd $USER_ARCHIVED
+		tar -xf $filename
+		rm $USER_ARCHIVED/$filename
+		dirname=$(basename $( ls $USER_ARCHIVED | grep '^node-' ))
+		dirname=${dirname%.tar.gz}
+		cd $USER_ARCHIVED/$dirname
+		echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL > /dev/null"
+		$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL > /dev/null || abort "configure failed"
+		echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
+		make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null
+		ret=$?
+		if [ $ret == "0" ]; then
+			break
+		fi
+		echoRed "Make failed, skip installing $filename"
+		echoBlue "rm -rf $USER_ARCHIVED/$filehead*"
+		rm -rf $USER_ARCHIVED/$dirname
+	done
+fi
+assertBinPath "node"
+assertBinPath "npm"
+echoGreen "-------- Installing npm utilities --------"
+for app in tmux-cpu tmux-mem
+do
+	checkBinPath $app
+	ret=$?
+	if [ $ret == "0" ]; then
+		echoBlue "Skip $app."
+	else
+		echoBlue "Installing $app."
+		npm install -g $app
+	fi
+done
+
 echoGreen "-------- Installing Java 8 -------"
 javaVer=`java -version 2>&1 | grep 'java version'`
 if [[ $javaVer == *1.8.* ]]; then
@@ -274,12 +305,7 @@ fi
 MVN_VER="3.3"
 echoGreen "-------- Installing Maven --------"
 filename=$(basename $( ls $DIR/archived/apache-maven-* ))
-checkBinPath "mvn"
-ret=$?
-if [ $ret == "0" ]; then
-	checkBinVersion "mvn" $MVN_VER
-	ret=$?
-fi
+checkBinVersion "mvn" $MVN_VER
 if [ $ret == "0" ]; then
 	echoBlue "Skip maven"
 else
