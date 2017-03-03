@@ -51,7 +51,7 @@ function checkExactBinPath {
 
 function checkBinVersion {
 	bin=$1
-	checkBinPath $bin || return -1
+	checkBinPath $bin || return 1
 	sysVer=`"$bin" --version 2>&1`
 	ver=$2
 	if [[ $sysVer =~ $ver ]]; then

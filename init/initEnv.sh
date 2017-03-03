@@ -29,7 +29,7 @@ else
 fi
 
 USER_INSTALL="$HOME/install"
-USER_ARCHIVED="$HOME/archived/linux-steup"
+USER_ARCHIVED="$HOME/archived"
 mkdir -p $USER_INSTALL
 mkdir -p $USER_INSTALL/include
 mkdir -p $USER_INSTALL/lib
@@ -290,6 +290,7 @@ done
 
 echoGreen "-------- Installing Java 8 -------"
 javaVer=`java -version 2>&1 | grep 'java version'`
+echoBlue "Current Java version:$javaVer"
 if [[ $javaVer == *1.8.* ]]; then
 	echoBlue "Current JAVA:$javaVer"
 elif [[ $os == "Darwin" ]]; then
@@ -306,6 +307,7 @@ MVN_VER="3.3"
 echoGreen "-------- Installing Maven --------"
 filename=$(basename $( ls $DIR/archived/apache-maven-* ))
 checkBinVersion "mvn" $MVN_VER
+ret=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip maven"
 else
@@ -433,8 +435,10 @@ else
 	cd $USER_ARCHIVED
 	unzip -o $USER_ARCHIVED/$filename > /dev/null || abort "Unzip pdftk failed"
 	dirname=$(basename $USER_ARCHIVED/pdftk-*-dist)
-	cd $DIR/archived/$dirname/pdftk
-	if [[ $os == CentOS* ]]; then
+	cd $USER_ARCHIVED/$dirname/pdftk
+	if [[ $os == "CentOS Linux release 7"* ]]; then
+		echoRed "Installing pdftk is not implemented on $os."
+	elif [[ $os == CentOS* ]]; then
 		echoBlue "make -f Makefile.Redhat"
 		cd $USER_ARCHIVED/$dirname/pdftk/
 		make -f $USER_ARCHIVED/$dirname/pdftk/Makefile.Redhat 2>&1 > /dev/null || abort "Making pdftk failed"
