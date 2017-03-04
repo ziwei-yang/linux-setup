@@ -35,7 +35,6 @@ mkdir -p $USER_INSTALL/bin
 mkdir -p $USER_INSTALL/include
 mkdir -p $USER_INSTALL/lib
 mkdir -p $USER_ARCHIVED
-rm -rf $USER_ARCHIVED/*
 
 echoGreen "-------- Checking environment. --------"
 # Check sudo privilege.
@@ -70,7 +69,7 @@ if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
 	echoGreen "-------- Installing system tools --------"
 	if [[ $os == CentOS* ]]; then
 		if [ $(yum grouplist groupinfo 'Development tools' | grep "Installed" | wc -l) == "0" ]; then
-			sudo yum -y groupinstall 'Development tools'
+			sudo yum -y groupinstall 'Development tools' > /dev/null
 		else
 			echoBlue "Skip Development tools"
 		fi
@@ -80,11 +79,11 @@ if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
 		checkBinPath $app && echoBlue "Found $app" && continue
 		echoBlue "Installing $app."
 		if [[ $os == CentOS* ]]; then
-			sudo yum -y install $app
+			sudo yum -y install $app > /dev/null
 		elif [[ $os == Ubuntu* ]]; then
-			sudo apt-get -y install $app
+			sudo apt-get -y install $app > /dev/null
 		elif [[ $os == "Darwin" ]]; then
-			brew install $app
+			brew install $app > /dev/null
 		fi
 	done
 	# Check unbuffer.
@@ -94,25 +93,25 @@ if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
 		echoBlue "Skip unbuffer."
 	else
 		if [[ $os == CentOS* ]]; then
-			sudo yum -y install expect
+			sudo yum -y install expect > /dev/null
 		elif [[ $os == Ubuntu* ]]; then
-			sudo apt-get -y install expect-dev
+			sudo apt-get -y install expect-dev > /dev/null
 		elif [[ $os == "Darwin" ]]; then
-			brew install homebrew/dupes/expect
+			brew install homebrew/dupes/expect > /dev/null
 		fi
 	fi
 	# Other library.
 	if [[ $os == CentOS* ]]; then
-		sudo yum -y install lapack lapack-devel blas blas-devel libxslt-devel libxslt libxml2-devel libxml2 ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj libgcj-devel gcc-c++ bzip2-devel
+		sudo yum -y install lapack lapack-devel blas blas-devel libxslt-devel libxslt libxml2-devel libxml2 ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj libgcj-devel gcc-c++ bzip2-devel > /dev/null
 	elif [[ $os == Ubuntu* ]]; then
-		sudo apt-get -y install liblapack3gf liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 libxml2-dev libxml2 gfortran imagemagick imagemagick-dev libpng-dev pdftk libbz2-dev
+		sudo apt-get -y install liblapack3gf liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 libxml2-dev libxml2 gfortran imagemagick imagemagick-dev libpng-dev pdftk libbz2-dev > /dev/null
 	elif [[ $os == "Darwin" ]]; then
-		brew tap homebrew/science
-		brew tap homebrew/python
-		brew install python lapack openblas pillow imagemagick graphviz py2cairo qt pyqt mysql-connector-c
-		brew install cairo --without-x
-		brew install numpy --with-openblas
-		brew install scipy --with-openblas
+		brew tap homebrew/science > /dev/null
+		brew tap homebrew/python > /dev/null
+		brew install python lapack openblas pillow imagemagick graphviz py2cairo qt pyqt mysql-connector-c > /dev/null
+		brew install cairo --without-x > /dev/null
+		brew install numpy --with-openblas > /dev/null
+		brew install scipy --with-openblas > /dev/null
 	fi
 else
 	echoRed "-------- Skip installing system tools --------"
@@ -126,6 +125,7 @@ fi
 # 	echoBlue "Skip G++"
 # else
 # 	echoBlue "Install G++"
+#	rm -rf $USER_ARCHIVED/gcc-*
 # 	filename=$(basename $( ls $DIR/archived/gcc-* ))
 # 	cp -v $DIR/archived/$filename $USER_ARCHIVED/
 # 	cd $USER_ARCHIVED
@@ -136,6 +136,7 @@ fi
 # 	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL > /dev/null || abort "configure failed"
 # 	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
 # 	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null
+#	rm -rf $USER_ARCHIVED/gcc-*
 # fi
 
 # Basic settings.
@@ -193,6 +194,7 @@ if [ $ret == "0" ]; then
 	echoBlue "Skip PhantomJS"
 else
 	filename=$(basename $( ls $DIR/archived/phantomjs-* ))
+	rm -rf $USER_ARCHIVED/phantomjs-*
 	cp -v $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	tar -xf $filename
@@ -200,6 +202,7 @@ else
 	cd $USER_ARCHIVED/$dirname
 	echoBlue "cp -v bin/phantomjs $USER_INSTALL/bin/phantomjs"
 	cp -v bin/phantomjs $USER_INSTALL/bin/phantomjs
+	rm -rf $USER_ARCHIVED/phantomjs-*
 fi
 assertBinPath "phantomjs"
 
@@ -212,6 +215,7 @@ if [[ $os != "Darwin" ]]; then
 	if [ $ret == "0" ] || [ $os == "Darwin" ]; then
 		echoBlue "Skip Python."
 	else
+		rm -rf $USER_ARCHIVED/Python-*
 		cp -v $DIR/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
 		tar -xf $filename
@@ -221,6 +225,7 @@ if [[ $os != "Darwin" ]]; then
 		$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null || abort "configure failed"
 		echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
 		make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null || abort "Make python failed"
+		rm -rf $USER_ARCHIVED/Python-*
 	fi
 else
 	echoBlue "Skip python."
@@ -254,6 +259,7 @@ else
 	do
 		filename=$(basename $( ls $DIR/archived/$filehead* ))
 		echoBlue "Installing $filename"
+		rm -rf $USER_ARCHIVED/node-*
 		cp -v $DIR/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
 		tar -xf $filename
@@ -271,7 +277,7 @@ else
 		fi
 		echoRed "Make failed, skip installing $filename"
 		echoBlue "rm -rf $USER_ARCHIVED/$filehead*"
-		rm -rf $USER_ARCHIVED/$dirname
+		rm -rf $USER_ARCHIVED/node-*
 	done
 fi
 assertBinPath "node"
@@ -291,13 +297,13 @@ done
 
 echoGreen "-------- Installing Java 8 -------"
 javaVer=`java -version 2>&1 | grep 'java version'`
-echoBlue "Current Java version:$javaVer"
 if [[ $javaVer == *1.8.* ]]; then
 	echoBlue "Current JAVA:$javaVer"
 elif [[ $os == "Darwin" ]]; then
 	echoRed "Current JAVA:$javaVer, Java should be manually install on MacOSX."
 else
 	filename=$(basename $( ls $DIR/archived/jdk-8u* ))
+	rm -rf $USER_ARCHIVED/jdk-*
 	cp -v $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	tar -xf $filename
@@ -312,6 +318,7 @@ ret=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip maven"
 else
+	rm -rf $USER_ARCHIVED/apache-maven-*
 	cp -v $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	tar -xf $filename
@@ -327,6 +334,7 @@ elif [[ -f $USER_INSTALL/lib/libsodium.so ]]; then
 	echoBlue "Skip libsodium"
 else
 	filename=$(basename $( ls $DIR/archived/libsodium-* ))
+	rm -rf $USER_ARCHIVED/libsodium-*
 	cp -v $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	tar -xf $filename
@@ -337,6 +345,7 @@ else
 	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null || abort "configure failed"
 	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
 	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null || abort "make failed"
+	rm -rf $USER_ARCHIVED/libsodium-*
 fi
 
 echoGreen "-------- Installing ZeroMQ --------"
@@ -345,6 +354,7 @@ if [[ -f $USER_INSTALL/lib/libzmq.dylib && $os == 'Darwin' ]]; then
 elif [[ -f $USER_INSTALL/lib/libzmq.so ]]; then
 	echoBlue "Skip zeromq"
 else
+	rm -rf $USER_ARCHIVED/zeromq-*
 	filename=$(basename $( ls $DIR/archived/zeromq-* ))
 	cp -v $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
@@ -362,6 +372,7 @@ else
 	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null || abort "configure failed"
 	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
 	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null || abort "make failed"
+	rm -rf $USER_ARCHIVED/zeromq-*
 fi
 
 echoGreen "-------- Installing jzmq --------"
@@ -370,6 +381,7 @@ if [[ -f $USER_INSTALL/lib/libjzmq.dylib && $os == 'Darwin' ]]; then
 elif [[ -f $USER_INSTALL/lib/libjzmq.so ]]; then
 	echoBlue "Skip jzmq"
 else
+	rm -rf $USER_ARCHIVED/jzmq-*
 	filename=$(basename $( ls $DIR/archived/jzmq-* ))
 	cp -v $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
@@ -385,6 +397,7 @@ else
 	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL --with-zeromq=$USER_INSTALL > /dev/null || abort "configure failed"
 	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
 	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null || abort "make failed"
+	rm -rf $USER_ARCHIVED/jzmq-*
 fi
 
 echoGreen "-------- Installing Nanomsg --------"
@@ -393,6 +406,7 @@ ret=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip nanomsg"
 else
+	rm -rf $USER_ARCHIVED/nanomsg-*
 	filename=$(basename $( ls $DIR/archived/nanomsg-* ))
 	cp -v $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
@@ -413,6 +427,7 @@ else
 	echoBlue "make all install"
 	make all install || abort "make install failed"
 	ln -v -sf $USER_INSTALL/lib64/libnanomsg* $USER_INSTALL/lib/
+	rm -rf $USER_ARCHIVED/nanomsg-*
 fi
 
 echoGreen "-------- Installing wkhtmltox --------"
@@ -431,6 +446,7 @@ ret=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip pdftk"
 else
+	rm -rf $USER_ARCHIVED/pdftk-*
 	filename=$(basename $( ls $DIR/archived/pdftk-* ))
 	cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
@@ -448,6 +464,7 @@ else
 	else
 		echoRed "Installing pdftk is not implemented on $os."
 	fi
+	rm -rf $USER_ARCHIVED/pdftk-*
 fi
 
 echoGreen "-----------------------------------------------"

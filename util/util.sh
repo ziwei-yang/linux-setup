@@ -17,7 +17,7 @@ function echoBlue {
 
 function checkBinPath {
 	bin=$1
-	binPath=`which $bin`
+	binPath=`which $bin 2>/dev/null`
 	if [[ -z $binPath ]]; then
 		echoRed "Could not locate [$bin]"
 		return 1
@@ -28,7 +28,7 @@ function checkBinPath {
 
 function assertBinPath {
 	bin=$1
-	binPath=`which $bin`
+	binPath=`which $bin 2>/dev/null`
 	if [[ -z $binPath ]]; then
 		echoRed "Could not locate [$bin]"
 		exit -1
@@ -40,7 +40,7 @@ function assertBinPath {
 function checkExactBinPath {
 	bin=$1
 	correctPath=$2
-	binPath=`which $bin`
+	binPath=`which $bin 2>/dev/null`
 	if [[ $binPath == $2 ]]; then
 		return 0
 	else
