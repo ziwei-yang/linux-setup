@@ -212,7 +212,7 @@ if [[ $os != "Darwin" ]]; then
 	filename=$(basename $( ls $DIR/archived/Python-* ))
 	checkExactBinPath "python" $USER_INSTALL/bin/python
 	ret=$?
-	if [ $ret == "0" ] || [ $os == "Darwin" ]; then
+	if [[ $ret == "0" ]] || [[ $os == "Darwin" ]]; then
 		echoBlue "Skip Python."
 	else
 		rm -rf $USER_ARCHIVED/Python-*
