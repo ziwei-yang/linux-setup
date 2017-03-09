@@ -38,80 +38,69 @@ mkdir -p $USER_ARCHIVED
 
 echoGreen "-------- Checking environment. --------"
 # Check sudo privilege.
-ret=$( sudo -n echo a 2>&1 )
-sudoAllowed="0"
-if [[ $ret == "a" ]] && [[ $os != "Darwin" ]]; then
-	echoBlue "User has sudo privilege without password."
-	sudoAllowed="1"
-elif [[ $os == 'Darwin' ]]; then
-	:
-else
-	echoRed "WARN: User has no sudo privilege without password. Change /etc/sudoers first."
-fi
+isSudoAllowed
+sudoAllowed=$?
 
 echoGreen "-------- Copying util configurations -------"
 mkdir -p $HOME/.vim/backupfiles
 mkdir -p $HOME/.vim/swapfiles
 mkdir -p $HOME/bin
 mkdir -p $HOME/conf
-cp -v $DIR/conf/home/.bash* $HOME/
-cp -v $DIR/conf/home/.*rc $HOME/
-cp -v $DIR/conf/home/.tmux*.conf $HOME/
-cp -v $DIR/conf/home/tmux_dev.sh $HOME/
-cp -v $DIR/conf/home/.profile $HOME/
+cp $DIR/conf/home/.bash* $HOME/
+cp $DIR/conf/home/.*rc $HOME/
+cp $DIR/conf/home/.tmux*.conf $HOME/
+cp $DIR/conf/home/tmux_dev.sh $HOME/
+cp $DIR/conf/home/.profile $HOME/
 # Do not copy other files for safety.
 
 echoGreen "-------- Refresh bash enviroment -------"
 source $HOME/.bash_profile
 source $HOME/.bashrc
 
-if [[ $sudoAllowed == "1" ]] || [[ $os == "Darwin" ]]; then
+if [[ $sudoAllowed == 0 ]] || [[ $os == "Darwin" ]]; then
 	echoGreen "-------- Installing system tools --------"
 	if [[ $os == CentOS* ]]; then
 		if [ $(yum grouplist groupinfo 'Development tools' | grep "Installed" | wc -l) == "0" ]; then
-			sudo yum -y groupinstall 'Development tools' > /dev/null
-		else
-			echoBlue "Skip Development tools"
+			statusExec sudo yum -y groupinstall 'Development tools'
 		fi
 	fi
 	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet cmake dirmngr clang
 	do
-		checkBinPath $app && echoBlue "Found $app" && continue
-		echoBlue "Installing $app."
+		checkBinPath $app && continue
 		if [[ $os == CentOS* ]]; then
-			sudo yum -y install $app > /dev/null
+			statusExec sudo yum -y install $app
 		elif [[ $os == Ubuntu* ]]; then
-			sudo apt-get -y install $app > /dev/null
+			statusExec sudo apt-get -y install $app
 		elif [[ $os == "Darwin" ]]; then
-			brew install $app > /dev/null
+			statusExec brew install $app
 		fi
 	done
 	# Check unbuffer.
 	checkBinPath "unbuffer"
 	ret=$?
 	if [ $ret == "0" ]; then
-		echoBlue "Skip unbuffer."
+		:
 	else
 		if [[ $os == CentOS* ]]; then
-			sudo yum -y install expect > /dev/null
+			statusExec sudo yum -y install expect
 		elif [[ $os == Ubuntu* ]]; then
-			sudo apt-get -y install expect-dev > /dev/null
+			statusExec sudo apt-get -y install expect-dev
 		elif [[ $os == "Darwin" ]]; then
-			brew install homebrew/dupes/expect > /dev/null
+			statusExec brew install homebrew/dupes/expect
 		fi
 	fi
 	# Other library.
 	if [[ $os == CentOS* ]]; then
-		sudo yum -y install lapack lapack-devel blas blas-devel libxslt-devel libxslt libxml2-devel libxml2 ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj libgcj-devel gcc-c++ bzip2-devel > /dev/null
+		statusExec sudo yum -y install lapack lapack-devel blas blas-devel libxslt-devel libxslt libxml2-devel libxml2 ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj libgcj-devel gcc-c++ bzip2-devel
 	elif [[ $os == Ubuntu* ]]; then
-		sudo apt-get -y install liblapack3gf liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 libxml2-dev libxml2 gfortran imagemagick imagemagick-dev libpng-dev pdftk libbz2-dev > /dev/null
+		statusExec sudo apt-get -y install liblapack3gf liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 libxml2-dev libxml2 gfortran imagemagick imagemagick-dev libpng-dev pdftk libbz2-dev
 	elif [[ $os == "Darwin" ]]; then
-		brew tap homebrew/science > /dev/null
-		brew tap homebrew/python > /dev/null
-		brew install python lapack openblas pillow imagemagick graphviz py2cairo qt pyqt mysql-connector-c > /dev/null
-		brew install cairo --without-x > /dev/null
-		brew install numpy --with-openblas > /dev/null
-		brew install scipy --with-openblas > /dev/null
+		statusExec brew tap homebrew/science
+		statusExec brew tap homebrew/python
+		statusExec brew install python lapack openblas pillow imagemagick graphviz py2cairo qt pyqt mysql-connector-c
+		statusExec brew install cairo --without-x
+		statusExec brew install numpy --with-openblas
+		statusExec brew install scipy --with-openblas
 	fi
 else
 	echoRed "-------- Skip installing system tools --------"
@@ -127,7 +116,7 @@ fi
 # 	echoBlue "Install G++"
 #	rm -rf $USER_ARCHIVED/gcc-*
 # 	filename=$(basename $( ls $DIR/archived/gcc-* ))
-# 	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+# 	cp $DIR/archived/$filename $USER_ARCHIVED/
 # 	cd $USER_ARCHIVED
 # 	tar -xf $filename
 # 	dirname=${filename%.tar.gz}
@@ -148,7 +137,7 @@ ret=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip RVM."
 else
-	gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
+	statusExec gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
 	curl -sSL https://get.rvm.io | bash -s stable
 	if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
 		echoBlue "source $HOME/.rvm/scripts/rvm"
@@ -169,7 +158,7 @@ if [ $ret == "0" ]; then
 	echoBlue "Skip Ruby."
 else
 	echoBlue "Update RVM before installing ruby."
-	rvm get stable
+	statusExec rvm get stable
 	# Change rvm source code image to taobao for China.
 	if [ $GFWFucked == "1" ]; then
 		sed -i.bak 's!http://cache.ruby-lang.org/pub/ruby!https://ruby.taobao.org/mirrors/ruby!' $HOME/.rvm/config/db
@@ -195,13 +184,13 @@ if [ $ret == "0" ]; then
 else
 	filename=$(basename $( ls $DIR/archived/phantomjs-* ))
 	rm -rf $USER_ARCHIVED/phantomjs-*
-	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+	statusExec cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
-	tar -xf $filename
+	statusExec tar -xf $filename
 	dirname=${filename%.tar.bz2}
 	cd $USER_ARCHIVED/$dirname
-	echoBlue "cp -v bin/phantomjs $USER_INSTALL/bin/phantomjs"
-	cp -v bin/phantomjs $USER_INSTALL/bin/phantomjs
+	echoBlue "cp bin/phantomjs $USER_INSTALL/bin/phantomjs"
+	cp bin/phantomjs $USER_INSTALL/bin/phantomjs
 	rm -rf $USER_ARCHIVED/phantomjs-*
 fi
 assertBinPath "phantomjs"
@@ -216,15 +205,15 @@ if [[ $os != "Darwin" ]]; then
 		echoBlue "Skip Python."
 	else
 		rm -rf $USER_ARCHIVED/Python-*
-		cp -v $DIR/archived/$filename $USER_ARCHIVED/
+		cp $DIR/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
 		tar -xf $filename
 		dirname=${filename%.tgz}
 		cd $USER_ARCHIVED/$dirname
-		echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null"
-		$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null || abort "configure failed"
-		echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
-		make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null || abort "Make python failed"
+		statusExec $USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL || abort "configure failed"
+		statusExec make install -j $MAKE_CORE_NUM || \
+			statusExec make install || \
+			abort "Make python failed"
 		rm -rf $USER_ARCHIVED/Python-*
 	fi
 else
@@ -260,17 +249,16 @@ else
 		filename=$(basename $( ls $DIR/archived/$filehead* ))
 		echoBlue "Installing $filename"
 		rm -rf $USER_ARCHIVED/node-*
-		cp -v $DIR/archived/$filename $USER_ARCHIVED/
+		cp $DIR/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
 		tar -xf $filename
 		rm $USER_ARCHIVED/$filename
 		dirname=$(basename $( ls $USER_ARCHIVED | grep '^node-' ))
 		dirname=${dirname%.tar.gz}
 		cd $USER_ARCHIVED/$dirname
-		echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL > /dev/null"
-		$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL > /dev/null || abort "configure failed"
-		echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
-		make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null
+		statusExec $USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL || abort "configure failed"
+		statusExec make install -j $MAKE_CORE_NUM || \
+			statusExec make install
 		ret=$?
 		if [ $ret == "0" ]; then
 			break
@@ -304,7 +292,7 @@ elif [[ $os == "Darwin" ]]; then
 else
 	filename=$(basename $( ls $DIR/archived/jdk-8u* ))
 	rm -rf $USER_ARCHIVED/jdk-*
-	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+	cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	tar -xf $filename
 	rm $filename
@@ -319,7 +307,7 @@ if [ $ret == "0" ]; then
 	echoBlue "Skip maven"
 else
 	rm -rf $USER_ARCHIVED/apache-maven-*
-	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+	cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	tar -xf $filename
 	rm $filename
@@ -335,16 +323,15 @@ elif [[ -f $USER_INSTALL/lib/libsodium.so ]]; then
 else
 	filename=$(basename $( ls $DIR/archived/libsodium-* ))
 	rm -rf $USER_ARCHIVED/libsodium-*
-	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+	cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	tar -xf $filename
 	rm $filename
 	dirname=${filename%.tar.gz}
 	cd $USER_ARCHIVED/$dirname
-	echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null"
-	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null || abort "configure failed"
-	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
-	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null || abort "make failed"
+	statusExec $USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL || abort "configure failed"
+	statusExec make install -j $MAKE_CORE_NUM || \
+		statusExec make install || abort "make failed"
 	rm -rf $USER_ARCHIVED/libsodium-*
 fi
 
@@ -356,7 +343,7 @@ elif [[ -f $USER_INSTALL/lib/libzmq.so ]]; then
 else
 	rm -rf $USER_ARCHIVED/zeromq-*
 	filename=$(basename $( ls $DIR/archived/zeromq-* ))
-	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+	cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	tar -xf $filename
 	rm $filename
@@ -366,12 +353,11 @@ else
 	export sodium_LIBS="-L$USER_INSTALL/lib"
 	export CFLAGS=$(pkg-config --cflags libsodium)
 	export LDFLAGS=$(pkg-config --libs libsodium)
-	echoBlue "$USER_ARCHIVED/$dirname/autogen.sh > /dev/null"
-	$USER_ARCHIVED/$dirname/autogen.sh > /dev/null || abort "autogen failed"
-	echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null"
-	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL > /dev/null || abort "configure failed"
-	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
-	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null || abort "make failed"
+	statusExec $USER_ARCHIVED/$dirname/autogen.sh || abort "autogen failed"
+	statusExec $USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL || abort "configure failed"
+	statusExec make install -j $MAKE_CORE_NUM || \
+		statusExec make install || \
+		abort "make failed"
 	rm -rf $USER_ARCHIVED/zeromq-*
 fi
 
@@ -383,7 +369,7 @@ elif [[ -f $USER_INSTALL/lib/libjzmq.so ]]; then
 else
 	rm -rf $USER_ARCHIVED/jzmq-*
 	filename=$(basename $( ls $DIR/archived/jzmq-* ))
-	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+	cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	unzip -o $filename
 	rm $filename
@@ -391,12 +377,13 @@ else
 	cd $USER_ARCHIVED/$dirname
 	export CFLAGS=$(pkg-config --cflags libsodium)
 	export LDFLAGS=$(pkg-config --libs libsodium)
-	echoBlue "$USER_ARCHIVED/$dirname/autogen.sh > /dev/null"
-	$USER_ARCHIVED/$dirname/autogen.sh > /dev/null || abort "autogen failed"
-	echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL --with-zeromq=$USER_INSTALL > /dev/null"
-	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL --with-zeromq=$USER_INSTALL > /dev/null || abort "configure failed"
-	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
-	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null || abort "make failed"
+	statusExec $USER_ARCHIVED/$dirname/autogen.sh || \
+		abort "autogen failed"
+	statusExec $USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL --exec-prefix=$USER_INSTALL --with-zeromq=$USER_INSTALL || \
+		abort "configure failed"
+	statusExec make install -j $MAKE_CORE_NUM || \
+		statusExec make install || \
+		abort "make failed"
 	rm -rf $USER_ARCHIVED/jzmq-*
 fi
 
@@ -408,7 +395,7 @@ if [ $ret == "0" ]; then
 else
 	rm -rf $USER_ARCHIVED/nanomsg-*
 	filename=$(basename $( ls $DIR/archived/nanomsg-* ))
-	cp -v $DIR/archived/$filename $USER_ARCHIVED/
+	cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	tar -xf $filename
 	rm $filename
@@ -417,15 +404,13 @@ else
 	builddir=$USER_ARCHIVED/$dirname/build
 	mkdir $builddir
 	cd $builddir
-	cmake $USER_ARCHIVED/$dirname > /dev/null || abort "cmake configure failed"
-	echoBlue "cmake --build $builddir"
-	cmake --build $builddir > /dev/null || abort "cmake build failed"
-	echoBlue "ctest $builddir > /dev/null"
-	ctest $builddir > /dev/null || abort "ctest failed"
-	echoBlue "cmake -DCMAKE_INSTALL_PREFIX:PATH=$USER_INSTALL $builddir"
-	cmake -DCMAKE_INSTALL_PREFIX:PATH=$USER_INSTALL $builddir || abort "cmake install failed"
-	echoBlue "make all install"
-	make all install || abort "make install failed"
+	statusExec cmake $USER_ARCHIVED/$dirname || \
+		abort "cmake configure failed"
+	statusExec cmake --build $builddir || \
+		abort "cmake build failed"
+	statusExec ctest $builddir || abort "ctest failed"
+	statusExec cmake -DCMAKE_INSTALL_PREFIX:PATH=$USER_INSTALL $builddir || abort "cmake install failed"
+	statusExec make all install || abort "make install failed"
 	ln -v -sf $USER_INSTALL/lib64/libnanomsg* $USER_INSTALL/lib/
 	rm -rf $USER_ARCHIVED/nanomsg-*
 fi
@@ -458,7 +443,7 @@ else
 	elif [[ $os == CentOS* ]]; then
 		echoBlue "make -f Makefile.Redhat"
 		cd $USER_ARCHIVED/$dirname/pdftk/
-		make -f $USER_ARCHIVED/$dirname/pdftk/Makefile.Redhat 2>&1 > /dev/null || abort "Making pdftk failed"
+		statusExec make -f $USER_ARCHIVED/$dirname/pdftk/Makefile.Redhat || abort "Making pdftk failed"
 		echo "cp $USER_ARCHIVED/$dirname/pdftk/pdftk $USER_INSTALL/bin/"
 		cp $USER_ARCHIVED/$dirname/pdftk/pdftk $USER_INSTALL/bin/
 	else

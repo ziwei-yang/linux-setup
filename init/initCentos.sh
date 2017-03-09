@@ -30,8 +30,7 @@ bash -c " echo 'SELINUXTYPE=targeted' >> /etc/sysconfig/selinux "
 echo "Need to reboot to disable SELinux."
 
 # Install essential tools.
-yum install man curl wget net-tools w3m nmap -y
-yum update -y && yum upgrade -y
+statusExec yum install -y man curl wget net-tools w3m nmap
 
 # Configure Network with Static IP Address
 echo "========================================="
@@ -62,5 +61,4 @@ fi
 # nmap 127.0.0.1
 
 # Enable Third Party Repositories
-yum install epel-release -y
-
+statusExec yum -y install epel-release

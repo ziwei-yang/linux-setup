@@ -2,17 +2,28 @@ source $HOME/.bashrc
 USER_ARCHIVED="$HOME/archived"
 USER_INSTALL="$HOME/install"
 
+function isFunction {
+	declare -f $1 > /dev/null
+	return $?
+}
+
+# Load system functions.
+isFunction "action" || \
+if [[ -f /etc/init.d/functions ]]; then
+	source /etc/init.d/functions
+fi
+
 # Internal functions.
 function echoRed {
-	echo "$(tput setaf 1)$1$(tput sgr0)"
+	echo "$(tput setaf 1)$@$(tput sgr0)"
 }
 
 function echoGreen {
-	echo "$(tput setaf 2)$1$(tput sgr0)"
+	echo "$(tput setaf 2)$@$(tput sgr0)"
 }
 
 function echoBlue {
-	echo "$(tput setaf 4)$1$(tput sgr0)"
+	echo "$(tput setaf 4)$@$(tput sgr0)"
 }
 
 function checkBinPath {
@@ -119,6 +130,36 @@ function isGFWFucked {
 	else
 		return 0
 	fi
+}
+
+function isSudoAllowed {
+	ret=$( sudo -n echo a 2>&1 )
+	if [[ $ret == "a" ]]; then
+		echoBlue "User has sudo privilege without password."
+		return 0
+	else
+		echoRed "User has no sudo privilege."
+		return 1
+	fi
+}
+
+function silentExec {
+	$@ > /dev/null 2>&1
+	return $?
+}
+
+function statusExec {
+	echo -n "$@"
+	silentExec $@
+	ret=$?
+	if [[ $ret == 0 ]]; then
+		isFunction 'success' && success "$@" && echo || \
+			echoGreen "    [  OK  ]"
+	else
+		isFunction 'failure' && failure "$@" && echo || \
+			echoRed "    [FAILED]"
+	fi
+	return $ret
 }
 
 function setupBasicEnv {
