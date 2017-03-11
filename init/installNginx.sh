@@ -47,6 +47,7 @@ do
 done
 
 if [[ $os == CentOS* ]]; then
+	statusExec yum -y remove nginx-mod-*
 	statusExec yum -y install nginx-module-*
 elif [[ $os == Ubuntu* ]]; then
 	:
