@@ -7,12 +7,6 @@ function isFunction {
 	return $?
 }
 
-# Load system functions.
-isFunction "action" || \
-if [[ -f /etc/init.d/functions ]]; then
-	source /etc/init.d/functions
-fi
-
 # Internal functions.
 function echoRed {
 	echo "$(tput setaf 1)$@$(tput sgr0)"
