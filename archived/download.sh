@@ -34,8 +34,6 @@ nodejs5URL="https://nodejs.org/dist/latest-v5.x/node-v5.12.0.tar.gz"
 wget -nc $nodejs5URL
 nodejs6URL="https://nodejs.org/dist/latest-v6.x/node-v6.10.0.tar.gz"
 wget -nc $nodejs6URL
-nodejs7URL="https://nodejs.org/dist/latest-v7.x/node-v7.7.1.tar.gz"
-wget -nc $nodejs7URL
 
 redisURL="http://download.redis.io/releases/redis-3.0.5.tar.gz"
 wget -nc $redisURL

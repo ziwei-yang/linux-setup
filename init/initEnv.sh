@@ -244,7 +244,7 @@ if [ $ret == "0" ]; then
 else
 	# Copy system libs for python
 	ln -sf /usr/lib64/python*/lib-dynload/bz2.so $USER_INSTALL/lib/python$PYTHON_VER/
-	for filehead in node-v7 node-v6 node-v5 node-v4 node-v0
+	for filehead in node-v6 node-v5 node-v4 node-v0
 	do
 		filename=$(basename $( ls $DIR/archived/$filehead* ))
 		echoBlue "Installing $filename"
@@ -371,7 +371,8 @@ else
 	filename=$(basename $( ls $DIR/archived/jzmq-* ))
 	cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
-	unzip -o $filename
+	statusExec unzip -o $filename || \
+		abort "unzip failed"
 	rm $filename
 	dirname=${filename%.zip}/jzmq-jni
 	cd $USER_ARCHIVED/$dirname
