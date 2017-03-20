@@ -9,15 +9,15 @@ function isFunction {
 
 # Internal functions.
 function echoRed {
-	echo "$(tput setaf 1)$@$(tput sgr0)"
+	builtin echo "$(tput setaf 1)$@$(tput sgr0)"
 }
 
 function echoGreen {
-	echo "$(tput setaf 2)$@$(tput sgr0)"
+	builtin echo "$(tput setaf 2)$@$(tput sgr0)"
 }
 
 function echoBlue {
-	echo "$(tput setaf 4)$@$(tput sgr0)"
+	builtin echo "$(tput setaf 4)$@$(tput sgr0)"
 }
 
 function checkBinPath {
@@ -147,10 +147,10 @@ function statusExec {
 	silentExec $@
 	ret=$?
 	if [[ $ret == 0 ]]; then
-		isFunction 'success' && success "$@" && echo || \
+		isFunction 'success' && success "$@" && builtin echo || \
 			echoGreen "    [  OK  ]"
 	else
-		isFunction 'failure' && failure "$@" && echo || \
+		isFunction 'failure' && failure "$@" && builtin echo || \
 			echoRed "    [FAILED]"
 	fi
 	return $ret
