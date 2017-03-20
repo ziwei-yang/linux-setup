@@ -64,7 +64,7 @@ if [[ $sudoAllowed == 0 ]] || [[ $os == "Darwin" ]]; then
 			statusExec sudo yum -y groupinstall 'Development tools'
 		fi
 	fi
-	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet cmake dirmngr clang
+	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet cmake dirmngr clang ant
 	do
 		checkBinPath $app && continue
 		if [[ $os == CentOS* ]]; then
