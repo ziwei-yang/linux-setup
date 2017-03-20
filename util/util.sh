@@ -9,14 +9,26 @@ function isFunction {
 
 # Internal functions.
 function echoRed {
+	echo "$(tput setaf 1)$@$(tput sgr0)"
+}
+
+function echoRed_builtin {
 	builtin echo "$(tput setaf 1)$@$(tput sgr0)"
 }
 
 function echoGreen {
+	echo "$(tput setaf 2)$@$(tput sgr0)"
+}
+
+function echoGreen_builtin {
 	builtin echo "$(tput setaf 2)$@$(tput sgr0)"
 }
 
 function echoBlue {
+	echo "$(tput setaf 4)$@$(tput sgr0)"
+}
+
+function echoBlue_builtin {
 	builtin echo "$(tput setaf 4)$@$(tput sgr0)"
 }
 
@@ -148,10 +160,10 @@ function statusExec {
 	ret=$?
 	if [[ $ret == 0 ]]; then
 		isFunction 'success' && success "$@" && builtin echo || \
-			echoGreen "    [  OK  ]"
+			echoGreen_builtin "    [  OK  ]"
 	else
 		isFunction 'failure' && failure "$@" && builtin echo || \
-			echoRed "    [FAILED]"
+			echoRed_builtin "    [FAILED]"
 	fi
 	return $ret
 }
