@@ -64,7 +64,7 @@ if [[ $sudoAllowed == 0 ]] || [[ $os == "Darwin" ]]; then
 			statusExec sudo yum -y groupinstall 'Development tools'
 		fi
 	fi
-	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet cmake dirmngr clang ant
+	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet cmake clang ant
 	do
 		checkBinPath $app && continue
 		if [[ $os == CentOS* ]]; then
@@ -451,6 +451,23 @@ else
 		echoRed "Installing pdftk is not implemented on $os."
 	fi
 	rm -rf $USER_ARCHIVED/pdftk-*
+fi
+
+echoGreen "-------- Installing MongoDB --------"
+checkBinPath "mongod"
+ret=$?
+if [ $ret == "0" ]; then
+	echoBlue "Skip mongodb"
+else
+	rm -rf $USER_ARCHIVED/mongodb-*
+	filename=$(basename $( ls $DIR/archived/mongodb-* ))
+	cp $DIR/archived/$filename $USER_ARCHIVED/
+	cd $USER_ARCHIVED
+	statusExec tar -zxf $USER_ARCHIVED/$filename || abort "Extract mongodb failed"
+	rm $USER_ARCHIVED/$filename
+	dirname=$(basename $USER_ARCHIVED/mongodb-*)
+	cp -v $USER_ARCHIVED/$dirname/bin/* $USER_INSTALL/bin/ || abort "Extract mongodb failed"
+	rm -rf $USER_ARCHIVED/$dirname
 fi
 
 echoGreen "-----------------------------------------------"

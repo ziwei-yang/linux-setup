@@ -63,4 +63,7 @@ wget -nc $wkhtmlURL
 pdftkURL="https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/pdftk-2.02-src.zip"
 wget -nc $pdftkURL
 
+mongoURL="https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.2.tgz"
+wget -nc $mongoURL
+
 cd $PWD
