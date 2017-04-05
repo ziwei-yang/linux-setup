@@ -312,6 +312,23 @@ else
 fi
 checkBinVersion "mvn" $MVN_VER || abort "Maven version is still not $MVN_VER"
 
+ANT_VER=`ant -version 2>&1 | grep Ant`
+echoGreen "-------- Installing ANT --------"
+filename=$(basename $( ls $DIR/archived/apache-ant-* ))
+fileerror=$?
+if [[ $ANT_VER == *1.10* ]]; then
+	echoBlue "Current ANT:$ANT_VER"
+elif [ $fileerror != "0" ]; then
+	echoRed "File does not exist"
+else
+	rm -rf $USER_ARCHIVED/apache-ant-*
+	cp $DIR/archived/$filename $USER_ARCHIVED/
+	cd $USER_ARCHIVED
+	unzip $USER_ARCHIVED/$filename
+	rm $USER_ARCHIVED/$filename
+	source $HOME/.bashrc
+fi
+
 echoGreen "-------- Installing libsodium --------"
 filename=$(basename $( ls $DIR/archived/libsodium-* ))
 fileerror=$?

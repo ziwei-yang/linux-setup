@@ -15,6 +15,8 @@ export JMX_ARGS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.l
 if [[ $uname == "Linux" ]]; then
 	JAVA_HOME=$( ls $HOME/archived/ | grep jdk | grep -v .gz | tail -1 )
 	export JAVA_HOME=$HOME/archived/$JAVA_HOME
+	ANT_HOME=$( ls $HOME/archived/ | grep apache-ant| grep -v .zip | tail -1 )
+	export ANT_HOME=$HOME/archived/$ANT_HOME
 elif [[ $uname == "Darwin" ]]; then
 	export PS1='\u:\W$'
 	JAVA_HOME=$( ls "/Library/Java/JavaVirtualMachines/" | grep jdk | tail -1 )
@@ -26,7 +28,7 @@ fi
 M2_HOME=$( ls $HOME/archived/ | grep maven | grep -v .gz | tail -1 )
 export M2_HOME=$HOME/archived/$M2_HOME
 export M2="$M2_HOME/bin"
-export PATH=$M2:$JAVA_HOME/bin:$HOME/.rvm/bin:$HOME/install/bin:$PATH
+export PATH=$M2:$ANT_HOME/bin:$JAVA_HOME/bin:$HOME/.rvm/bin:$HOME/install/bin:$PATH
 export CPATH=$HOME/install/include:$CPATH
 export LIBRARY_PATH=$HOME/install/lib:$LIBRARY_PATH
 export LD_LIBRARY_PATH=$HOME/install/lib:$LD_LIBRARY_PATH

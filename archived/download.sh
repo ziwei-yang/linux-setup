@@ -23,9 +23,6 @@ if [[ $uname == 'Linux' ]]; then
 	wget -nc $pyPipURL
 fi
 
-# gppURL="http://ftp.tsukuba.wide.ad.jp/software/gcc/releases/gcc-6.3.0/gcc-6.3.0.tar.gz"
-# wget -nc $gppURL
-
 nodejs0_12URL="https://nodejs.org/dist/latest-v0.12.x/node-v0.12.18.tar.gz"
 wget -nc $nodejs0_12URL
 nodejs4URL="https://nodejs.org/dist/latest-v4.x/node-v4.8.0.tar.gz"
@@ -65,5 +62,8 @@ wget -nc $pdftkURL
 
 mongoURL="https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.2.tgz"
 wget -nc $mongoURL
+
+antURL="http://ftp.cuhk.edu.hk/pub/packages/apache.org//ant/binaries/apache-ant-1.10.1-bin.zip"
+wget -nc $antURL
 
 cd $PWD
