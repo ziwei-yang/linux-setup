@@ -15,7 +15,6 @@ export JMX_ARGS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.l
 if [[ $uname == "Linux" ]]; then
 	JAVA_HOME=$( ls $HOME/archived/ | grep jdk | grep -v .gz | tail -1 )
 	export JAVA_HOME=$HOME/archived/$JAVA_HOME
-	export ANT_HOME=/usr/share/ant
 elif [[ $uname == "Darwin" ]]; then
 	export PS1='\u:\W$'
 	JAVA_HOME=$( ls "/Library/Java/JavaVirtualMachines/" | grep jdk | tail -1 )
