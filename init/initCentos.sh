@@ -17,8 +17,13 @@ if [[ $USER != 'root' ]]; then
 	echo Current user must be root.
 	exit -1
 fi
+
 os=$( osinfo )
-if [[ $os != CentOS* ]]; then
+if [[ $os == "CentOS release 6"* ]]; then
+	wget -O /etc/yum.repos.d/libredhat-shadowsocks-epel-6.repo "https://copr.fedorainfracloud.org/coprs/librehat/shadowsocks/repo/epel-6/librehat-shadowsocks-epel-6.repo"
+elif [[ $os == "CentOS Linux release 7"* ]]; then
+	wget -O /etc/yum.repos.d/libredhat-shadowsocks-epel-7.repo "https://copr.fedorainfracloud.org/coprs/librehat/shadowsocks/repo/epel-7/librehat-shadowsocks-epel-7.repo"
+else
 	echo "Unsupport OS $os"
 	exit -1
 fi

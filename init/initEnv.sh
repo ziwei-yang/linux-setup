@@ -64,7 +64,7 @@ if [[ $sudoAllowed == 0 ]] || [[ $os == "Darwin" ]]; then
 			statusExec sudo yum -y groupinstall 'Development tools'
 		fi
 	fi
-	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet cmake dirmngr clang
+	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet cmake clang ant
 	do
 		checkBinPath $app && continue
 		if [[ $os == CentOS* ]]; then
@@ -105,28 +105,6 @@ if [[ $sudoAllowed == 0 ]] || [[ $os == "Darwin" ]]; then
 else
 	echoRed "-------- Skip installing system tools --------"
 fi
-
-# G++ 6.3
-# echoGreen "-------- Checking G++ --------"
-# checkNewerBinVersion "g++" "g++ (GCC) 6."
-# ret=$?
-# if [ $ret == "0" ]; then
-# 	echoBlue "Skip G++"
-# else
-# 	echoBlue "Install G++"
-#	rm -rf $USER_ARCHIVED/gcc-*
-# 	filename=$(basename $( ls $DIR/archived/gcc-* ))
-# 	cp $DIR/archived/$filename $USER_ARCHIVED/
-# 	cd $USER_ARCHIVED
-# 	tar -xf $filename
-# 	dirname=${filename%.tar.gz}
-# 	cd $USER_ARCHIVED/$dirname
-# 	echoBlue "$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL > /dev/null"
-# 	$USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL > /dev/null || abort "configure failed"
-# 	echoBlue "make install -j $MAKE_CORE_NUM > /dev/null"
-# 	make install -j $MAKE_CORE_NUM > /dev/null || make install > /dev/null
-#	rm -rf $USER_ARCHIVED/gcc-*
-# fi
 
 # Basic settings.
 git config --global color.ui auto
@@ -179,10 +157,13 @@ fi
 echoGreen "-------- Installing PhantomJS --------"
 checkExactBinPath "phantomjs" $USER_INSTALL/bin/phantomjs
 ret=$?
+filename=$(basename $( ls $DIR/archived/phantomjs-* ))
+fileerror=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip PhantomJS"
+elif [ $fileerror != "0" ]; then
+	echoRed "File does not exist"
 else
-	filename=$(basename $( ls $DIR/archived/phantomjs-* ))
 	rm -rf $USER_ARCHIVED/phantomjs-*
 	statusExec cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
@@ -197,8 +178,11 @@ assertBinPath "phantomjs"
 
 PYTHON_VER="2.7"
 echoGreen "-------- Installing Python --------"
-if [[ $os != "Darwin" ]]; then
-	filename=$(basename $( ls $DIR/archived/Python-* ))
+filename=$(basename $( ls $DIR/archived/Python-* ))
+fileerror=$?
+if [ $fileerror != "0" ]; then
+	echoRed "File does not exist"
+elif [[ $os != "Darwin" ]]; then
 	checkExactBinPath "python" $USER_INSTALL/bin/python
 	ret=$?
 	if [[ $ret == "0" ]] || [[ $os == "Darwin" ]]; then
@@ -223,7 +207,9 @@ checkBinVersion "python" $PYTHON_VER || abort "Python version is still not $PYTH
 
 # Install PIP
 echoGreen "-------- Installing PIP and Py lib --------"
-if [[ $os != "Darwin" ]]; then
+if [ ! -f $DIR/archived/get-pip.py ]; then
+	echoRed "File does not exist"
+elif [[ $os != "Darwin" ]]; then
 	checkExactBinPath "pip" $USER_INSTALL/bin/pip
 	ret=$?
 	if [ $ret == "0" ]; then
@@ -244,9 +230,14 @@ if [ $ret == "0" ]; then
 else
 	# Copy system libs for python
 	ln -sf /usr/lib64/python*/lib-dynload/bz2.so $USER_INSTALL/lib/python$PYTHON_VER/
-	for filehead in node-v6 node-v5 node-v4 node-v0
+	for filehead in node-v5 node-v4 node-v0
 	do
 		filename=$(basename $( ls $DIR/archived/$filehead* ))
+		fileerror=$?
+		if [ $fileerror != "0" ]; then
+			echoRed "File does not exist"
+			continue
+		fi
 		echoBlue "Installing $filename"
 		rm -rf $USER_ARCHIVED/node-*
 		cp $DIR/archived/$filename $USER_ARCHIVED/
@@ -285,12 +276,15 @@ done
 
 echoGreen "-------- Installing Java 8 -------"
 javaVer=`java -version 2>&1 | grep 'java version'`
+filename=$(basename $( ls $DIR/archived/jdk-8u* ))
+fileerror=$?
 if [[ $javaVer == *1.8.* ]]; then
 	echoBlue "Current JAVA:$javaVer"
 elif [[ $os == "Darwin" ]]; then
 	echoRed "Current JAVA:$javaVer, Java should be manually install on MacOSX."
+elif [ $fileerror != "0" ]; then
+	echoRed "File does not exist"
 else
-	filename=$(basename $( ls $DIR/archived/jdk-8u* ))
 	rm -rf $USER_ARCHIVED/jdk-*
 	cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
@@ -300,11 +294,14 @@ fi
 
 MVN_VER="3.3"
 echoGreen "-------- Installing Maven --------"
-filename=$(basename $( ls $DIR/archived/apache-maven-* ))
 checkBinVersion "mvn" $MVN_VER
 ret=$?
+filename=$(basename $( ls $DIR/archived/apache-maven-* ))
+fileerror=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip maven"
+elif [ $fileerror != "0" ]; then
+	echoRed "File does not exist"
 else
 	rm -rf $USER_ARCHIVED/apache-maven-*
 	cp $DIR/archived/$filename $USER_ARCHIVED/
@@ -316,12 +313,15 @@ fi
 checkBinVersion "mvn" $MVN_VER || abort "Maven version is still not $MVN_VER"
 
 echoGreen "-------- Installing libsodium --------"
+filename=$(basename $( ls $DIR/archived/libsodium-* ))
+fileerror=$?
 if [[ -f $USER_INSTALL/lib/libsodium.dylib && $os == 'Darwin' ]]; then
 	echoBlue "Skip libsodium for macOS"
 elif [[ -f $USER_INSTALL/lib/libsodium.so ]]; then
 	echoBlue "Skip libsodium"
+elif [ $fileerror != "0" ]; then
+	echoRed "File does not exist"
 else
-	filename=$(basename $( ls $DIR/archived/libsodium-* ))
 	rm -rf $USER_ARCHIVED/libsodium-*
 	cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
@@ -336,13 +336,16 @@ else
 fi
 
 echoGreen "-------- Installing ZeroMQ --------"
+filename=$(basename $( ls $DIR/archived/zeromq-* ))
+fileerror=$?
 if [[ -f $USER_INSTALL/lib/libzmq.dylib && $os == 'Darwin' ]]; then
 	echoBlue "Skip zeromq for macOS"
 elif [[ -f $USER_INSTALL/lib/libzmq.so ]]; then
 	echoBlue "Skip zeromq"
+elif [ $fileerror != "0" ]; then
+	echoRed "File does not exist"
 else
 	rm -rf $USER_ARCHIVED/zeromq-*
-	filename=$(basename $( ls $DIR/archived/zeromq-* ))
 	cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	tar -xf $filename
@@ -362,13 +365,16 @@ else
 fi
 
 echoGreen "-------- Installing jzmq --------"
+filename=$(basename $( ls $DIR/archived/jzmq-* ))
+fileerror=$?
 if [[ -f $USER_INSTALL/lib/libjzmq.dylib && $os == 'Darwin' ]]; then
 	echoBlue "Skip jzmq for macOS"
 elif [[ -f $USER_INSTALL/lib/libjzmq.so ]]; then
 	echoBlue "Skip jzmq"
+elif [ $fileerror != "0" ]; then
+	echoRed "File does not exist"
 else
 	rm -rf $USER_ARCHIVED/jzmq-*
-	filename=$(basename $( ls $DIR/archived/jzmq-* ))
 	cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	statusExec unzip -o $filename || \
@@ -391,11 +397,14 @@ fi
 echoGreen "-------- Installing Nanomsg --------"
 checkBinPath "nanocat"
 ret=$?
+filename=$(basename $( ls $DIR/archived/nanomsg-* ))
+fileerror=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip nanomsg"
+elif [ $fileerror != "0" ]; then
+	echoRed "File does not exist"
 else
 	rm -rf $USER_ARCHIVED/nanomsg-*
-	filename=$(basename $( ls $DIR/archived/nanomsg-* ))
 	cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	tar -xf $filename
@@ -419,21 +428,27 @@ fi
 echoGreen "-------- Installing wkhtmltox --------"
 checkBinPath "wkhtmltopdf"
 ret=$?
+filename=$(basename $( ls $DIR/archived/wkhtmltox-* ))
+fileerror=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip wkhtmltox"
+elif [ $fileerror != "0" ]; then
+	echoRed "File does not exist"
 else
-	filename=$(basename $( ls $DIR/archived/wkhtmltox-* ))
 	tar xf $DIR/archived/$filename -C $USER_INSTALL --strip 1 wkhtmltox/
 fi
 
 echoGreen "-------- Installing pdftk --------"
 checkBinPath "pdftk"
 ret=$?
+filename=$(basename $( ls $DIR/archived/pdftk-* ))
+fileerror=$?
 if [ $ret == "0" ]; then
 	echoBlue "Skip pdftk"
+elif [ $fileerror != "0" ]; then
+	echoRed "File does not exist"
 else
 	rm -rf $USER_ARCHIVED/pdftk-*
-	filename=$(basename $( ls $DIR/archived/pdftk-* ))
 	cp $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	unzip -o $USER_ARCHIVED/$filename > /dev/null || abort "Unzip pdftk failed"
@@ -451,6 +466,26 @@ else
 		echoRed "Installing pdftk is not implemented on $os."
 	fi
 	rm -rf $USER_ARCHIVED/pdftk-*
+fi
+
+echoGreen "-------- Installing MongoDB --------"
+checkBinPath "mongod"
+ret=$?
+filename=$(basename $( ls $DIR/archived/mongodb-* ))
+fileerror=$?
+if [ $ret == "0" ]; then
+	echoBlue "Skip mongodb"
+elif [ $fileerror != "0" ]; then
+	echoRed "File does not exist"
+else
+	rm -rf $USER_ARCHIVED/mongodb-*
+	cp $DIR/archived/$filename $USER_ARCHIVED/
+	cd $USER_ARCHIVED
+	statusExec tar -zxf $USER_ARCHIVED/$filename || abort "Extract mongodb failed"
+	rm $USER_ARCHIVED/$filename
+	dirname=$(basename $USER_ARCHIVED/mongodb-*)
+	cp -v $USER_ARCHIVED/$dirname/bin/* $USER_INSTALL/bin/ || abort "Extract mongodb failed"
+	rm -rf $USER_ARCHIVED/$dirname
 fi
 
 echoGreen "-----------------------------------------------"

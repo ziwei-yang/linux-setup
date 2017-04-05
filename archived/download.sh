@@ -46,7 +46,7 @@ wget -nc $mavenURL
 
 # libsodiumURL="http://download.libsodium.org/libsodium/releases/libsodium-1.0.3.tar.gz"
 libsodiumURL="https://37.59.238.213/libsodium/releases/libsodium-1.0.10.tar.gz"
-zeromqURL="http://download.zeromq.org/zeromq-4.1.4.tar.gz"
+zeromqURL="https://github.com/zeromq/libzmq/releases/download/v4.2.1/zeromq-4.2.1.tar.gz"
 wget --no-check-certificate -nc $libsodiumURL
 wget -nc $zeromqURL
 
@@ -62,5 +62,8 @@ wget -nc $wkhtmlURL
 
 pdftkURL="https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/pdftk-2.02-src.zip"
 wget -nc $pdftkURL
+
+mongoURL="https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.2.tgz"
+wget -nc $mongoURL
 
 cd $PWD

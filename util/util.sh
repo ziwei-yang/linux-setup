@@ -12,12 +12,24 @@ function echoRed {
 	echo "$(tput setaf 1)$@$(tput sgr0)"
 }
 
+function echoRed_builtin {
+	builtin echo "$(tput setaf 1)$@$(tput sgr0)"
+}
+
 function echoGreen {
 	echo "$(tput setaf 2)$@$(tput sgr0)"
 }
 
+function echoGreen_builtin {
+	builtin echo "$(tput setaf 2)$@$(tput sgr0)"
+}
+
 function echoBlue {
 	echo "$(tput setaf 4)$@$(tput sgr0)"
+}
+
+function echoBlue_builtin {
+	builtin echo "$(tput setaf 4)$@$(tput sgr0)"
 }
 
 function checkBinPath {
@@ -147,11 +159,11 @@ function statusExec {
 	silentExec $@
 	ret=$?
 	if [[ $ret == 0 ]]; then
-		isFunction 'success' && success "$@" && echo || \
-			echoGreen "    [  OK  ]"
+		isFunction 'success' && success "$@" && builtin echo || \
+			echoGreen_builtin "    [  OK  ]"
 	else
-		isFunction 'failure' && failure "$@" && echo || \
-			echoRed "    [FAILED]"
+		isFunction 'failure' && failure "$@" && builtin echo || \
+			echoRed_builtin "    [FAILED]"
 	fi
 	return $ret
 }
