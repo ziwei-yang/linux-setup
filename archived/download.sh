@@ -54,8 +54,8 @@ wget -O jzmq-master.zip -nc --no-check-certificate $jzmqURL
 nanomqURL="https://github.com/nanomsg/nanomsg/archive/0.9-beta.tar.gz"
 wget -O nanomsg-0.9-beta.tar.gz -nc $nanomqURL
 
-wkhtmlURL="http://download.gna.org/wkhtmltopdf/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz"
-wget -nc $wkhtmlURL
+wkhtmlURL="https://github.com/wkhtmltopdf/wkhtmltopdf/archive/0.12.4.tar.gz"
+wget -O wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -nc $wkhtmlURL
 
 pdftkURL="https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/pdftk-2.02-src.zip"
 wget -nc $pdftkURL
