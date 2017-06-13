@@ -64,7 +64,7 @@ if [[ $sudoAllowed == 0 ]] || [[ $os == "Darwin" ]]; then
 			statusExec sudo yum -y groupinstall 'Development tools'
 		fi
 	fi
-	for app in vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet cmake clang ant
+	for app in sshfs openssl vim jq awk sed man tmux screen git curl wget basename tput gpg tree finger nload telnet cmake clang ant
 	do
 		checkBinPath $app && continue
 		if [[ $os == CentOS* ]]; then
@@ -104,6 +104,12 @@ if [[ $sudoAllowed == 0 ]] || [[ $os == "Darwin" ]]; then
 	fi
 else
 	echoRed "-------- Skip installing system tools --------"
+fi
+
+if [[ $sudoAllowed == 0 ]] || [[ $os == "Darwin" ]]; then
+	echoBlue "Add user privilege for sshfs"
+	username=$( whoami )
+	sudo usermod -a -G fuse $username
 fi
 
 # Basic settings.
@@ -281,7 +287,7 @@ done
 
 echoGreen "-------- Installing Java 8 -------"
 javaVer=`java -version 2>&1 | grep 'java version'`
-filename=$(basename $( ls $DIR/archived/jdk-8u* ))
+filename=$(basename "$( ls $DIR/archived/jdk-8u* )" )
 fileerror=$?
 if [[ $javaVer == *1.8.* ]]; then
 	echoBlue "Current JAVA:$javaVer"
