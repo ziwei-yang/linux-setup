@@ -222,6 +222,11 @@ else
 	echoBlue "Skip pip."
 fi
 
+echoGreen "-------- Installing pyenv --------"
+if [ ! -d $HOME/.pyenv ]; then
+	git clone https://github.com/pyenv/pyenv.git $HOME/.pyenv
+fi
+
 echoGreen "-------- Installing Node.js --------"
 checkExactBinPath "node" $USER_INSTALL/bin/node
 ret=$?
