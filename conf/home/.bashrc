@@ -28,7 +28,8 @@ fi
 M2_HOME=$( ls $HOME/archived/ | grep maven | grep -v .gz | tail -1 )
 export M2_HOME=$HOME/archived/$M2_HOME
 export M2="$M2_HOME/bin"
-export PATH=$M2:$ANT_HOME/bin:$JAVA_HOME/bin:$HOME/.rvm/bin:$HOME/install/bin:$PATH
+export PYENV_ROOT=$HOME/.pyenv
+export PATH=$PYENV_ROOT/bin:$M2:$ANT_HOME/bin:$JAVA_HOME/bin:$HOME/.rvm/bin:$HOME/install/bin:$PATH
 export CPATH=$HOME/install/include:$CPATH
 export LIBRARY_PATH=$HOME/install/lib:$LIBRARY_PATH
 export LD_LIBRARY_PATH=$HOME/install/lib:$LD_LIBRARY_PATH
