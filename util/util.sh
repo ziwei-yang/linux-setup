@@ -32,6 +32,11 @@ function echoBlue_builtin {
 	builtin echo "$(tput setaf 4)$@$(tput sgr0)"
 }
 
+function abort() {
+	echoRed "Script execution abort, reason: $@"
+	exit -1
+}
+
 function checkBinPath {
 	bin=$1
 	binPath=`which $bin 2>/dev/null`
@@ -128,23 +133,33 @@ function externalIP {
 }
 
 function isGFWFucked {
-	country=$( curl http://ipinfo.io/ | jq '.country' )
+	[[ $GFW_FUCKED == '0' ]] && return 0
+	[[ $GFW_FUCKED == '1' ]] && return 1
+	echo "Checking if is fucked by GFW"
+# 	country=$( curl http://ipinfo.io/ | jq '.country' )
+country='"CN"'
 	echoGreen "Country Code: $country"
 	if [[ $country == '"CN"' ]]; then
 		echoRed ' ============ OH NO, GFW sucks! =============='
+		GFW_FUCKED=1
 		return 1
 	else
+		GFW_FUCKED=0
 		return 0
 	fi
 }
 
 function isSudoAllowed {
+	[[ $SUDO_PRIVILEGE == '1' ]] && return 0
+	[[ $SUDO_PRIVILEGE == '0' ]] && return 1
 	ret=$( sudo -n echo a 2>&1 )
 	if [[ $ret == "a" ]]; then
 		echoBlue "User has sudo privilege without password."
+		SUDO_PRIVILEGE=1
 		return 0
 	else
 		echoRed "User has no sudo privilege."
+		SUDO_PRIVILEGE=0
 		return 1
 	fi
 }
@@ -168,6 +183,35 @@ function statusExec {
 	return $ret
 }
 
+function isCentOS {
+	[[ $OS == CentOS* ]] && return 0
+	return 1
+}
+function isCentOS6 {
+	[[ $OS == "CentOS release 6*" ]] && return 0
+	return 1
+}
+function isCentOS7 {
+	[[ $OS == "CentOS Linux release 7*" ]] && return 0
+	return 1
+}
+function isMacOS {
+	[[ $OS == Darwin ]] && return 0
+	return 1
+}
+function isUbuntu {
+	[[ $OS == Ubuntu* ]] && return 0
+	return 1
+}
+function isUnknownOS {
+	isCentOS || isMacOS || isUbuntu || return 0
+	return 1
+}
+function isLinux {
+	[[ $( uname ) == 'Linux' ]] && return 0
+	return 1
+}
+
 function setupBasicEnv {
 	echoGreen "-------- Checking environment. --------"
 	assertBinPath "echo"
@@ -178,31 +222,31 @@ function setupBasicEnv {
 	assertBinPath "head"
 	
 	# Check OS
-	os=$( osinfo )
-	if [[ $os == CentOS* ]]; then
-		echoBlue "Current OS: $os"
+	OS=$( osinfo )
+	echoBlue "Current OS: $OS"
+	isCentOS && (
 		assertBinPath "yum"
 		assertBinPath "rpm"
-	elif [[ $os == Ubuntu* ]]; then
-		echoBlue "Current OS: $os"
-		assertBinPath "apt-get"
-	elif [[ $os == Darwin ]]; then
-		echoBlue "Current OS: Darwin/MacOSX"
-		checkBinPath "brew"
-		ret=$?
-		if [[ $ret == "0" ]]; then
-			echoBlue "Skip install brew."
-		else
+	)
+	isUbuntu && assertBinPath "apt-get"
+	isMacOS && (
+		checkBinPath "brew" && echoBlue "Skip install brew." || (
 			echoBlue "Installing brew."
 			ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-		fi
-	else
-		echoRed "Error: OS is not CentOS/Ubuntu/MacOSX."
-		exit -1
-	fi
-}
+		)
+	)
+	isUnknownOS && abort "Error: OS is not CentOS/Ubuntu/MacOSX."
 
-function abort() {
-	echoRed "Script execution abort, reason: $@"
-	exit -1
+	# Check CPU Core num.
+	CPU_CORE=4
+	isMacOS && (
+		echo "For Darwin/MacOSX, assume CPU Core:$CPU_CORE"
+	) || (
+		lastCPUID=$(cat /proc/cpuinfo | grep processor | tail -n 1 | awk '{print $3}')
+		CPU_CORE=$(($lastCPUID + 1))
+		echo "CPU Core:$CPU_CORE"
+	)
+
+	unset SUDO_PRIVILEGE
+	unset GFW_FUCKED
 }
