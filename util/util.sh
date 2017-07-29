@@ -136,8 +136,7 @@ function isGFWFucked {
 	[[ $GFW_FUCKED == '0' ]] && return 0
 	[[ $GFW_FUCKED == '1' ]] && return 1
 	echo "Checking if is fucked by GFW"
-# 	country=$( curl http://ipinfo.io/ | jq '.country' )
-country='"CN"'
+	country=$( curl http://ipinfo.io/ | jq '.country' )
 	echoGreen "Country Code: $country"
 	if [[ $country == '"CN"' ]]; then
 		echoRed ' ============ OH NO, GFW sucks! =============='
