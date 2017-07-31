@@ -187,11 +187,11 @@ function isCentOS {
 	return 1
 }
 function isCentOS6 {
-	[[ $OS == "CentOS release 6*" ]] && return 0
+	[[ $OS == "CentOS release 6"* ]] && return 0
 	return 1
 }
 function isCentOS7 {
-	[[ $OS == "CentOS Linux release 7*" ]] && return 0
+	[[ $OS == "CentOS Linux release 7"* ]] && return 0
 	return 1
 }
 function isMacOS {
@@ -209,6 +209,11 @@ function isUnknownOS {
 function isLinux {
 	[[ $( uname ) == 'Linux' ]] && return 0
 	return 1
+}
+function isFailed {
+	eval "$@"
+	[[ $? == '0' ]] && return 1
+	return 0
 }
 
 function setupBasicEnv {

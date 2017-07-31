@@ -10,7 +10,7 @@ source $DIR/util/util.sh
 setupBasicEnv
 
 cd $DIR/archived
-# $DIR/archived/download.sh || abort "Error in downloading files."
+$DIR/archived/download.sh || abort "Error in downloading files."
 cd $DIR
 
 USER_INSTALL="$HOME/install"
@@ -38,10 +38,9 @@ source $HOME/.bashrc
 
 isSudoAllowed && isCentOS && (
 	echoGreen "-------- Checking CentOS Development tools --------"
-	[ $(yum grouplist groupinfo 'Development tools' | grep "Installed" | \
-		wc -l) == "0" ] && \
+	[ $(yum grouplist groupinfo 'Development tools' | grep "Installed" | wc -l) == "0" ] && \
 		statusExec sudo yum -y groupinstall 'Development tools' || \
-		abort "Failed in installing Development tools for CentOS"
+	 	echoBlue "OK"
 )
 
 ( isSudoAllowed || isMacOS ) && (
@@ -49,7 +48,7 @@ isSudoAllowed && isCentOS && (
 	for app in sshfs openssl vim jq awk sed man tmux screen git curl wget \
 		basename tput gpg tree finger nload telnet cmake clang ant
 	do
-		echo "Checking $app" && checkBinPath $app && continue
+		checkBinPath $app && continue
 		isCentOS && statusExec sudo yum -y install $app
 		isUbuntu &&statusExec sudo apt-get -y install $app
 		isMacOS && statusExec brew install $app
@@ -194,6 +193,7 @@ isLinux && (
 		) || echoRed "Python files does not exist"
 	)
 )
+checkBinVersion "python" 2.7 || abort "Python 2.7 is not in bin path."
 
 echoGreen "-------- Checking Python pip --------"
 isLinux && (
@@ -239,10 +239,10 @@ checkExactBinPath "node" $USER_INSTALL/bin/node && \
 		echoRed "Make failed, skip installing $filename"
 		echoBlue "rm -rf $USER_ARCHIVED/$filehead*"
 		rm -rf $USER_ARCHIVED/node-*
-		assertBinPath "node"
-		assertBinPath "npm"
 	done
 )
+assertBinPath "node"
+assertBinPath "npm"
 
 echoGreen "-------- Checking npm utilities --------"
 checkBinPath 'npm' && (
@@ -283,11 +283,11 @@ echoBlue "Skip Maven" || (
 		statusExec tar -xf $filename
 		rm $filename
 		source $HOME/.bashrc
-		checkBinVersion "mvn" $MVN_VER || \
-			abort "Maven version is still not $MVN_VER"
 		echo "OK"
 	) || ehco "Maven files does not exist."
 )
+checkBinVersion "mvn" $MVN_VER || \
+	abort "Maven version is still not $MVN_VER"
 
 echoGreen "-------- Checking ANT --------"
 ANT_VER=`ant -version 2>&1 | grep Ant`
@@ -329,6 +329,10 @@ echoBlue "Skip libsodium." || (
 		echo "OK"
 	) || echoRed "libsodium file does not exist."
 )
+(
+	[[ -f $USER_INSTALL/lib/libsodium.dylib && isMacOS ]] || \
+	[[ -f $USER_INSTALL/lib/libsodium.so && isLinux ]]
+) || abort "libsodium does not exist."
 
 echoGreen "-------- Checking ZeroMQ --------"
 (
@@ -361,6 +365,10 @@ echoBlue "Skip ZeroMQ." || (
 		echo "OK"
 	) || echoRed "ZeroMQ file does not exist."
 )
+(
+	[[ -f $USER_INSTALL/lib/libzmq.dylib && isMacOS ]] || \
+	[[ -f $USER_INSTALL/lib/libzmq.so && isLinux ]]
+) || abort "libzmq does not exist."
 
 echoGreen "-------- Checking jzmq --------"
 (
@@ -393,6 +401,10 @@ echoBlue "Skip jzmq" || (
 		echo "OK"
 	) || echoRed "jzmq file does not exist."
 )
+(
+	[[ -f $USER_INSTALL/lib/libjzmq.dylib && isMacOS ]] || \
+	[[ -f $USER_INSTALL/lib/libjzmq.so && isLinux ]]
+) || abort "libzmq does not exist."
 
 echoGreen "-------- Installing Nanomsg --------"
 checkBinPath "nanocat" && \
@@ -424,6 +436,7 @@ echoBlue "Skip nanomsg" || (
 		echo "OK"
 	) || echoRed "nanomsg file does not exist."
 )
+checkBinPath "nanocat" || abort "nanocat does not exist."
 
 echoGreen "-------- Checking wkhtmltox --------"
 checkBinPath "wkhtmltopdf" && \
@@ -458,6 +471,7 @@ echoBlue "Skip pdftk" || (
 		) || echoRed "Installing pdftk is not implemented on $OS."
 	) || echoRed "pdftk file does not exist."
 )
+isCentOS6 && isFailed checkBinPath "pdftk" && abort "pdftk does not exist."
 
 echoGreen "-------- Checking MongoDB --------"
 checkBinPath "mongod" && \
@@ -476,7 +490,7 @@ echoBlue "Skip MongoDB" || (
 		echo "OK"
 	) || echoRed "MongoDB file does not exist."
 )
-ret=$
+checkBinPath "mongod" || abort "mongod does not exist"
 
 echoGreen "-----------------------------------------------"
 echoGreen "Environment set up, reopen bash to take effect."
