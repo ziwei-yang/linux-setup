@@ -141,10 +141,10 @@ function isGFWFucked {
 	if [[ $country == '"CN"' ]]; then
 		echoRed ' ============ OH NO, GFW sucks! =============='
 		GFW_FUCKED=1
-		return 1
+		return 0
 	else
 		GFW_FUCKED=0
-		return 0
+		return 1
 	fi
 }
 
