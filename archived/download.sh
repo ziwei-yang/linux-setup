@@ -14,7 +14,7 @@ checkBinPath "wget"
 #wget -nc $btsyncURL
 
 if [[ $uname == 'Linux' ]]; then
-	wget -nc --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u102-b14/jdk-8u102-linux-x64.tar.gz"
+	wget -nc --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz?AuthParam=1501752378_c0582458423d25f6ddb66565c5cae7ae"
 	
 	pythonURL="https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz"
 	wget -nc $pythonURL
