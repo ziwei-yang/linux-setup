@@ -141,6 +141,7 @@ checkExactBinPath "ruby" $HOME/.rvm/rubies/ruby-$RUBY_VER*/bin/ruby && \
 	)
 	rvm use $RUBY_VER
 )
+source $HOME/.bashrc
 checkBinVersion "ruby" $RUBY_VER || abort "Ruby version is still not $RUBY_VER"
 # Change rvm image to taobao for China.
 isGFWFucked && \
