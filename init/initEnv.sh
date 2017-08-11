@@ -211,13 +211,22 @@ echoGreen "-------- Checking pyenv --------"
 	statusExec git clone https://github.com/pyenv/pyenv.git $HOME/.pyenv
 
 echoGreen "-------- Checking Node.js --------"
-checkExactBinPath "node" $USER_INSTALL/bin/node && \
-	echoBlue "Skip Nodejs." || (
+# Only install Node.js within current user.
+# To install Node.js in Centos as root, check this:
+# https://nodejs.org/en/download/package-manager/
+(
+	checkBinVersion "node" 'v8' || \
+	checkBinVersion "node" 'v7' || \
+	checkBinVersion "node" 'v6' || \
+	checkBinVersion "node" 'v5' || \
+	checkBinVersion "node" 'v4' || \
+	checkExactBinPath "node" $USER_INSTALL/bin/node
+) && echoBlue "Skip Nodejs." || (
 	# Copy system libs for python
 	[ -d $USER_INSTALL/lib/python$PYTHON_VER ] && \
 		ln -sf /usr/lib64/python*/lib-dynload/bz2.so \
 		$USER_INSTALL/lib/python$PYTHON_VER/
-	for filehead in node-v5 node-v4 node-v0
+	for filehead in node-v7 node-v6 node-v5 node-v4 node-v0
 	do
 		filename=$(basename $( ls $DIR/archived/$filehead* ))
 		[ $? != 0 ] && \
