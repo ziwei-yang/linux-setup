@@ -122,7 +122,7 @@ checkExactBinPath "rvm" $HOME/.rvm/bin/rvm && \
 	assertBinPath "rvm"
 )
 
-RUBY_VER="2.3"
+RUBY_VER="2.4"
 echoGreen "-------- Checking Ruby $RUBY_VER --------"
 rvm use $RUBY_VER
 checkExactBinPath "ruby" $HOME/.rvm/rubies/ruby-$RUBY_VER*/bin/ruby && \
@@ -142,6 +142,7 @@ checkExactBinPath "ruby" $HOME/.rvm/rubies/ruby-$RUBY_VER*/bin/ruby && \
 	rvm use $RUBY_VER
 )
 source $HOME/.bashrc
+rvm use $RUBY_VER
 checkBinVersion "ruby" $RUBY_VER || abort "Ruby version is still not $RUBY_VER"
 # Change rvm image to taobao for China.
 isGFWFucked && \
@@ -200,9 +201,9 @@ echoGreen "-------- Checking Python pip --------"
 isLinux && (
 	checkExactBinPath "pip" $USER_INSTALL/bin/pip && \
 	echoBlue "pip for Python $PYTHON_VER is exist." || (
-		[ ! -f $DIR/archived/get-pip.py ] && \
+		[ -f $DIR/archived/get-pip.py ] && \
 			statusExec python $DIR/archived/get-pip.py || \
-			echoRed "File does not exist"
+			echoRed "File $DIR/archived/get-pip.py does not exist"
 	)
 )
 
