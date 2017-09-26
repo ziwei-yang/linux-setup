@@ -29,7 +29,7 @@ nodejs4URL="https://nodejs.org/dist/latest-v4.x/node-v4.8.4.tar.gz"
 wget -nc $nodejs4URL
 nodejs5URL="https://nodejs.org/dist/latest-v5.x/node-v5.12.0.tar.gz"
 wget -nc $nodejs5URL
-nodejs6URL="https://nodejs.org/dist/latest-v6.x/node-v6.11.2.tar.gz"
+nodejs6URL="https://nodejs.org/dist/latest-v6.x/node-v6.11.3.tar.gz"
 wget -nc $nodejs6URL
 nodejs7URL="https://nodejs.org/dist/latest-v7.x/node-v7.10.1.tar.gz"
 wget -nc $nodejs7URL
@@ -43,8 +43,7 @@ wget -nc $phantomjsURL
 mavenURL="http://apache.communilink.net/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz"
 wget -nc $mavenURL
 
-# libsodiumURL="http://download.libsodium.org/libsodium/releases/libsodium-1.0.3.tar.gz"
-libsodiumURL="https://37.59.238.213/libsodium/releases/libsodium-1.0.10.tar.gz"
+libsodiumURL="http://download.libsodium.org/libsodium/releases/libsodium-1.0.14.tar.gz"
 zeromqURL="https://github.com/zeromq/libzmq/releases/download/v4.2.1/zeromq-4.2.1.tar.gz"
 wget --no-check-certificate -nc $libsodiumURL
 wget -nc $zeromqURL
@@ -56,7 +55,7 @@ wget -O jzmq-master.zip -nc --no-check-certificate $jzmqURL
 nanomqURL="https://github.com/nanomsg/nanomsg/archive/0.9-beta.tar.gz"
 wget -O nanomsg-0.9-beta.tar.gz -nc $nanomqURL
 
-wkhtmlURL="https://github.com/wkhtmltopdf/wkhtmltopdf/archive/0.12.4.tar.gz"
+wkhtmlURL="https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz"
 wget -O wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -nc $wkhtmlURL
 
 pdftkURL="https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/pdftk-2.02-src.zip"
