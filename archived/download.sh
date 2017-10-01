@@ -44,7 +44,7 @@ mavenURL="http://apache.communilink.net/maven/maven-3/3.3.9/binaries/apache-mave
 wget -nc $mavenURL
 
 libsodiumURL="http://download.libsodium.org/libsodium/releases/libsodium-1.0.14.tar.gz"
-zeromqURL="https://github.com/zeromq/libzmq/releases/download/v4.2.1/zeromq-4.2.1.tar.gz"
+zeromqURL="https://github.com/zeromq/zeromq4-1/releases/download/v4.1.6/zeromq-4.1.6.tar.gz"
 wget --no-check-certificate -nc $libsodiumURL
 wget -nc $zeromqURL
 
