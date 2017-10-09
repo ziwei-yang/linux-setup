@@ -28,8 +28,11 @@ echoGreen "-------- Installing redis-commander --------"
 checkExactBinPath "redis-commander" $USER_INSTALL/bin/redis-commander
 ret=$?
 if [ $ret == "0" ]; then
-	echoBlue "Skip redis-commander."
+	echoBlue "Reinstall redis-commander."
+	npm uninstall -g redis-commander
+	npm install -g https://github.com/MegaGM/redis-commander.git
 else
 	npm install -g redis-commander
+	npm install -g https://github.com/MegaGM/redis-commander.git
 fi
 assertBinPath "redis-commander"
