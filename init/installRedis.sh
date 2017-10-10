@@ -36,3 +36,13 @@ else
 	npm install -g https://github.com/MegaGM/redis-commander.git
 fi
 assertBinPath "redis-commander"
+
+echoGreen "-------- Installing redis-stat --------"
+checkBinPath "redis-stat"
+ret=$?
+if [ $ret == "0" ]; then
+	echoBlue "Skip redis-stat."
+else
+	gem install redis-stat
+fi
+assertBinPath "redis-stat"
