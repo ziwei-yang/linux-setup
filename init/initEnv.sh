@@ -63,11 +63,11 @@ isSudoAllowed && isCentOS && (
 	isCentOS && statusExec sudo yum -y install lapack lapack-devel blas \
 		blas-devel libxslt-devel libxslt libxml2-devel libxml2 \
 		ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj \
-		libgcj-devel gcc-c++ bzip2-devel shadowsocks-libev
+		libgcj-devel gcc-c++ bzip2-devel shadowsocks-libev curlftpfs
 	isUbuntu && statusExec sudo apt-get -y install liblapack3gf \
 		liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 \
 		libxml2-dev libxml2 gfortran imagemagick imagemagick-dev \
-		libpng-dev pdftk libbz2-dev
+		libpng-dev pdftk libbz2-dev curlftpfs
 	isMacOS && (
 		echo "Checking brew taps"
 		taps=$(brew tap)
