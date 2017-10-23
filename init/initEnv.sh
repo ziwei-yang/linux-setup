@@ -63,7 +63,8 @@ isSudoAllowed && isCentOS && (
 	isCentOS && statusExec sudo yum -y install lapack lapack-devel blas \
 		blas-devel libxslt-devel libxslt libxml2-devel libxml2 \
 		ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj \
-		libgcj-devel gcc-c++ bzip2-devel shadowsocks-libev curlftpfs
+		libgcj-devel gcc-c++ bzip2-devel shadowsocks-libev curlftpfs \
+		golang gmp-devel
 	isUbuntu && statusExec sudo apt-get -y install liblapack3gf \
 		liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 \
 		libxml2-dev libxml2 gfortran imagemagick imagemagick-dev \

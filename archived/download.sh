@@ -40,7 +40,7 @@ wget -nc $redisURL
 phantomjsURL="http://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2"
 wget -nc $phantomjsURL
 
-mavenURL="http://apache.communilink.net/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz"
+mavenURL="http://apache.website-solution.net/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.tar.gz"
 wget -nc $mavenURL
 
 libsodiumURL="http://download.libsodium.org/libsodium/releases/libsodium-1.0.14.tar.gz"
