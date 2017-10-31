@@ -284,7 +284,7 @@ echoBlue "Current JAVA:$javaVer" || (
 	)
 )
 
-MVN_VER="3.3"
+MVN_VER="3.5"
 echoGreen "-------- Checking Maven --------"
 checkBinVersion "mvn" $MVN_VER && \
 echoBlue "Skip Maven" || (
