@@ -25,11 +25,11 @@ fi
 
 nodejs0_12URL="https://nodejs.org/dist/latest-v0.12.x/node-v0.12.18.tar.gz"
 wget -nc $nodejs0_12URL
-nodejs4URL="https://nodejs.org/dist/latest-v4.x/node-v4.8.4.tar.gz"
+nodejs4URL="https://nodejs.org/dist/latest-v4.x/node-v4.8.5.tar.gz"
 wget -nc $nodejs4URL
 nodejs5URL="https://nodejs.org/dist/latest-v5.x/node-v5.12.0.tar.gz"
 wget -nc $nodejs5URL
-nodejs6URL="https://nodejs.org/dist/latest-v6.x/node-v6.11.3.tar.gz"
+nodejs6URL="https://nodejs.org/dist/latest-v6.x/node-v6.11.5.tar.gz"
 wget -nc $nodejs6URL
 nodejs7URL="https://nodejs.org/dist/latest-v7.x/node-v7.10.1.tar.gz"
 wget -nc $nodejs7URL
@@ -40,7 +40,7 @@ wget -nc $redisURL
 phantomjsURL="http://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2"
 wget -nc $phantomjsURL
 
-mavenURL="http://apache.website-solution.net/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.tar.gz"
+mavenURL="http://ftp.cuhk.edu.hk/pub/packages/apache.org/maven/maven-3/3.5.2/source/apache-maven-3.5.2-src.tar.gz"
 wget -nc $mavenURL
 
 libsodiumURL="http://download.libsodium.org/libsodium/releases/libsodium-1.0.14.tar.gz"
