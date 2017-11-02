@@ -10,11 +10,12 @@ setupBasicEnv
 USER_INSTALL="$HOME/install"
 os=$( osinfo )
 if [[ $os = "CentOS Linux release 7."* ]]; then
+	require_version='17.09'
 	if [[ $os < "CentOS Linux release 7.3" ]]; then
 		abort "$os is not supported"
 	fi
 	isSudoAllowed || abort "User has no privilege."
-	statusExec sudo yum install -y yum-utils
+	statusExec sudo yum install -y yum-utils device-mapper-persistent-data lvm2
 	statusExec sudo yum-config-manager \
 		--add-repo \
 	        https://download.docker.com/linux/centos/docker-ce.repo
