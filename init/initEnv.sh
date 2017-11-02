@@ -298,6 +298,7 @@ echoBlue "Skip Maven" || (
 		echo "OK"
 	) || ehco "Maven files does not exist."
 )
+source $HOME/.bashrc
 checkBinVersion "mvn" $MVN_VER || \
 	abort "Maven version is still not $MVN_VER"
 
