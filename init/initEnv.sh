@@ -241,7 +241,7 @@ checkBinVersion "python3" $PYTHON3_VER || abort "Python $PYTHON3_VER is not in b
 
 echoGreen "-------- Checking Python pip3 --------"
 isLinux && (
-	checkExactBinPath "pip3" $USER_INSTALL/bin/pip && \
+	checkExactBinPath "pip3" $USER_INSTALL/bin/pip3 && \
 	echoBlue "pip for Python $PYTHON_VER is exist." || (
 		[ -f $DIR/archived/get-pip.py ] && \
 			statusExec python3 $DIR/archived/get-pip.py || \
