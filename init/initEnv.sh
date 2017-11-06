@@ -182,7 +182,7 @@ isLinux && (
 			cp $DIR/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
 			tar -xf $filename
-			dirname=${filename%.xz}
+			dirname=${filename%.tar.xz}
 			cd $USER_ARCHIVED/$dirname
 			statusExec $USER_ARCHIVED/$dirname/configure \
 				--prefix=$USER_INSTALL \
@@ -223,7 +223,7 @@ isLinux && (
 			cp $DIR/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
 			tar -xf $filename
-			dirname=${filename%.xz}
+			dirname=${filename%.tar.xz}
 			cd $USER_ARCHIVED/$dirname
 			statusExec $USER_ARCHIVED/$dirname/configure \
 				--prefix=$USER_INSTALL \
