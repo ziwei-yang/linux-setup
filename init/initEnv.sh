@@ -237,7 +237,7 @@ isLinux && (
 		) || echoRed "Python 3 files does not exist"
 	)
 )
-checkBinVersion "python" $PYTHON3_VER || abort "Python $PYTHON3_VER is not in bin path."
+checkBinVersion "python3" $PYTHON3_VER || abort "Python $PYTHON3_VER is not in bin path."
 
 echoGreen "-------- Checking Python pip3 --------"
 isLinux && (
