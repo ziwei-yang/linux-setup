@@ -167,18 +167,18 @@ checkExactBinPath "phantomjs" $USER_INSTALL/bin/phantomjs && \
 	) || echoRed "File does not exist"
 )
 
-echoGreen "-------- Checking Python --------"
+echoGreen "-------- Checking Python 2.7 --------"
 PYTHON_VER="2.7"
 isMacOS && (
-	checkBinVersion "python" "2.7" && \
-		echoBlue "Skip python 2.7" || \
+	checkBinVersion "python" $PYTHON_VER && \
+		echoBlue "Skip python $PYTHON_VER" || \
 		statusExec brew install python
 )
 isLinux && (
 	checkExactBinPath "python" $USER_INSTALL/bin/python && \
 	echoBlue "Python $PYTHON_VER is exist." || (
-		filename=$(basename $( ls $DIR/archived/Python-* )) && (
-			rm -rf $USER_ARCHIVED/Python-*
+		filename=$(basename $( ls $DIR/archived/Python-2* )) && (
+			rm -rf $USER_ARCHIVED/Python-2*
 			cp $DIR/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
 			tar -xf $filename
@@ -193,10 +193,10 @@ isLinux && (
 				abort "Make python failed"
 			rm -rf $USER_ARCHIVED/Python-*
 			echo "OK"
-		) || echoRed "Python files does not exist"
+		) || echoRed "Python 2 files does not exist"
 	)
 )
-checkBinVersion "python" 2.7 || abort "Python 2.7 is not in bin path."
+checkBinVersion "python" $PYTHON_VER || abort "Python $PYTHON_VER is not in bin path."
 
 echoGreen "-------- Checking Python pip --------"
 isLinux && (
@@ -204,6 +204,47 @@ isLinux && (
 	echoBlue "pip for Python $PYTHON_VER is exist." || (
 		[ -f $DIR/archived/get-pip.py ] && \
 			statusExec python $DIR/archived/get-pip.py || \
+			echoRed "File $DIR/archived/get-pip.py does not exist"
+	)
+)
+
+echoGreen "-------- Checking Python 3.6 --------"
+PYTHON3_VER="3.6"
+isMacOS && (
+	checkBinVersion "python3" $PYTHON3_VER && \
+		echoBlue "Skip python3 $PYTHON3_VER" || \
+		statusExec brew install python
+)
+isLinux && (
+	checkExactBinPath "python3" $USER_INSTALL/bin/python3 && \
+	echoBlue "Python $PYTHON_VER is exist." || (
+		filename=$(basename $( ls $DIR/archived/Python-3* )) && (
+			rm -rf $USER_ARCHIVED/Python-3*
+			cp $DIR/archived/$filename $USER_ARCHIVED/
+			cd $USER_ARCHIVED
+			tar -xf $filename
+			dirname=${filename%.tgz}
+			cd $USER_ARCHIVED/$dirname
+			statusExec $USER_ARCHIVED/$dirname/configure \
+				--prefix=$USER_INSTALL \
+				--exec-prefix=$USER_INSTALL || \
+				abort "configure failed"
+			statusExec make install -j $CPU_CORE || \
+				statusExec make install || \
+				abort "Make python failed"
+			rm -rf $USER_ARCHIVED/Python-*
+			echo "OK"
+		) || echoRed "Python 3 files does not exist"
+	)
+)
+checkBinVersion "python" $PYTHON3_VER || abort "Python $PYTHON3_VER is not in bin path."
+
+echoGreen "-------- Checking Python pip3 --------"
+isLinux && (
+	checkExactBinPath "pip3" $USER_INSTALL/bin/pip && \
+	echoBlue "pip for Python $PYTHON_VER is exist." || (
+		[ -f $DIR/archived/get-pip.py ] && \
+			statusExec python3 $DIR/archived/get-pip.py || \
 			echoRed "File $DIR/archived/get-pip.py does not exist"
 	)
 )

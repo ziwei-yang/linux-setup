@@ -16,8 +16,11 @@ checkBinPath "wget"
 if [[ $uname == 'Linux' ]]; then
 	wget -nc --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz"
 	
-	pythonURL="https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz"
+	pythonURL="https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tar.xz"
 	wget -nc $pythonURL
+	
+	python3URL="https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tar.xz"
+	wget -nc $python3URL
 	
 	pyPipURL="https://bootstrap.pypa.io/get-pip.py"
 	wget -nc $pyPipURL
