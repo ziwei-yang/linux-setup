@@ -29,10 +29,18 @@ if [[ $os = "CentOS Linux release 7."* ]]; then
 	statusExec sudo systemctl start docker
 	statusExec docker run hello-world || \
 		echoBlue "Log out and log back in so that your group membership is re-evaluated."
-	statusExec wget --quiet -O /tmp/docker-machine https://github.com/docker/machine/releases/download/v0.10.0/docker-machine-`uname -s`-`uname -m` && \
-		chmod +x /tmp/docker-machine && \
-		statusExec mv /tmp/docker-machine $USER_INSTALL/bin/
+	statusExec sudo wget --quiet -O /tmp/docker-machine https://github.com/docker/machine/releases/download/v0.10.0/docker-machine-`uname -s`-`uname -m`
+	statusExec sudo chmod +x /tmp/docker-machine
+	statusExec sudo mv /tmp/docker-machine $USER_INSTALL/bin/
 	statusExec $USER_INSTALL/bin/docker-machine --version
+
+	# Install docker compose
+	statusExec sudo curl -L \
+		https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` \
+		-o /usr/local/bin/docker-compose
+	statusExec sudo chmod +x /usr/local/bin/docker-compose
+	checkBinVersion "/usr/local/bin/docker-compose" '1.17' || \
+		abort "docker-compose version is still not 1.17"
 else
 	abort "$os is not supported"
 fi
