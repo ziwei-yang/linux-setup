@@ -121,6 +121,7 @@ checkExactBinPath "rvm" $HOME/.rvm/bin/rvm && \
 		source "$HOME/.rvm/scripts/rvm"
 	fi
 	assertBinPath "rvm"
+	echo 'rvm_auto_reload_flag=2' >> $HOME/.rvmrc
 )
 
 RUBY_VER="2.4"
