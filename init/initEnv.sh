@@ -68,7 +68,8 @@ isSudoAllowed && isCentOS && (
 	isUbuntu && statusExec sudo apt-get -y install liblapack3gf \
 		liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 \
 		libxml2-dev libxml2 gfortran imagemagick imagemagick-dev \
-		libpng-dev pdftk libbz2-dev curlftpfs protobuf protobuf-dev
+		libpng-dev pdftk libbz2-dev curlftpfs protobuf-compiler \
+		libprotobuf-dev libprotobuf-c-dev
 	isMacOS && (
 		echo "Checking brew taps"
 		taps=$(brew tap)
