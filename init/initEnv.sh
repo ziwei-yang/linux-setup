@@ -64,11 +64,11 @@ isSudoAllowed && isCentOS && (
 		blas-devel libxslt-devel libxslt libxml2-devel libxml2 \
 		ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj \
 		libgcj-devel gcc-c++ bzip2-devel shadowsocks-libev curlftpfs \
-		golang gmp-devel
+		golang gmp-devel protobuf protobuf-devel
 	isUbuntu && statusExec sudo apt-get -y install liblapack3gf \
 		liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 \
 		libxml2-dev libxml2 gfortran imagemagick imagemagick-dev \
-		libpng-dev pdftk libbz2-dev curlftpfs
+		libpng-dev pdftk libbz2-dev curlftpfs protobuf protobuf-dev
 	isMacOS && (
 		echo "Checking brew taps"
 		taps=$(brew tap)
@@ -100,6 +100,38 @@ isSudoAllowed && isCentOS && (
 	)
 	echo "OK"
 ) || echoRed "-------- Skip installing system tools --------"
+
+echoGreen "-------- Checking mosh --------"
+isMacOS && (
+	checkBinPath "mosh" && \
+		echoBlue "Skip mosh" || \
+		statusExec brew install mosh
+)
+isLinux && (
+	checkBinPath "mosh" && \
+	echoBlue "Skip Mosh" || (
+		filename=$(basename $( ls $DIR/archived/mosh-* )) && (
+			rm -rf $USER_ARCHIVED/mosh-*
+			statusExec cp $DIR/archived/$filename $USER_ARCHIVED/
+			cd $USER_ARCHIVED
+			statusExec tar -zxf $USER_ARCHIVED/$filename || \
+				abort "Extract mosh failed"
+			rm $USER_ARCHIVED/$filename
+			dirname=$(basename $USER_ARCHIVED/mosh-*)
+			statusExec $USER_ARCHIVED/$dirname/configure \
+				--prefix=$USER_INSTALL \
+				--exec-prefix=$USER_INSTALL || \
+				abort "configure failed"
+			statusExec make install -j $CPU_CORE || \
+				statusExec make install || \
+				abort "Make mosh failed"
+			rm -rf $USER_ARCHIVED/mosh-*
+			echo "OK"
+		) || echoRed "Mosh file does not exist."
+	)
+)
+checkBinPath "mosh" || abort "mosh does not exist"
+exit
 
 isSudoAllowed && isLinux && (
 	echoGreen "-------- Adding user privilege of fuse --------"

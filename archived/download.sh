@@ -70,4 +70,7 @@ wget -nc $mongoURL
 antURL="http://ftp.cuhk.edu.hk/pub/packages/apache.org//ant/binaries/apache-ant-1.10.1-bin.zip"
 wget -nc $antURL
 
+moshURL='https://mosh.org/mosh-1.3.2.tar.gz'
+wget -nc $moshURL
+
 cd $PWD
