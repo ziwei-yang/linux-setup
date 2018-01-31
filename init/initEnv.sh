@@ -173,6 +173,7 @@ checkExactBinPath "ruby" $HOME/.rvm/rubies/ruby-$RUBY_VER*/bin/ruby && \
 		echoBlue "rvm install $RUBY_VER"
 		rvm install $RUBY_VER
 	)
+	source $HOME/.bashrc
 	rvm use $RUBY_VER
 )
 source $HOME/.bashrc
