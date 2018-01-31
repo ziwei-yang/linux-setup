@@ -132,7 +132,6 @@ isLinux && (
 	)
 )
 checkBinPath "mosh" || abort "mosh does not exist"
-exit
 
 isSudoAllowed && isLinux && (
 	echoGreen "-------- Adding user privilege of fuse --------"
