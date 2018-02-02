@@ -21,7 +21,8 @@ elif [[ $uname == "Darwin" ]]; then
 	export PS1='\u:\W$'
 	JAVA_HOME=$( ls "/Library/Java/JavaVirtualMachines/" | grep jdk | tail -1 )
 	export JAVA_HOME="/Library/Java/JavaVirtualMachines/$JAVA_HOME/Contents/Home"
-	export VIMRUNTIME="/usr/share/vim/vim74"
+	VIMRUNTIME=$( ls /usr/share/vim/ | grep -E 'vim[0-9]{2}' | tail -1 )
+	export VIMRUNTIME="/usr/share/vim/$VIMRUNTIME"
 fi
 
 # PATH

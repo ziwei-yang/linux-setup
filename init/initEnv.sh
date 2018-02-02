@@ -51,7 +51,7 @@ isSudoAllowed && isCentOS && (
 		checkBinPath $app && continue
 		isCentOS && statusExec sudo yum -y install $app
 		isUbuntu &&statusExec sudo apt-get -y install $app
-		isMacOS && statusExec brew install $app
+		isMacOS && [[ $app != 'sshfs' ]] && statusExec brew install $app
 	done
 	# Check unbuffer.
 	echo "Checking unbuffer" && checkBinPath "unbuffer" || (
@@ -247,7 +247,7 @@ PYTHON3_VER="3.6"
 isMacOS && (
 	checkBinVersion "python3" $PYTHON3_VER && \
 		echoBlue "Skip python3 $PYTHON3_VER" || \
-		statusExec brew install python
+		statusExec brew install python3
 )
 isLinux && (
 	checkExactBinPath "python3" $USER_INSTALL/bin/python3 && \
