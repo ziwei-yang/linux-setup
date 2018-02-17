@@ -14,7 +14,7 @@ checkBinPath "wget"
 #wget -nc $btsyncURL
 
 if [[ $uname == 'Linux' ]]; then
-	wget -nc --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz"
+	wget -nc --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-8u161-linux-x64.tar.gz"
 	
 	pythonURL="https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tar.xz"
 	wget -nc $pythonURL
@@ -28,16 +28,14 @@ fi
 
 nodejs0_12URL="https://nodejs.org/dist/latest-v0.12.x/node-v0.12.18.tar.gz"
 wget -nc $nodejs0_12URL
-nodejs4URL="https://nodejs.org/dist/latest-v4.x/node-v4.8.5.tar.gz"
+nodejs4URL="https://nodejs.org/dist/latest-v4.x/node-v4.8.7.tar.gz"
 wget -nc $nodejs4URL
 nodejs5URL="https://nodejs.org/dist/latest-v5.x/node-v5.12.0.tar.gz"
 wget -nc $nodejs5URL
-nodejs6URL="https://nodejs.org/dist/latest-v6.x/node-v6.11.5.tar.gz"
+nodejs6URL="https://nodejs.org/dist/latest-v6.x/node-v6.12.3.tar.gz"
 wget -nc $nodejs6URL
-nodejs7URL="https://nodejs.org/dist/latest-v7.x/node-v7.10.1.tar.gz"
-wget -nc $nodejs7URL
 
-redisURL="http://download.redis.io/releases/redis-3.0.5.tar.gz"
+redisURL="http://download.redis.io/releases/redis-4.0.8.tar.gz"
 wget -nc $redisURL
 
 phantomjsURL="http://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2"

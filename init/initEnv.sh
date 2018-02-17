@@ -64,12 +64,14 @@ isSudoAllowed && isCentOS && (
 		blas-devel libxslt-devel libxslt libxml2-devel libxml2 \
 		ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj \
 		libgcj-devel gcc-c++ bzip2-devel shadowsocks-libev curlftpfs \
-		golang gmp-devel protobuf protobuf-devel
+		golang gmp-devel protobuf protobuf-devel ncurses-devel \
+		openssl-devel
 	isUbuntu && statusExec sudo apt-get -y install liblapack3gf \
 		liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 \
 		libxml2-dev libxml2 gfortran imagemagick imagemagick-dev \
 		libpng-dev pdftk libbz2-dev curlftpfs protobuf-compiler \
-		libprotobuf-dev libprotobuf-c-dev
+		libprotobuf-dev libprotobuf-c-dev libncursesw5-dev \
+		libopenssl-dev
 	isMacOS && (
 		echo "Checking brew taps"
 		taps=$(brew tap)
