@@ -160,8 +160,7 @@ checkExactBinPath "rvm" $HOME/.rvm/bin/rvm && \
 
 RUBY_VER="2.4"
 echoGreen "-------- Checking Ruby $RUBY_VER --------"
-rvm use $RUBY_VER
-checkExactBinPath "ruby" $HOME/.rvm/rubies/ruby-$RUBY_VER*/bin/ruby && \
+rvm use $RUBY_VER && \
 	echoBlue "Skip installing Ruby $RUBY_VER" || (
 	echoBlue "Update RVM before installing ruby."
 	statusExec rvm get stable
@@ -246,11 +245,7 @@ isLinux && (
 
 echoGreen "-------- Checking Python 3.6 --------"
 PYTHON3_VER="3.6"
-isMacOS && (
-	checkBinVersion "python3" $PYTHON3_VER && \
-		echoBlue "Skip python3 $PYTHON3_VER" || \
-		statusExec brew install python3
-)
+isMacOS && echoBlue "Skip python4 $PYTHON3_VER"
 isLinux && (
 	checkExactBinPath "python3" $USER_INSTALL/bin/python3 && \
 	echoBlue "Python $PYTHON_VER is exist." || (
@@ -272,8 +267,8 @@ isLinux && (
 			echo "OK"
 		) || echoRed "Python 3 files does not exist"
 	)
+	checkBinVersion "python3" $PYTHON3_VER || abort "Python $PYTHON3_VER is not in bin path."
 )
-checkBinVersion "python3" $PYTHON3_VER || abort "Python $PYTHON3_VER is not in bin path."
 
 echoGreen "-------- Checking Python pip3 --------"
 isLinux && (
