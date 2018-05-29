@@ -6,7 +6,7 @@ DIR=$DIR/../
 
 source $DIR/util/util.sh
 
-setupBasicEnv
+setup_sys_env
 os=$( osinfo )
 USER=$( whoami )
 if [[ $USER != 'root' ]]; then
@@ -34,21 +34,21 @@ fi
 
 for app in nginx
 do
-	checkBinPath $app && continue
+	find_path $app && continue
 	if [[ $os == CentOS* ]]; then
-		isSudoAllowed || abort "Must be allowed"
-		statusExec yum -y install $app
+		can_sudo || abort "Must be allowed"
+		status_exec yum -y install $app
 	elif [[ $os == Ubuntu* ]]; then
-		isSudoAllowed || abort "Must be allowed"
-		statusExec apt-get -y install $app
+		can_sudo || abort "Must be allowed"
+		status_exec apt-get -y install $app
 	elif [[ $os == "Darwin" ]]; then
-		statusExec brew install $app
+		status_exec brew install $app
 	fi
 done
 
 if [[ $os == CentOS* ]]; then
-	statusExec yum -y remove nginx-mod-*
-	statusExec yum -y install nginx-module-*
+	status_exec yum -y remove nginx-mod-*
+	status_exec yum -y install nginx-module-*
 elif [[ $os == Ubuntu* ]]; then
 	:
 elif [[ $os == "Darwin" ]]; then

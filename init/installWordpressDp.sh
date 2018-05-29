@@ -8,7 +8,7 @@ echo "cd $DIR"
 cd $DIR
 
 source $DIR/util/util.sh
-setupBasicEnv
+setup_sys_env
 
 os=$( osinfo )
 
@@ -21,12 +21,12 @@ else
 	echo "CPU Core:$MAKE_CORE_NUM"
 fi
 
-echoGreen "-------- Checking environment. --------"
+log_green "-------- Checking environment. --------"
 # Check sudo privilege.
 ret=$( sudo -n echo a 2>&1 )
 sudoAllowed="0"
 if [[ $ret == "a" ]] && [[ $os != "Darwin" ]]; then
-	echoBlue "User has sudo privilege without password."
+	log_blue "User has sudo privilege without password."
 	sudoAllowed="1"
 else
 	echoRed "WARN: User has no sudo privilege without password. Change /etc/sudoers first."
@@ -42,4 +42,4 @@ else
 	echo "Unsupport OS:$os"
 fi
 
-echoBlue "Remeber to modify .htaccess to enable permalink on wordpress, Set 'All' to all 'AllowOverride' in /etc/apache/conf/httpd.conf"
+log_blue "Remeber to modify .htaccess to enable permalink on wordpress, Set 'All' to all 'AllowOverride' in /etc/apache/conf/httpd.conf"

@@ -4,13 +4,13 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 DIR=$DIR/../
 
 source $DIR/util/util.sh
-setupBasicEnv
+setup_sys_env
 
 # Check sudo privilege.
 ret=$( sudo -n echo a )
 sudoAllowed="0"
 if [ $ret == "a" ]; then
-	echoBlue "User has sudo privilege without password."
+	log_blue "User has sudo privilege without password."
 	sudoAllowed="1"
 else
 	echoRed "Error: User has no sudo privilege without password. Change /etc/sudoers first."

@@ -8,7 +8,7 @@ cd $DIR
 
 uname=$( uname )
 source $DIR/../util/util.sh
-checkBinPath "wget"
+find_path "wget"
 
 #btsyncURL="http://download.getsyncapp.com/endpoint/btsync/os/linux-x64/track/stable/bittorrent_sync_x64.tar.gz"
 #wget -nc $btsyncURL

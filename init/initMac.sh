@@ -23,10 +23,10 @@ fi
 xcode-select --install > /dev/null 2>&1
 
 # Install homebrew.
-checkBinPath brew
+find_path brew
 ret=$?
 if [ $ret == "0" ]; then
-	echoBlue "Skip installing homebrew."
+	log_blue "Skip installing homebrew."
 else
 	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi

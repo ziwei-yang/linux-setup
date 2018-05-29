@@ -6,7 +6,7 @@ DIR=$DIR/../
 
 source $DIR/util/util.sh
 
-setupBasicEnv
+setup_sys_env
 USER_INSTALL="$HOME/install"
 os=$( osinfo )
 if [[ $os = "CentOS Linux release 7."* ]]; then
@@ -14,8 +14,8 @@ if [[ $os = "CentOS Linux release 7."* ]]; then
 	if [[ $os < "CentOS Linux release 7.3" ]]; then
 		abort "$os is not supported"
 	fi
-	isSudoAllowed || abort "User has no privilege."
-	statusExec sudo yum remove docker docker-common docker-selinux docker-engine
+	can_sudo || abort "User has no privilege."
+	status_exec sudo yum remove docker docker-common docker-selinux docker-engine
 else
 	abort "$os is not supported"
 fi

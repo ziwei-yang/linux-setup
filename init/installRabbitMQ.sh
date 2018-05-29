@@ -6,18 +6,18 @@ DIR=$DIR/../
 cd $DIR
 
 source $DIR/util/util.sh
-setupBasicEnv
+setup_sys_env
 
-assertBinPath "echo"
-assertBinPath "sudo"
-assertBinPath "yum"
-assertBinPath "cp"
-assertBinPath "wc"
+assert_path "echo"
+assert_path "sudo"
+assert_path "yum"
+assert_path "cp"
+assert_path "wc"
 
-checkBinPath "rabbitmq-server"
+find_path "rabbitmq-server"
 ret=$?
 if [ $ret == "0" ]; then
-	echoBlue "Skip installing rabbitMQ..."
+	log_blue "Skip installing rabbitMQ..."
 else
 	# Install EPEL repo.
 	sudo rpm -Uvh "http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm"
