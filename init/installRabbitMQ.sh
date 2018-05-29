@@ -1,12 +1,8 @@
-# Check and set environment before every scripts. Golbal vars should be not affect others.
+#! /bin/bash
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-DIR=$DIR/../
-cd $DIR
-
-source $DIR/util/util.sh
-setup_sys_env
+source $DIR/../common/bootstrap.sh
 
 assert_path "echo"
 assert_path "sudo"

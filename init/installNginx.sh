@@ -2,11 +2,8 @@
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-DIR=$DIR/../
+source $DIR/../common/bootstrap.sh
 
-source $DIR/util/util.sh
-
-setup_sys_env
 os=$( osinfo )
 USER=$( whoami )
 if [[ $USER != 'root' ]]; then

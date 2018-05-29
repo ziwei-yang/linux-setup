@@ -3,14 +3,10 @@
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-DIR=$DIR/../
-echo "cd $DIR"
-cd $DIR
+source $DIR/../common/bootstrap.sh
 
 # Pre-defined vars.
 newhostname=''
-
-source $DIR/util/util.sh
 
 USER=$( whoami )
 if [[ $USER != 'root' ]]; then

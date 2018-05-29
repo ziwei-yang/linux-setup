@@ -1,10 +1,8 @@
+#! /bin/bash
 PWD=$(pwd)
-
-# Check and set environment before every scripts. Golbal vars should be not affect others.
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-echo "cd $DIR"
-cd $DIR
+source $DIR/../common/bootstrap.sh
 
 uname=$( uname )
 source $DIR/../util/util.sh

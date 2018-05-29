@@ -20,6 +20,8 @@ datetime=$( date +"%Y%m%d_%H%M%S_%N" )
 datestr=$( date +"%Y%m%d" )
 datestr_underline=$( date +"%Y_%m_%d" )
 
+setup_sys_env
+
 echo "-------- Overwritting functions. --------"
 # Rewrite builtin echo with timestamp and file.
 function log(){

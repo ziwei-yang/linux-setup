@@ -1,11 +1,8 @@
+#! /bin/bash
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-DIR=$DIR/../
-cd $DIR
-
-source $DIR/util/util.sh
-setup_sys_env
+source $DIR/../common/bootstrap.sh
 
 # Install beautifulsoup4
 check_py_lib "beautifulsoup4" "4.1.3"

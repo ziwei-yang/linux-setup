@@ -217,7 +217,7 @@ function is_failed {
 }
 
 function setup_sys_env {
-	log_green "-------- Checking environment. --------"
+	log_green "-------- checking system --------"
 	assert_path "echo"
 	assert_path "sudo"
 	assert_path "cp"

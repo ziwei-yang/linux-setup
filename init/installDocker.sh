@@ -2,12 +2,8 @@
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-DIR=$DIR/../
+source $DIR/../common/bootstrap.sh
 
-source $DIR/util/util.sh
-
-setup_sys_env
-USER_INSTALL="$HOME/install"
 os=$( osinfo )
 if [[ $os = "CentOS Linux release 7."* ]]; then
 	require_version='17.09'
