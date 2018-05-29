@@ -4,14 +4,11 @@
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-DIR=$DIR/../
+source $DIR/../common/bootstrap.sh
 
-source $DIR/util/util.sh
-setup_sys_env
-
-cd $DIR/archived
-$DIR/archived/download.sh || abort "Error in downloading files."
-cd $DIR
+cd $LINUX_SETUP_HOME/archived
+$LINUX_SETUP_HOME/archived/download.sh || abort "Error in downloading files."
+cd $LINUX_SETUP_HOME
 
 USER_INSTALL="$HOME/install"
 USER_ARCHIVED="$HOME/archived"
@@ -26,15 +23,13 @@ mkdir -p $HOME/.vim/backupfiles
 mkdir -p $HOME/.vim/swapfiles
 mkdir -p $HOME/bin
 mkdir -p $HOME/conf
-cp $DIR/conf/home/.bash* $HOME/
-cp $DIR/conf/home/.*rc $HOME/
-cp $DIR/conf/home/.tmux*.conf $HOME/
-cp $DIR/conf/home/tmux_dev.sh $HOME/
-cp $DIR/conf/home/.profile $HOME/
+cp $LINUX_SETUP_HOME/conf/home/.bash* $HOME/
+cp $LINUX_SETUP_HOME/conf/home/.*rc $HOME/
+cp $LINUX_SETUP_HOME/conf/home/.tmux*.conf $HOME/
+cp $LINUX_SETUP_HOME/conf/home/tmux_dev.sh $HOME/
+cp $LINUX_SETUP_HOME/conf/home/.profile $HOME/
 
 log_green "-------- Refresh bash enviroment -------"
-source $HOME/.bash_profile
-source $HOME/.bashrc
 
 can_sudo && is_centos && (
 	log_green "-------- Checking CentOS Development tools --------"
@@ -113,9 +108,9 @@ is_mac && (
 is_linux && (
 	find_path "mosh" && \
 	log_blue "Skip Mosh" || (
-		filename=$(basename $( ls $DIR/archived/mosh-* )) && (
+		filename=$(basename $( ls $LINUX_SETUP_HOME/archived/mosh-* )) && (
 			rm -rf $USER_ARCHIVED/mosh-*
-			status_exec cp $DIR/archived/$filename $USER_ARCHIVED/
+			status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
 			status_exec tar -zxf $USER_ARCHIVED/$filename || \
 				abort "Extract mosh failed"
@@ -160,8 +155,7 @@ check_path "rvm" $HOME/.rvm/bin/rvm && \
 
 RUBY_VER="2.4"
 log_green "-------- Checking Ruby $RUBY_VER --------"
-rvm use $RUBY_VER
-check_path "ruby" $HOME/.rvm/rubies/ruby-$RUBY_VER*/bin/ruby && \
+rvm use $RUBY_VER && \
 	log_blue "Skip installing Ruby $RUBY_VER" || (
 	log_blue "Update RVM before installing ruby."
 	status_exec rvm get stable
@@ -189,9 +183,9 @@ in_china && \
 log_green "-------- Checking PhantomJS --------"
 check_path "phantomjs" $USER_INSTALL/bin/phantomjs && \
 	log_blue "Skip PhantomJS" || (
-	filename=$(basename $( ls $DIR/archived/phantomjs-* )) && (
+	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/phantomjs-* )) && (
 		rm -rf $USER_ARCHIVED/phantomjs-*
-		status_exec cp $DIR/archived/$filename $USER_ARCHIVED/
+		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
 		status_exec tar -xf $filename
 		dirname=${filename%.tar.bz2}
@@ -213,9 +207,9 @@ is_mac && (
 is_linux && (
 	check_path "python" $USER_INSTALL/bin/python && \
 	log_blue "Python $PYTHON_VER is exist." || (
-		filename=$(basename $( ls $DIR/archived/Python-2* )) && (
+		filename=$(basename $( ls $LINUX_SETUP_HOME/archived/Python-2* )) && (
 			rm -rf $USER_ARCHIVED/Python-2*
-			cp $DIR/archived/$filename $USER_ARCHIVED/
+			cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
 			tar -xf $filename
 			dirname=${filename%.tar.xz}
@@ -238,25 +232,21 @@ log_green "-------- Checking Python pip --------"
 is_linux && (
 	check_path "pip" $USER_INSTALL/bin/pip && \
 	log_blue "pip for Python $PYTHON_VER is exist." || (
-		[ -f $DIR/archived/get-pip.py ] && \
-			status_exec python $DIR/archived/get-pip.py || \
-			log_red "File $DIR/archived/get-pip.py does not exist"
+		[ -f $LINUX_SETUP_HOME/archived/get-pip.py ] && \
+			status_exec python $LINUX_SETUP_HOME/archived/get-pip.py || \
+			log_red "File $LINUX_SETUP_HOME/archived/get-pip.py does not exist"
 	)
 )
 
 log_green "-------- Checking Python 3.6 --------"
 PYTHON3_VER="3.6"
-is_mac && (
-	check_version "python3" $PYTHON3_VER && \
-		log_blue "Skip python3 $PYTHON3_VER" || \
-		status_exec brew install python3
-)
+is_mac && log_blue "Skip python3 $PYTHON3_VER"
 is_linux && (
 	check_path "python3" $USER_INSTALL/bin/python3 && \
 	log_blue "Python $PYTHON_VER is exist." || (
-		filename=$(basename $( ls $DIR/archived/Python-3* )) && (
+		filename=$(basename $( ls $LINUX_SETUP_HOME/archived/Python-3* )) && (
 			rm -rf $USER_ARCHIVED/Python-3*
-			cp $DIR/archived/$filename $USER_ARCHIVED/
+			cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
 			tar -xf $filename
 			dirname=${filename%.tar.xz}
@@ -272,6 +262,7 @@ is_linux && (
 			echo "OK"
 		) || log_red "Python 3 files does not exist"
 	)
+	checkBinVersion "python3" $PYTHON3_VER || abort "Python $PYTHON3_VER is not in bin path."
 )
 check_version "python3" $PYTHON3_VER || abort "Python $PYTHON3_VER is not in bin path."
 
@@ -279,9 +270,9 @@ log_green "-------- Checking Python pip3 --------"
 is_linux && (
 	check_path "pip3" $USER_INSTALL/bin/pip3 && \
 	log_blue "pip for Python $PYTHON_VER is exist." || (
-		[ -f $DIR/archived/get-pip.py ] && \
-			status_exec python3 $DIR/archived/get-pip.py || \
-			log_red "File $DIR/archived/get-pip.py does not exist"
+		[ -f $LINUX_SETUP_HOME/archived/get-pip.py ] && \
+			status_exec python3 $LINUX_SETUP_HOME/archived/get-pip.py || \
+			log_red "File $LINUX_SETUP_HOME/archived/get-pip.py does not exist"
 	)
 )
 
@@ -307,13 +298,13 @@ log_green "-------- Checking Node.js --------"
 		$USER_INSTALL/lib/python$PYTHON_VER/
 	for filehead in node-v7 node-v6 node-v5 node-v4 node-v0
 	do
-		filename=$(basename $( ls $DIR/archived/$filehead* ))
+		filename=$(basename $( ls $LINUX_SETUP_HOME/archived/$filehead* ))
 		[ $? != 0 ] && \
 			log_red "File $filehead does not exist" && \
 			continue
 		log_blue "Installing $filename"
 		rm -rf $USER_ARCHIVED/node-*
-		status_exec cp $DIR/archived/$filename $USER_ARCHIVED/
+		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
 		status_exec tar -xf $filename
 		rm $USER_ARCHIVED/$filename
@@ -350,9 +341,9 @@ log_blue "Current JAVA:$javaVer" || (
 	is_mac && \
 		log_red "Java should be manually install on MacOSX."
 	is_linux && (
-		filename=$(basename "$( ls $DIR/archived/jdk-8u* )" ) && (
+		filename=$(basename "$( ls $LINUX_SETUP_HOME/archived/jdk-8u* )" ) && (
 			rm -rf $USER_ARCHIVED/jdk-*
-			status_exec cp $DIR/archived/$filename $USER_ARCHIVED/
+			status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
 			status_exec tar -xf $filename
 			rm $filename
@@ -365,9 +356,9 @@ MVN_VER="3.5"
 log_green "-------- Checking Maven --------"
 check_version "mvn" $MVN_VER && \
 log_blue "Skip Maven" || (
-	filename=$(basename $( ls $DIR/archived/apache-maven-* )) && (
+	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/apache-maven-* )) && (
 		rm -rf $USER_ARCHIVED/apache-maven-*
-		status_exec cp $DIR/archived/$filename $USER_ARCHIVED/
+		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
 		status_exec tar -xf $filename
 		rm $filename
@@ -383,9 +374,9 @@ log_green "-------- Checking ANT --------"
 ANT_VER=`ant -version 2>&1 | grep Ant`
 [[ $ANT_VER == *1.10* ]] && \
 log_blue "Current ANT:$ANT_VER" || (
-	filename=$(basename $( ls $DIR/archived/apache-ant-* )) && (
+	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/apache-ant-* )) && (
 		rm -rf $USER_ARCHIVED/apache-ant-*
-		status_exec cp $DIR/archived/$filename $USER_ARCHIVED/
+		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
 		status_exec unzip $USER_ARCHIVED/$filename
 		rm $USER_ARCHIVED/$filename
@@ -400,9 +391,9 @@ log_green "-------- Checking libsodium --------"
 	[[ -f $USER_INSTALL/lib/libsodium.so && is_linux ]]
 ) && \
 log_blue "Skip libsodium." || (
-	filename=$(basename $( ls $DIR/archived/libsodium-* )) && (
+	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/libsodium-* )) && (
 		rm -rf $USER_ARCHIVED/libsodium-*
-		status_exec cp $DIR/archived/$filename $USER_ARCHIVED/
+		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
 		status_exec tar -xf $filename
 		rm $filename
@@ -430,9 +421,9 @@ log_green "-------- Checking ZeroMQ --------"
 	[[ -f $USER_INSTALL/lib/libzmq.so && is_linux ]]
 ) && \
 log_blue "Skip ZeroMQ." || (
-	filename=$(basename $( ls $DIR/archived/zeromq-* )) && (
+	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/zeromq-* )) && (
 		rm -rf $USER_ARCHIVED/zeromq-*
-		status_exec cp $DIR/archived/$filename $USER_ARCHIVED/
+		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
 		status_exec tar -xf $filename
 		rm $filename
@@ -466,9 +457,9 @@ log_green "-------- Checking jzmq --------"
 	[[ -f $USER_INSTALL/lib/libjzmq.so && is_linux ]]
 ) && \
 log_blue "Skip jzmq" || (
-	filename=$(basename $( ls $DIR/archived/jzmq-* )) && (
+	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/jzmq-* )) && (
 		rm -rf $USER_ARCHIVED/jzmq-*
-		status_exec cp $DIR/archived/$filename $USER_ARCHIVED/
+		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
 		status_exec unzip -o $filename || \
 			abort "unzip failed"
@@ -499,9 +490,9 @@ log_blue "Skip jzmq" || (
 log_green "-------- Installing Nanomsg --------"
 find_path "nanocat" && \
 log_blue "Skip nanomsg" || (
-	filename=$(basename $( ls $DIR/archived/nanomsg-* )) && (
+	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/nanomsg-* )) && (
 		rm -rf $USER_ARCHIVED/nanomsg-*
-		status_exec cp $DIR/archived/$filename $USER_ARCHIVED/
+		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
 		status_exec tar -xf $filename
 		rm $filename
@@ -531,8 +522,8 @@ find_path "nanocat" || abort "nanocat does not exist."
 log_green "-------- Checking wkhtmltox --------"
 find_path "wkhtmltopdf" && \
 log_blue "Skip wkhtmltox" || (
-	filename=$(basename $( ls $DIR/archived/wkhtmltox-* )) && (
-		status_exec tar xf $DIR/archived/$filename \
+	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/wkhtmltox-* )) && (
+		status_exec tar xf $LINUX_SETUP_HOME/archived/$filename \
 			-C $USER_INSTALL --strip 1 wkhtmltox/
 	) || log_red "wkhtmltox file does not exist."
 )
@@ -540,10 +531,10 @@ log_blue "Skip wkhtmltox" || (
 log_green "-------- Checking pdftk --------"
 find_path "pdftk" && \
 log_blue "Skip pdftk" || (
-	filename=$(basename $( ls $DIR/archived/pdftk-* )) && (
+	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/pdftk-* )) && (
 		is_centos6 && (
 			rm -rf $USER_ARCHIVED/pdftk-*
-			status_exec cp $DIR/archived/$filename $USER_ARCHIVED/
+			status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
 			status_exec unzip -o $USER_ARCHIVED/$filename || \
 				abort "Unzip pdftk failed"
@@ -566,9 +557,9 @@ is_centos6 && is_failed find_path "pdftk" && abort "pdftk does not exist."
 log_green "-------- Checking MongoDB --------"
 find_path "mongod" && \
 log_blue "Skip MongoDB" || (
-	filename=$(basename $( ls $DIR/archived/mongodb-* )) && (
+	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/mongodb-* )) && (
 		rm -rf $USER_ARCHIVED/mongodb-*
-		status_exec cp $DIR/archived/$filename $USER_ARCHIVED/
+		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
 		status_exec tar -zxf $USER_ARCHIVED/$filename || \
 			abort "Extract mongodb failed"
