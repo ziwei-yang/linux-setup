@@ -180,6 +180,21 @@ in_china && \
 	status_exec gem sources \
 	--add https://ruby.taobao.org/ --remove https://rubygems.org/
 
+log_green "-------- Checking aphrodite repo --------"
+APD_HOME="$DIR/../../aphrodite"
+[[ -d $APD_HOME ]] && \
+	log_blue "Skip aphrodite repo" || (
+	cd $USER_ARCHIVED
+	status_exec rm -rf $USER_ARCHIVED/aphrodite
+	status_exec git clone "git@github.com:celon/aphrodite.git" || \
+		status_exec git clone "https://github.com/celon/aphrodite.git" || \
+		abort "Failed to clone aphrodite"
+	status_exec mv $USER_ARCHIVED/aphrodite $APD_HOME || \
+		abort "Failed to mv aphrodite"
+	$APD_HOME/bin/setup.sh $RUBY_VER || abort "Failed to setup aphrodite"
+)
+[[ -d $APD_HOME ]] || abort "Failed in initialize aphrodite"
+
 log_green "-------- Checking PhantomJS --------"
 check_path "phantomjs" $USER_INSTALL/bin/phantomjs && \
 	log_blue "Skip PhantomJS" || (
@@ -262,7 +277,7 @@ is_linux && (
 			echo "OK"
 		) || log_red "Python 3 files does not exist"
 	)
-	checkBinVersion "python3" $PYTHON3_VER || abort "Python $PYTHON3_VER is not in bin path."
+	check_version "python3" $PYTHON3_VER || abort "Python $PYTHON3_VER is not in bin path."
 )
 check_version "python3" $PYTHON3_VER || abort "Python $PYTHON3_VER is not in bin path."
 

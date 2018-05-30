@@ -1,19 +1,30 @@
+#!/bin/bash --login
 source $HOME/.bash_profile
 source $HOME/.bashrc
 
-ARGS="$@"
-echo "-------- setting up Linux environment $ARGS --------"
+echo "Setting up Linux environment at $( date )"
+echo "ARGS:$@"
+
 __SOURCE="${BASH_SOURCE[0]}"
 __DIR="$( cd -P "$( dirname "$__SOURCE" )" && pwd )"
-
 export LINUX_SETUP_COMMON=$__DIR
 export LINUX_SETUP_HOME="$( cd -P $__DIR/../ && pwd )"
-echo $LINUX_SETUP_HOME
-
-export HOSTNAME=`hostname`
-echo "HOST:$HOSTNAME"
 
 source $LINUX_SETUP_HOME/util/util.sh
+
+export APD_HOME="$( cd -P $__DIR/../../aphrodite && pwd )"
+export APD_BIN="$( cd -P $APD_HOME/bin && pwd )"
+
+export USER_ARCHIVED="$HOME/archived"
+export USER_INSTALL="$HOME/install"
+
+for dir in $APD_BIN $USER_ARCHIVED $USER_INSTALL $LINUX_SETUP_COMMON
+do
+	[[ ! -d $dir ]] && abort "Could not locate $dir"
+done
+
+export HOSTNAME=`hostname`
+log "HOST:$HOSTNAME"
 
 # Useful variables.
 datetime=$( date +"%Y%m%d_%H%M%S_%N" )
@@ -21,18 +32,3 @@ datestr=$( date +"%Y%m%d" )
 datestr_underline=$( date +"%Y_%m_%d" )
 
 setup_sys_env
-
-echo "-------- Overwritting functions. --------"
-# Rewrite builtin echo with timestamp and file.
-function log(){
-	timeStr=$(date +'%m-%d %H:%M:%S')
-	if [[ $0 == '-'* ]]; then
-		filename=$0 # Detect interactive shells.
-	else
-		filename=$(basename $0)
-	fi
-	builtin echo -n "$timeStr [$filename]:"
-	builtin echo $@
-}
-
-[[ ! -z $DIR ]] && echo "cd $DIR" && cd $DIR

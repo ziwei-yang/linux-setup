@@ -1,5 +1,13 @@
-USER_ARCHIVED="$HOME/archived"
-USER_INSTALL="$HOME/install"
+function log {
+	_time=$(date +'%m-%d %H:%M:%S')
+	if [[ $0 == '-'* ]]; then
+		_filename=$0 # Detect interactive shells.
+	else
+		_filename=$(basename $0)
+	fi
+	builtin echo -n "$_time [$_filename]:"
+	builtin echo $@
+}
 
 function is_func {
 	declare -f $1 > /dev/null
@@ -8,7 +16,7 @@ function is_func {
 
 # Internal functions.
 function log_red {
-	echo "$(tput setaf 1)$@$(tput sgr0)"
+	log "$(tput setaf 1)$@$(tput sgr0)"
 }
 
 function echo_red {
@@ -16,7 +24,7 @@ function echo_red {
 }
 
 function log_green {
-	echo "$(tput setaf 2)$@$(tput sgr0)"
+	log "$(tput setaf 2)$@$(tput sgr0)"
 }
 
 function echo_green {
@@ -24,7 +32,7 @@ function echo_green {
 }
 
 function log_blue {
-	echo "$(tput setaf 4)$@$(tput sgr0)"
+	log "$(tput setaf 4)$@$(tput sgr0)"
 }
 
 function echo_blue {
@@ -37,10 +45,10 @@ function abort() {
 }
 
 function find_path {
-	bin=$1
-	binPath=`which $bin 2>/dev/null`
-	if [[ -z $binPath ]]; then
-		log_red "Could not locate [$bin]"
+	_bin=$1
+	_bin_path=`which $_bin 2>/dev/null`
+	if [[ -z $_bin_path ]]; then
+		log_red "Could not locate [$_bin]"
 		return 1
 	else
 		return 0
@@ -48,10 +56,10 @@ function find_path {
 }
 
 function assert_path {
-	bin=$1
-	binPath=`which $bin 2>/dev/null`
-	if [[ -z $binPath ]]; then
-		log_red "Could not locate [$bin]"
+	_bin=$1
+	_bin_path=`which $_bin 2>/dev/null`
+	if [[ -z $_bin_path ]]; then
+		log_red "Could not locate [$_bin]"
 		exit -1
 	else
 		return 0
@@ -59,10 +67,9 @@ function assert_path {
 }
 
 function check_path {
-	bin=$1
-	correctPath=$2
-	binPath=`which $bin 2>/dev/null`
-	if [[ $binPath == $2 ]]; then
+	_bin=$1
+	_bin_path=`which $_bin 2>/dev/null`
+	if [[ $_bin_path == $2 ]]; then
 		return 0
 	else
 		log_red "Could not locate [$2]"
@@ -71,48 +78,48 @@ function check_path {
 }
 
 function check_version {
-	bin=$1
-	find_path $bin || return 1
-	sysVer=`"$bin" --version 2>&1`
-	ver=$2
-	if [[ $sysVer =~ $ver ]]; then
-		echo "[$bin] version [${sysVer:0:20}] matched [$ver]."
+	_bin=$1
+	find_path $_bin || return 1
+	_sys_ver=`"$_bin" --version 2>&1`
+	_req_ver=$2
+	if [[ $_sys_ver =~ $_req_ver ]]; then
+		log "[$_bin] version [${_sys_ver:0:20}] matched [$_req_ver]."
 		return 0
 	else
-		log_red "[$bin] version [$sysVer] not match [$ver]."
+		log_red "[$_bin] version [$_sys_ver] not match [$_req_ver]."
 		return 1
 	fi
 }
 
 function check_newer_version {
-	bin=$1
-	find_path $bin || return -1
-	sysVer=`"$bin" --version 2>&1`
-	ver=$2
-	if [[ $sysVer =~ $ver ]]; then
+	_bin=$1
+	find_path $_bin || return -1
+	_sys_ver=`"$_bin" --version 2>&1`
+	_req_ver=$2
+	if [[ $_sys_ver =~ $_req_ver ]]; then
 		return 0
-	elif [[ $sysVer > $ver ]]; then
+	elif [[ $_sys_ver > $_req_ver ]]; then
 		return 0
 	else
-		log_red "[$bin] version [$sysVer] is older than [$ver]."
+		log_red "[$_bin] version [$_sys_ver] is older than [$_req_ver]."
 		return 1
 	fi
 }
 
 function check_py_lib {
-	libName=$1
-	libVer=$2
-	sysLibVer=`pip freeze | grep "$libName=="`
-	if [[ -z $sysLibVer ]]; then
+	_lib=$1
+	_req_ver=$2
+	_sys_ver=`pip freeze | grep "$_lib=="`
+	if [[ -z $_sys_ver ]]; then
 		log_red "Python lib $1 not exist."
 		return 1
 	elif [[ -z $2 ]]; then
 		# Check lib existence is enough.
 		:
-	elif [[ "$sysLibVer" == "$libName==$libVer" ]]; then
+	elif [[ "$_sys_ver" == "$_lib==$_req_ver" ]]; then
 		:
 	else
-		log_red "[$libName] version [$sysLibVer] not match [$libVer]."
+		log_red "[$_lib] version [$_sys_ver] not match [$_req_ver]."
 		return 1
 	fi
 	return 0
@@ -135,10 +142,10 @@ function ext_ip {
 function in_china {
 	[[ $GFW_FUCKED == '0' ]] && return 0
 	[[ $GFW_FUCKED == '1' ]] && return 1
-	echo "Checking if is fucked by GFW"
-	country=$( curl http://ipinfo.io/ | jq '.country' )
-	log_green "Country Code: $country"
-	if [[ $country == '"CN"' ]]; then
+	log "Checking if is fucked by GFW"
+	_country=$( curl http://ipinfo.io/ | jq '.country' )
+	log_green "Country Code: $_country"
+	if [[ $_country == '"CN"' ]]; then
 		log_red ' ============ OH NO, GFW sucks! =============='
 		GFW_FUCKED=1
 		return 0
@@ -151,8 +158,8 @@ function in_china {
 function can_sudo {
 	[[ $SUDO_PRIVILEGE == '1' ]] && return 0
 	[[ $SUDO_PRIVILEGE == '0' ]] && return 1
-	ret=$( sudo -n echo a 2>&1 )
-	if [[ $ret == "a" ]]; then
+	_ret=$( sudo -n log a 2>&1 )
+	if [[ $_ret == "a" ]]; then
 		log_blue "User has sudo privilege without password."
 		SUDO_PRIVILEGE=1
 		return 0
@@ -169,17 +176,17 @@ function silent_exec {
 }
 
 function status_exec {
-	echo -n "$@"
+	log -n "$@"
 	silent_exec $@
-	ret=$?
-	if [[ $ret == 0 ]]; then
-		is_func 'success' && success "$@" && builtin echo || \
+	_ret=$?
+	if [[ $_ret == 0 ]]; then
+		is_func 'success' && success "$@" || \
 			echo_green "    [  OK  ]"
 	else
-		is_func 'failure' && failure "$@" && builtin echo || \
+		is_func 'failure' && failure "$@" || \
 			echo_red "    [FAILED]"
 	fi
-	return $ret
+	return $_ret
 }
 
 function is_centos {
@@ -216,6 +223,14 @@ function is_failed {
 	return 0
 }
 
+function absolute_path {
+	realpath $@
+}
+
+function absolute_dir_path {
+	dirname $( realpath $@ )
+}
+
 function setup_sys_env {
 	log_green "-------- checking system --------"
 	assert_path "echo"
@@ -224,6 +239,7 @@ function setup_sys_env {
 	assert_path "wc"
 	assert_path "cat"
 	assert_path "head"
+	assert_path "realpath"
 	
 	# Check OS
 	OS=$( osinfo )
@@ -242,13 +258,13 @@ function setup_sys_env {
 	is_unknown_os && abort "Error: OS is not CentOS/Ubuntu/MacOSX."
 
 	# Check CPU Core num.
-	CPU_CORE=4
 	is_mac && (
-		echo "For Darwin/MacOSX, assume CPU Core:$CPU_CORE"
+		CPU_CORE=4
+		log "For Darwin/MacOSX, assume CPU Core:$CPU_CORE"
 	) || (
-		lastCPUID=$(cat /proc/cpuinfo | grep processor | tail -n 1 | awk '{print $3}')
-		CPU_CORE=$(($lastCPUID + 1))
-		echo "CPU Core:$CPU_CORE"
+		_lastCPUID=$(cat /proc/cpuinfo | grep processor | tail -n 1 | awk '{print $3}')
+		CPU_CORE=$(($_lastCPUID + 1))
+		log "CPU Core:$CPU_CORE"
 	)
 
 	unset SUDO_PRIVILEGE
@@ -257,41 +273,65 @@ function setup_sys_env {
 
 # Send email with content in file.
 function mail_file {
-	datetime=$1
-	filepath=$2
-	message=$3
-	title=$4
-	recipient=$5
-	format=$6
+	_file=$1
+	_title=$2
+	_recipient=$3
+	_format=$4
 
-	if [ -z "$recipient" ]; then
-		echo 'No mail recipient found, skip sending email.'
-        return
-	elif [[ ! -f $filepath ]]; then
-		echo "Sending email to $recipient with NO content"
-		echo "ruby $__DIR/mail_task.rb -s '$title' -r '$recipient'"
-		ruby $__DIR/mail_task.rb -s "$title" -r "$recipient"
-    fi
-	# Extract error lines in front of log, replaced the original file in email.
-	bname=`basename $filepath`
-
-	echo "Sending email to $recipient with file $filepath"
-	if [[ $format == "html" ]]; then
-		echo "Sending email to $recipient with file $filepath in $format"
-		ruby $LINUX_SETUP_COMMON/mail_task.rb -s "$title" -r "$recipient" -h "$filepath"
-	elif [[ $format == "ansi2html" ]]; then
-		echo "Sending email to $recipient with file $filepath in $format"
-		file2html="/tmp/$bname.html"
-		aha -f $filepath > $file2html || abort "Failed in converting file to html"
-		echo "ruby $__DIR/mail_task.rb -s '$title' -r '$recipient' -h '$file2html'"
-		ruby $__DIR/mail_task.rb -s "$title" -r "$recipient" -h "$file2html"
-	elif [[ $format == "attachment" ]]; then
-		echo "Sending email to $recipient with file $filepath"
-		ruby $__DIR/mail_task.rb -s "$title" -r "$recipient" -a "$filepath"
+	_mail_script=$APD_HOME/bin/mail_task.rb
+	if [ ! -f $_mail_script ]; then
+		log "No mail script $_mail_script found, skip sending email."
+	elif [ -z "$_recipient" ]; then
+		log 'No mail recipient found, skip sending email.'
+	elif [[ ! -f $_file ]]; then
+		log "Sending email to $_recipient with NO content"
+		log "ruby $_mail_script -s '$_title' -r '$_recipient'"
+		ruby $_mail_script -s "$_title" -r "$_recipient"
+	elif [[ $_format == "html" ]]; then
+		log "Sending email to $_recipient with file $_file in $_format"
+		ruby $_mail_script -s "$_title" -r "$_recipient" -h "$_file"
+	elif [[ $_format == "ansi2html" ]]; then
+		log "Sending email to $_recipient with file $_file in $_format"
+		_file2html="/tmp/$bname.html"
+		aha -f $_file > $_file2html || abort "Failed in converting file to html"
+		ruby $_mail_script -s "$_title" -r "$_recipient" -h "$_file2html"
+	elif [[ $_format == "attachment" ]]; then
+		log "Sending email to $_recipient with file $_file"
+		ruby $_mail_script -s "$_title" -r "$_recipient" -a "$_file"
 	else
-		echo "Using plain text format."
-		cat -v $filepath | mail -s "$title" $recipient
+		log "Sending email to $_recipient with file $_file in plain text"
+		cat -v $_file | mail -s "$_title" $_recipient
 	fi
+}
+
+# Usage: mail_task_log recipient task_script start_time log_file (error_msgs)
+function mail_task_log {
+	log "Sending log via email at $( date ): $@"
+	_recipient=$1
+	shift
+	_script=$1
+	shift
+	_start_datetime=$1
+	shift
+	_log_file=$1
+	shift
+
+	# Build short _title: max_shown_length=30
+	_script_length=${#_script}
+	_chopped_script_name=$_script
+	if [[ $_script_length -gt 30 ]]; then
+		_chopped_script_name=${_script:$((_script_length-27)):$_script_length}
+		_chopped_script_name="...$_chopped_script_name"
+	fi
+	# display datetime length 15=8+1+6
+	_chopped_time=${_start_datetime:0:15}
+	_title="Log $_chopped_script_name at $_chopped_time"
+
+	# Append error message if available.
+	_errmsg=$1
+	[[ ! -z $_errmsg && $_errmsg != '' ]] && _title="$_title : terminated : $@"
+
+	mail_file "$_log_file" "$_title" "$_recipient" 'ansi2html'
 }
 
 function find_process {
@@ -299,14 +339,14 @@ function find_process {
 		return
 	fi
 
-	keyword=""
-	user=""
+	_keyword=""
+	_user=""
 	IFS="@"
 	for seg in $1;do
-		if [[ $keyword == "" ]];then keyword=$seg; continue; fi
-		if [[ $user == "" ]];then user=$seg; continue; fi
+		if [[ $_keyword == "" ]];then _keyword=$seg; continue; fi
+		if [[ $_user == "" ]];then _user=$seg; continue; fi
 	done
 	IFS=" "
-	res=$(ps aux | grep -v grep | grep "^$user" | grep -F $keyword)
-	builtin echo $res
+	_res=$(ps aux | grep -v grep | grep "^$_user" | grep -F $_keyword)
+	log $_res
 }
