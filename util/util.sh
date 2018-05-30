@@ -125,6 +125,25 @@ function check_py_lib {
 	return 0
 }
 
+function check_gem {
+	_lib=$1
+	_req_ver=$2
+	_sys_ver=`gem list --local | grep -E "^$_lib\s"`
+	if [[ -z $_sys_ver ]]; then
+		log_red "Gem $1 not exist."
+		return 1
+	elif [[ -z $2 ]]; then
+		# Check lib existence is enough.
+		:
+	elif [[ "$_sys_ver" == "$_lib ($_req_ver"* ]]; then
+		:
+	else
+		log_red "[$_lib] version [$_sys_ver] not match [$_req_ver]."
+		return 1
+	fi
+	return 0
+}
+
 function osinfo {
 	if [[ -f /etc/redhat-release ]]; then
 		head -n1 /etc/redhat-release
@@ -269,6 +288,27 @@ function setup_sys_env {
 
 	unset SUDO_PRIVILEGE
 	unset GFW_FUCKED
+}
+
+# Check basic ruby environment for email script.
+function setup_basic_ruby_env {
+	log_green "-------- checking Basic Ruby Env --------"
+	assert_path "ruby"
+	assert_path "gem"
+	check_gem 'mail' || gem install 'mail' || abort "Gem mail installation failed."
+	_mail_script=$APD_HOME/bin/mail_task.rb
+	if [[ -f $APD_HOME ]]; then
+		return
+	fi
+	log "Cloning aphrodite ruby repo: $APD_HOME"
+	USER_ARCHIVED="$HOME/archived"
+	cd $USER_ARCHIVED
+	status_exec rm -rf $USER_ARCHIVED/aphrodite
+	status_exec git clone "git@github.com:celon/aphrodite.git" || \
+		status_exec git clone "https://github.com/celon/aphrodite.git" || \
+		abort "Failed to clone aphrodite"
+	status_exec mv $USER_ARCHIVED/aphrodite $APD_HOME || \
+		abort "Failed to mv aphrodite"
 }
 
 # Send email with content in file.

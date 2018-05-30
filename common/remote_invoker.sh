@@ -4,6 +4,8 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 source $DIR/bootstrap.sh
 log "$SOURCE received args: $@"
 
+setup_basic_ruby_env
+
 ######################### FUNC #########################
 function finished {
 	log "remote_invoker:Finished() called: $@"

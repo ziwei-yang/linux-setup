@@ -5,6 +5,8 @@ RUNNER_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 source $RUNNER_DIR/bootstrap.sh
 log "$SOURCE received args: $@"
 
+setup_basic_ruby_env
+
 ######################### FUNC #########################
 function record_status {
 	if [[ ! -f $APD_BIN/redis_cmd.rb ]]; then
