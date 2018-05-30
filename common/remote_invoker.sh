@@ -67,8 +67,9 @@ done
 
 # Extract script.
 log "Remained are script and args: $@"
-script=$( absolute_path "$1" )
+script=$1
 [[ -z $script || ! -f $script ]] && finished "Target script $script not exist!"
+script=$( absolute_path "$1" )
 script_dir=$( absolute_dir_path $script )
 script_basename=$( basename $script )
 log "script: $script"

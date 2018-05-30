@@ -46,7 +46,7 @@ function finished {
 }
 
 function signal_caught {
-	logRed "Abnormal signal caught while running $script"
+	log_red "Abnormal signal caught while running $script"
 	finished "signal_caught"
 }
 
@@ -106,8 +106,9 @@ done
 
 # Parse and reformat script path.
 log "Remained are script and args: $@"
-script=$( absolute_path "$1" )
+script=$1
 [[ -z $script || ! -f $script ]] && finished "Target script $script not exist!"
+script=$( absolute_path "$1" )
 script_dir=$( absolute_dir_path $script )
 script_basename=$( basename $script )
 shift
@@ -162,13 +163,13 @@ if [ $loop -eq 1 ]; then
 		record_status $redis_hash 'FINISH' $@
 		log "$script finished"
 		if [ ! -z $email_recipient ]; then
-			logBlue "Email alert after 3 seconds."
+			log_blue "Email alert after 3 seconds."
 			sleep 3
 			log_snap_file="/tmp/err_$( date +'%Y%m%d_%H%M%S_%N' )_$script_basename.log"
 			tail -n 250 $log_file > $log_snap_file
 			sendFileAsMail "$dateTime" "$log_snap_file" "content." "$script terminated" "$email_recipient" 'ansi2html'
 		fi
-		logBlue "Retry script after 3 seconds."
+		log_blue "Retry script after 3 seconds."
 		sleep 3
 	done
 else
