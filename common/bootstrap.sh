@@ -12,6 +12,21 @@ export LINUX_SETUP_HOME="$( cd -P $__DIR/../ && pwd )"
 
 source $LINUX_SETUP_HOME/util/util.sh
 
+log_green "-------- Checking aphrodite repo --------"
+export APD_HOME="$__DIR/../../aphrodite"
+[[ -d $APD_HOME ]] && \
+	log_blue "Skip aphrodite repo" || (
+	USER_ARCHIVED="$HOME/archived"
+	cd $USER_ARCHIVED
+	status_exec rm -rf $USER_ARCHIVED/aphrodite
+	status_exec git clone "git@github.com:celon/aphrodite.git" || \
+		status_exec git clone "https://github.com/celon/aphrodite.git" || \
+		abort "Failed to clone aphrodite"
+	status_exec mv $USER_ARCHIVED/aphrodite $APD_HOME || \
+		abort "Failed to mv aphrodite"
+)
+[[ -d $APD_HOME ]] || abort "Failed in initialize aphrodite"
+
 export APD_HOME="$( cd -P $__DIR/../../aphrodite && pwd )"
 export APD_BIN="$( cd -P $APD_HOME/bin && pwd )"
 
