@@ -1,5 +1,5 @@
 #!/bin/bash --login
-[[ $LINUX_SETUP_LOAD == '1' ]] && log "Skip loading linux-setup again." && return
+[[ $LINUX_SETUP_LOAD == '1' ]] && echo "Skip loading linux-setup again." && return
 source $HOME/.bash_profile
 source $HOME/.bashrc
 
@@ -41,4 +41,4 @@ datestr_underline=$( date +"%Y_%m_%d" )
 
 setup_sys_env
 
-LINUX_SETUP_LOAD=1
+export LINUX_SETUP_LOAD=1
