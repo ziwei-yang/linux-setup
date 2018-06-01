@@ -193,7 +193,6 @@ APD_HOME="$DIR/../../aphrodite"
 		abort "Failed to clone aphrodite"
 	status_exec mv $USER_ARCHIVED/aphrodite $APD_HOME || \
 		abort "Failed to mv aphrodite"
-	$APD_HOME/bin/setup.sh $RUBY_VER || abort "Failed to setup aphrodite"
 )
 [[ -d $APD_HOME ]] || abort "Failed in initialize aphrodite"
 
