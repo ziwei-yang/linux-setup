@@ -151,6 +151,8 @@ check_path "rvm" $HOME/.rvm/bin/rvm && \
 	fi
 	assert_path "rvm"
 	echo 'rvm_auto_reload_flag=2' >> $HOME/.rvmrc
+	# To start using RVM you need to run source ~/.rvm/scripts/rvm
+	source $HOME/.rvm/scripts/rvm
 )
 
 RUBY_VER="2.4"
