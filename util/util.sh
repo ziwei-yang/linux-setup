@@ -293,11 +293,16 @@ function setup_sys_env {
 # Check basic ruby environment for email script.
 function setup_basic_ruby_env {
 	log_green "-------- checking Basic Ruby Env --------"
+	log "APD_HOME: $APD_HOME"
 	assert_path "ruby"
 	assert_path "gem"
 	check_gem 'mail' || gem install 'mail' || abort "Gem mail installation failed."
 	_mail_script=$APD_HOME/bin/mail_task.rb
-	if [[ -f $APD_HOME ]]; then
+	if [[ -f $_mail_script ]]; then
+		# Try to pull latest version if no diff exists.
+		_diff=$( cd $APD_HOME && git diff )
+		[[ -z $_diff ]] && ( cd $APD_HOME && status_exec git pull ) || \
+			log_blue "git diff exists inside $APD_HOME"
 		return
 	fi
 	log "Cloning aphrodite ruby repo: $APD_HOME"
