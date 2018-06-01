@@ -367,7 +367,7 @@ log_blue "Current JAVA:$javaVer" || (
 	)
 )
 
-MVN_VER="3.5"
+MVN_VER="3"
 log_green "-------- Checking Maven --------"
 check_version "mvn" $MVN_VER && \
 log_blue "Skip Maven" || (
@@ -592,7 +592,8 @@ log_green "-------- Checking aha Ansi HTML Adapter --------"
 find_path "aha" && \
 log_blue "Skip aha" || (
     cd $USER_ARCHIVED
-    git clone 'https://github.com/theZiz/aha.git'
+    status_exec rm -rf $USER_ARCHIVED/aha
+    status_exec git clone 'https://github.com/theZiz/aha.git'
     cd $USER_ARCHIVED/aha
     status_exec make install PREFIX=$USER_INSTALL
 )

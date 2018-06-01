@@ -48,7 +48,7 @@ function find_path {
 	_bin=$1
 	_bin_path=`which $_bin 2>/dev/null`
 	if [[ -z $_bin_path ]]; then
-		log_red "Could not locate [$_bin]"
+		# log_red "Could not locate [$_bin]"
 		return 1
 	else
 		return 0
@@ -243,11 +243,30 @@ function is_failed {
 }
 
 function absolute_path {
-	realpath $@
+	[[ -z $1 ]] && echo $@ && return
+	find_path "realpath" && realpath $@ && return
+	_dir=$( dirname $1 )
+	_bname=$( basename $1 )
+	if [[ -d "$1" ]]; then
+		_path=$( absolute_dir_path "$1/a" )
+		builtin echo "$_path"
+	elif [[ -d "$_dir" ]]; then
+		_dir=$( absolute_dir_path $1 )
+		builtin echo "$_dir/$_bname"
+	else
+		builtin echo $_dir
+	fi
 }
 
+# If directory exists, return $dir/$file. Otherwise just echo same arguments.
 function absolute_dir_path {
-	dirname $( realpath $@ )
+	[[ -z $1 ]] && echo $@ && return
+	find_path "realpath" && dirname $( realpath $@ ) && return
+	_dir=$( dirname $1 )
+	[[ -d "$1" ]] && _dir=$( cd -P "$1" && cd ..  && pwd )
+	[ ! -d "$_dir" ] && builtin echo $@ && return
+	_dir=$( cd -P "$_dir" && pwd )
+	builtin echo $_dir
 }
 
 function setup_sys_env {
@@ -258,7 +277,8 @@ function setup_sys_env {
 	assert_path "wc"
 	assert_path "cat"
 	assert_path "head"
-	assert_path "realpath"
+	assert_path "dirname"
+	assert_path "basename"
 	
 	# Check OS
 	OS=$( osinfo )
