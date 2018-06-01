@@ -14,6 +14,10 @@ function is_func {
 	return $?
 }
 
+function cursor_r {
+	builtin echo -n -e "\r"
+}
+
 # Internal functions.
 function log_red {
 	log "$(tput setaf 1)$@$(tput sgr0)"
@@ -200,10 +204,10 @@ function status_exec {
 	_ret=$?
 	if [[ $_ret == 0 ]]; then
 		is_func 'success' && success "$@" || \
-			echo_green "    [  OK  ]"
+			cursor_r && echo_green "[ OK ]"
 	else
 		is_func 'failure' && failure "$@" || \
-			echo_red "    [FAILED]"
+			cursor_r && echo_red   "[FAIL]"
 	fi
 	return $_ret
 }
