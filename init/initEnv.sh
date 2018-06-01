@@ -4,7 +4,7 @@
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-source $DIR/../common/bootstrap.sh
+source $DIR/../common/bootstrap.sh NORUBY
 
 cd $LINUX_SETUP_HOME/archived
 $LINUX_SETUP_HOME/archived/download.sh || abort "Error in downloading files."
