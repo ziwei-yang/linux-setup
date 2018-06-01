@@ -7,66 +7,88 @@ source $DIR/../common/bootstrap.sh NORUBY
 uname=$( uname )
 source $DIR/../util/util.sh
 find_path "wget"
+cd $DIR
 
-#btsyncURL="http://download.getsyncapp.com/endpoint/btsync/os/linux-x64/track/stable/bittorrent_sync_x64.tar.gz"
-#wget -nc $btsyncURL
+function dl {
+	wget -c --no-cookies --no-check-certificate -nc $@
+}
+
+function dl_oracle {
+	wget --header "Cookie: oraclelicense=accept-securebackup-cookie" -c --no-cookies --no-check-certificate -nc $@
+}
 
 if [[ $uname == 'Linux' ]]; then
-	wget -nc --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-8u161-linux-x64.tar.gz"
+	url="http://www.oracle.com"
+	jdk_version=8
+	ext='tar.gz'
+	jdk_download_url1="$url/technetwork/java/javase/downloads/index.html"
+	jdk_download_url2=$(
+		curl -s $jdk_download_url1 | \
+		egrep -o "\/technetwork\/java/\javase\/downloads\/jdk${jdk_version}-downloads-.+?\.html" | \
+		head -1 | \
+		cut -d '"' -f 1
+	    )
+	jdk_download_url3="${url}${jdk_download_url2}"
+	jdk_download_url4=$(
+		curl -s $jdk_download_url3 | \
+	        egrep -o "http\:\/\/download.oracle\.com\/otn-pub\/java\/jdk\/[8-9](u[0-9]+|\+).*\/jdk-${jdk_version}.*(-|_)linux-(x64|x64_bin).$ext"
+	)
+	for u in $jdk_download_url4; do
+		status_exec dl_oracle $u
+	done
 	
 	pythonURL="https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tar.xz"
-	wget -nc $pythonURL
+	status_exec dl $pythonURL
 	
 	python3URL="https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tar.xz"
-	wget -nc $python3URL
+	status_exec dl $python3URL
 	
 	pyPipURL="https://bootstrap.pypa.io/get-pip.py"
-	wget -nc $pyPipURL
+	status_exec dl $pyPipURL
 fi
 
 nodejs0_12URL="https://nodejs.org/dist/latest-v0.12.x/node-v0.12.18.tar.gz"
-wget -nc $nodejs0_12URL
-nodejs4URL="https://nodejs.org/dist/latest-v4.x/node-v4.8.7.tar.gz"
-wget -nc $nodejs4URL
+status_exec dl $nodejs0_12URL
+nodejs4URL="https://nodejs.org/dist/latest-v4.x/node-v4.9.1.tar.gz"
+status_exec dl $nodejs4URL
 nodejs5URL="https://nodejs.org/dist/latest-v5.x/node-v5.12.0.tar.gz"
-wget -nc $nodejs5URL
-nodejs6URL="https://nodejs.org/dist/latest-v6.x/node-v6.12.3.tar.gz"
-wget -nc $nodejs6URL
+status_exec dl $nodejs5URL
+nodejs6URL="https://nodejs.org/dist/latest-v6.x/node-v6.14.2.tar.gz"
+status_exec dl $nodejs6URL
 
 redisURL="http://download.redis.io/releases/redis-4.0.8.tar.gz"
-wget -nc $redisURL
+status_exec dl $redisURL
 
 phantomjsURL="http://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2"
-wget -nc $phantomjsURL
+status_exec dl $phantomjsURL
 
-mavenURL="http://ftp.cuhk.edu.hk/pub/packages/apache.org/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz"
-wget -nc $mavenURL
+mavenURL="http://ftp.cuhk.edu.hk/pub/packages/apache.org/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz"
+status_exec dl $mavenURL
 
 libsodiumURL="http://download.libsodium.org/libsodium/releases/libsodium-1.0.14.tar.gz"
 zeromqURL="https://github.com/zeromq/zeromq4-1/releases/download/v4.1.6/zeromq-4.1.6.tar.gz"
-wget --no-check-certificate -nc $libsodiumURL
-wget -nc $zeromqURL
+status_exec dl $libsodiumURL
+status_exec dl $zeromqURL
 
-# jzmqURL="https://github.com/zeromq/jzmq/archive/v3.1.0.tar.gz"
 jzmqURL="https://github.com/zeromq/jzmq/archive/master.zip"
-wget -O jzmq-master.zip -nc --no-check-certificate $jzmqURL
+status_exec wget -O jzmq-master.zip $jzmqURL
 
 nanomqURL="https://github.com/nanomsg/nanomsg/archive/0.9-beta.tar.gz"
-wget -O nanomsg-0.9-beta.tar.gz -nc $nanomqURL
+status_exec wget -O nanomsg-0.9-beta.tar.gz $nanomqURL
 
 wkhtmlURL="https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz"
-wget -O wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -nc $wkhtmlURL
+status_exec wget -O wkhtmltox-0.12.4_linux-generic-amd64.tar.xz $wkhtmlURL
 
 pdftkURL="https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/pdftk-2.02-src.zip"
-wget -nc $pdftkURL
+status_exec dl $pdftkURL
 
 mongoURL="https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.2.tgz"
-wget -nc $mongoURL
+status_exec dl $mongoURL
 
-antURL="http://apache.communilink.net//ant/binaries/apache-ant-1.10.2-bin.zip"
-wget -nc $antURL
+antURL="http://apache.communilink.net//ant/binaries/apache-ant-1.10.3-bin.zip"
+status_exec dl $antURL
 
 moshURL='https://mosh.org/mosh-1.3.2.tar.gz'
-wget -nc $moshURL
+status_exec dl $moshURL
 
 cd $PWD
