@@ -6,10 +6,6 @@ SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 source $DIR/../common/bootstrap.sh NORUBY
 
-cd $LINUX_SETUP_HOME/archived
-$LINUX_SETUP_HOME/archived/download.sh || abort "Error in downloading files."
-cd $LINUX_SETUP_HOME
-
 USER_INSTALL="$HOME/install"
 USER_ARCHIVED="$HOME/archived"
 mkdir -p $USER_INSTALL
@@ -99,6 +95,11 @@ can_sudo && is_centos && (
 	)
 	echo "OK"
 ) || log_red "-------- Skip installing system tools --------"
+
+# Downloading activities require wget
+cd $LINUX_SETUP_HOME/archived
+$LINUX_SETUP_HOME/archived/download.sh || abort "Error in downloading files."
+cd $LINUX_SETUP_HOME
 
 log_green "-------- Checking mosh --------"
 is_mac && (

@@ -3,7 +3,7 @@
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-source $DIR/../common/bootstrap.sh
+source $DIR/../common/bootstrap.sh NORUBY
 
 # Pre-defined vars.
 newhostname=''
@@ -13,6 +13,8 @@ if [[ $USER != 'root' ]]; then
 	echo Current user must be root.
 	exit -1
 fi
+
+find_path "wget" && yum -y install wget
 
 os=$( osinfo )
 if [[ $os == "CentOS release 6"* ]]; then

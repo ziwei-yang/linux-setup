@@ -181,14 +181,14 @@ function in_china {
 function can_sudo {
 	[[ $SUDO_PRIVILEGE == '1' ]] && return 0
 	[[ $SUDO_PRIVILEGE == '0' ]] && return 1
-	_ret=$( sudo -n log a 2>&1 )
+	_ret=$( sudo -n echo a 2>&1 )
 	if [[ $_ret == "a" ]]; then
 		log_blue "User has sudo privilege without password."
 		SUDO_PRIVILEGE=1
 		return 0
 	else
 		log_red "User has no sudo privilege."
-		SUDO_PRIVILEGE=0
+		SUDO_PRIVILEGE=1
 		return 1
 	fi
 }
