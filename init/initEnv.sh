@@ -33,7 +33,7 @@ can_sudo && is_centos && (
 	[ $(yum grouplist groupinfo 'Development tools' | grep "Installed" | wc -l) == "0" ] && \
 		status_exec sudo yum -y groupinstall 'Development tools' || \
 	 	log_blue "OK"
-	status_exec yum -y install epel-release
+	status_exec sudo yum -y install epel-release
 )
 
 ( can_sudo || is_mac ) && (
