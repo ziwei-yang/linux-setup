@@ -191,8 +191,7 @@ APD_HOME="$DIR/../../aphrodite"
 	log_blue "Skip aphrodite repo" || (
 	cd $USER_ARCHIVED
 	status_exec rm -rf $USER_ARCHIVED/aphrodite
-	status_exec git clone "git@github.com:celon/aphrodite.git" || \
-		status_exec git clone "https://github.com/celon/aphrodite.git" || \
+	status_exec git clone "https://github.com/celon/aphrodite.git" || \
 		abort "Failed to clone aphrodite"
 	status_exec mv $USER_ARCHIVED/aphrodite $APD_HOME || \
 		abort "Failed to mv aphrodite"
