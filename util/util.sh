@@ -188,7 +188,7 @@ function can_sudo {
 		return 0
 	else
 		log_red "User has no sudo privilege."
-		SUDO_PRIVILEGE=1
+		SUDO_PRIVILEGE=0
 		return 1
 	fi
 }
