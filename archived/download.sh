@@ -17,6 +17,14 @@ function dl_oracle {
 	wget --header "Cookie: oraclelicense=accept-securebackup-cookie" -c --no-cookies --no-check-certificate -nc $@
 }
 
+function dl_dir {
+	dl --execute robots=off --no-parent -nH --level=1 --recursive $@
+}
+
+antURL="http://apache.communilink.net/ant/binaries/"
+status_exec dl_dir --cut-dirs=2 -A 'bin.zip' $antURL
+exit
+
 if [[ $uname == 'Linux' ]]; then
 	url="http://www.oracle.com"
 	jdk_version=8
@@ -47,14 +55,15 @@ if [[ $uname == 'Linux' ]]; then
 	status_exec dl $pyPipURL
 fi
 
-nodejs0_12URL="https://nodejs.org/dist/latest-v0.12.x/node-v0.12.18.tar.gz"
-status_exec dl $nodejs0_12URL
-nodejs4URL="https://nodejs.org/dist/latest-v4.x/node-v4.9.1.tar.gz"
-status_exec dl $nodejs4URL
-nodejs5URL="https://nodejs.org/dist/latest-v5.x/node-v5.12.0.tar.gz"
-status_exec dl $nodejs5URL
-nodejs6URL="https://nodejs.org/dist/latest-v6.x/node-v6.14.2.tar.gz"
-status_exec dl $nodejs6URL
+# Reject long name binary tar ball.
+nodejs0URL="https://nodejs.org/download/release/latest-v0.12.x/"
+wget -c --no-cookies --no-check-certificate -nc --execute robots=off --no-parent -nH --level=1 --recursive --cut-dirs=3 --accept '.tar.gz' --reject '*v????????*.tar.gz' $nodejs0URL
+nodejs4URL="https://nodejs.org/download/release/latest-v4.x/"
+wget -c --no-cookies --no-check-certificate -nc --execute robots=off --no-parent -nH --level=1 --recursive --cut-dirs=3 --accept '.tar.gz' --reject '*v????????*.tar.gz' $nodejs4URL
+nodejs6URL="https://nodejs.org/download/release/latest-v6.x/"
+wget -c --no-cookies --no-check-certificate -nc --execute robots=off --no-parent -nH --level=1 --recursive --cut-dirs=3 --accept '.tar.gz' --reject '*v????????*.tar.gz' $nodejs6URL
+nodejs8URL="https://nodejs.org/download/release/latest-v8.x/"
+wget -c --no-cookies --no-check-certificate -nc --execute robots=off --no-parent -nH --level=1 --recursive --cut-dirs=3 --accept '.tar.gz' --reject '*v????????*.tar.gz' $nodejs8URL
 
 redisURL="http://download.redis.io/releases/redis-4.0.8.tar.gz"
 status_exec dl $redisURL
@@ -85,8 +94,8 @@ status_exec dl $pdftkURL
 mongoURL="https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.2.tgz"
 status_exec dl $mongoURL
 
-antURL="http://apache.communilink.net//ant/binaries/apache-ant-1.10.3-bin.zip"
-status_exec dl $antURL
+antURL="http://apache.communilink.net/ant/binaries/"
+status_exec dl_dir --cut-dirs=2 -A 'bin.zip' $antURL
 
 moshURL='https://mosh.org/mosh-1.3.2.tar.gz'
 status_exec dl $moshURL

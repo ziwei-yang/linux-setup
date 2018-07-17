@@ -315,12 +315,13 @@ log_green "-------- Checking Node.js --------"
 	[ -d $USER_INSTALL/lib/python$PYTHON_VER ] && \
 		ln -sf /usr/lib64/python*/lib-dynload/bz2.so \
 		$USER_INSTALL/lib/python$PYTHON_VER/
-	for filehead in node-v7 node-v6 node-v5 node-v4 node-v0
+	for filehead in node-v8 node-v7 node-v6 node-v5 node-v4 node-v0
 	do
-		filename=$(basename $( ls $LINUX_SETUP_HOME/archived/$filehead* ))
+		filename=$( ls $LINUX_SETUP_HOME/archived/$filehead* )
 		[ $? != 0 ] && \
 			log_red "File $filehead does not exist" && \
 			continue
+		filename=$(basename $( builtin echo $filename | tail -1 ))
 		log_blue "Installing $filename"
 		rm -rf $USER_ARCHIVED/node-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
