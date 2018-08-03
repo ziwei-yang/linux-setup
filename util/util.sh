@@ -230,6 +230,7 @@ function is_mac {
 }
 function is_ubuntu {
 	[[ $OS == Ubuntu* ]] && return 0
+	[[ $OS == "Linux Mint"* ]] && return 0
 	return 1
 }
 function is_unknown_os {
