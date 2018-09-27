@@ -31,11 +31,11 @@ if [[ $os = "CentOS Linux release 7."* ]]; then
 
 	# Install docker compose
 	status_exec sudo curl -L \
-		https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` \
+		https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m` \
 		-o /usr/local/bin/docker-compose
 	status_exec sudo chmod +x /usr/local/bin/docker-compose
-	check_version "/usr/local/bin/docker-compose" '1.17' || \
-		abort "docker-compose version is still not 1.17"
+	check_version "/usr/local/bin/docker-compose" '1.22' || \
+		abort "docker-compose version is still not 1.22"
 else
 	abort "$os is not supported"
 fi
