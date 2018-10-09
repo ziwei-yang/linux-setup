@@ -76,13 +76,13 @@ status_exec dl $libsodiumURL
 status_exec dl $zeromqURL
 
 jzmqURL="https://github.com/zeromq/jzmq/archive/master.zip"
-status_exec wget -O jzmq-master.zip $jzmqURL
+status_exec wget -nc -O jzmq-master.zip $jzmqURL
 
 nanomqURL="https://github.com/nanomsg/nanomsg/archive/0.9-beta.tar.gz"
-status_exec wget -O nanomsg-0.9-beta.tar.gz $nanomqURL
+status_exec wget -nc -O nanomsg-0.9-beta.tar.gz $nanomqURL
 
 wkhtmlURL="https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz"
-status_exec wget -O wkhtmltox-0.12.4_linux-generic-amd64.tar.xz $wkhtmlURL
+status_exec wget -nc -O wkhtmltox-0.12.4_linux-generic-amd64.tar.xz $wkhtmlURL
 
 pdftkURL="https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/pdftk-2.02-src.zip"
 status_exec dl $pdftkURL
