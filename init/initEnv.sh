@@ -53,19 +53,29 @@ can_sudo && is_centos && (
 		is_mac && status_exec brew install homebrew/dupes/expect
 	)
 	# Other library.
-	is_centos && status_exec sudo yum -y install lapack lapack-devel blas \
-		blas-devel libxslt-devel libxslt libxml2-devel libxml2 \
-		ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj \
-		libgcj-devel gcc-c++ bzip2-devel shadowsocks-libev curlftpfs \
-		golang gmp-devel protobuf protobuf-devel ncurses-devel \
-		openssl-devel libcurl-devel mysql-devel
-	is_ubuntu && status_exec sudo apt-get -y install liblapack3gf \
-		liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 \
-		libxml2-dev libxml2 gfortran imagemagick imagemagick-dev \
-		libpng-dev pdftk libbz2-dev curlftpfs protobuf-compiler \
-		libprotobuf-dev libprotobuf-c-dev libncursesw5-dev \
-		libopenssl-dev libssl-dev libcurl4-openssl-dev \
-		libmysqlclient-dev
+	is_centos && (
+		for lib in lapack lapack-devel blas \
+			blas-devel libxslt-devel libxslt libxml2-devel libxml2 \
+			ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj \
+			libgcj-devel gcc-c++ bzip2-devel shadowsocks-libev curlftpfs \
+			golang gmp-devel protobuf protobuf-devel ncurses-devel \
+			openssl-devel libcurl-devel mysql-devel
+		do
+			status_exec sudo yum install -y $lib
+		done
+	)
+	is_ubuntu && (
+		for lib in liblapack3gf \
+			liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 \
+			libxml2-dev libxml2 gfortran imagemagick imagemagick-dev \
+			libpng-dev pdftk libbz2-dev curlftpfs protobuf-compiler \
+			libprotobuf-dev libprotobuf-c-dev libncursesw5-dev \
+			libopenssl-dev libssl-dev libcurl4-openssl-dev \
+			libmysqlclient-dev libncurses5-dev libncursesw5-dev
+		do
+			status_exec sudo apt-get -y install $lib
+		done
+	)
 	is_mac && (
 		echo "Checking brew taps"
 		taps=$(brew tap)

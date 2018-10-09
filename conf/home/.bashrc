@@ -41,6 +41,7 @@ export PKG_CONFIG_PATH=$HOME/install/lib:$HOME/install/lib/pkgconfig:$PKG_CONFIG
 export rvm_path=$HOME/.rvm
 # Load RVM into a shell session *as a function*
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+trap SIGINT # Some RVM script could ignore SIGINT.
 
 # History control
 export HISTCONTROL='ignorespace:ignoredups:erasedups'
