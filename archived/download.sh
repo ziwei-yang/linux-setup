@@ -27,14 +27,14 @@ if [[ $uname == 'Linux' ]]; then
 	ext='tar.gz'
 	jdk_download_url1="$url/technetwork/java/javase/downloads/index.html"
 	jdk_download_url2=$(
-		curl -s $jdk_download_url1 | \
+		curl -L -s $jdk_download_url1 | \
 		egrep -o "\/technetwork\/java/\javase\/downloads\/jdk${jdk_version}-downloads-.+?\.html" | \
 		head -1 | \
 		cut -d '"' -f 1
 	    )
 	jdk_download_url3="${url}${jdk_download_url2}"
 	jdk_download_url4=$(
-		curl -s $jdk_download_url3 | \
+		curl -L -s $jdk_download_url3 | \
 	        egrep -o "http\:\/\/download.oracle\.com\/otn-pub\/java\/jdk\/[8-9](u[0-9]+|\+).*\/jdk-${jdk_version}.*(-|_)linux-(x64|x64_bin).$ext"
 	)
 	for u in $jdk_download_url4; do
