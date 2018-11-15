@@ -52,6 +52,11 @@ can_sudo && is_centos && (
 		is_ubuntu && status_exec sudo apt-get -y install expect-dev
 		is_mac && status_exec brew install homebrew/dupes/expect
 	)
+	# Check dig
+	echo "Checking dig" && find_path "dig" || (
+		is_centos && status_exec sudo yum -y install bind-utils
+		is_ubuntu && status_exec sudo apt-get -y install dnsutils
+	)
 	# Other library.
 	is_centos && (
 		for lib in lapack lapack-devel blas \
