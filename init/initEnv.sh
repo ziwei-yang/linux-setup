@@ -50,7 +50,7 @@ can_sudo && is_centos && (
 	echo "Checking unbuffer" && find_path "unbuffer" || (
 		is_centos && status_exec sudo yum -y install expect
 		is_ubuntu && status_exec sudo apt-get -y install expect-dev
-		is_mac && status_exec brew install homebrew/dupes/expect
+		is_mac && status_exec brew install expect
 	)
 	# Check dig
 	echo "Checking dig" && find_path "dig" || (
@@ -84,15 +84,16 @@ can_sudo && is_centos && (
 	is_mac && (
 		echo "Checking brew taps"
 		taps=$(brew tap)
-		echo "Checking brew tap homebrew/science" && \
-			[ $(echo $taps | grep homebrew/science | wc -l) == '0' ] && \
-			status_exec brew tap homebrew/science
-		echo "Checking brew tap homebrew/python" && \
-			[ $(echo $taps | grep homebrew/python | wc -l) == '0' ] && \
-			status_exec brew tap homebrew/python
+		# No need to check these tap again from macos 10.13
+# 		echo "Checking brew tap homebrew/science" && \
+# 			[ $(echo $taps | grep homebrew/science | wc -l) == '0' ] && \
+# 			status_exec brew tap homebrew/science
+# 		echo "Checking brew tap homebrew/python" && \
+# 			[ $(echo $taps | grep homebrew/python | wc -l) == '0' ] && \
+# 			status_exec brew tap homebrew/python
 		echo "Checking brew list"
 		list=$(brew list)
-		for app in python lapack openblas pillow \
+		for app in python lapack openblas \
 			imagemagick graphviz py2cairo qt pyqt
 			# mysql-connector-c
 		do
@@ -272,9 +273,9 @@ is_linux && (
 	)
 )
 
-log_green "-------- Checking Python 3.6 --------"
-PYTHON3_VER="3.6"
-is_mac && log_blue "Skip python3 $PYTHON3_VER"
+log_green "-------- Checking Python 3.X --------"
+PYTHON3_VER="3."
+is_mac && log_blue "Skip python3"
 is_linux && (
 	check_path "python3" $USER_INSTALL/bin/python3 && \
 	log_blue "Python $PYTHON_VER is exist." || (
@@ -319,6 +320,7 @@ log_green "-------- Checking Node.js --------"
 # To install Node.js in Centos as root, check this:
 # https://nodejs.org/en/download/package-manager/
 (
+	check_version "node" 'v10' || \
 	check_version "node" 'v8' || \
 	check_version "node" 'v7' || \
 	check_version "node" 'v6' || \
@@ -359,22 +361,12 @@ log_green "-------- Checking Node.js --------"
 assert_path "node"
 assert_path "npm"
 
-log_green "-------- Checking npm utilities --------"
-find_path 'npm' && (
-	for app in tmux-cpu tmux-mem ; do
-		find_path $app && log_blue "Skip $app" && continue
-		log_blue "Installing $app."
-		npm install -g $app
-	done
-	echo "OK"
-) || log_red "npm could not be found."
-
 log_green "-------- CheckingJava 8 -------"
 javaVer=`java -version 2>&1 | grep 'java version'`
 [[ $javaVer == *1.8.* ]] && \
 log_blue "Current JAVA:$javaVer" || (
 	is_mac && \
-		log_red "Java should be manually install on MacOSX."
+		brew cask install java
 	is_linux && (
 		filename=$(basename "$( ls $LINUX_SETUP_HOME/archived/jdk-8u* )" ) && (
 			rm -rf $USER_ARCHIVED/jdk-*
@@ -487,8 +479,10 @@ log_blue "Skip ZeroMQ." || (
 ) || abort "libzmq does not exist."
 
 log_green "-------- Checking jzmq --------"
+# JAVA 10 dropped javah
 (
 	[[ -f $USER_INSTALL/lib/libjzmq.dylib && is_mac ]] || \
+	[[ ! -f $JAVA_HOME/bin/javah ]] || \
 	[[ -f $USER_INSTALL/lib/libjzmq.so && is_linux ]]
 ) && \
 log_blue "Skip jzmq" || (
@@ -519,8 +513,9 @@ log_blue "Skip jzmq" || (
 )
 (
 	[[ -f $USER_INSTALL/lib/libjzmq.dylib && is_mac ]] || \
+	[[ ! -f $JAVA_HOME/bin/javah ]] || \
 	[[ -f $USER_INSTALL/lib/libjzmq.so && is_linux ]]
-) || abort "libzmq does not exist."
+) || abort "JZMQ does not exist."
 
 log_green "-------- Installing Nanomsg --------"
 find_path "nanocat" && \

@@ -23,7 +23,7 @@ else
 	pip install "https://pypi.python.org/packages/source/f/feedparser/feedparser-5.2.0.post1.tar.gz"
 fi
 # Install official lib
-for pylib in gevent click requests pycurl simplejson chardet lxml numpy scipy scikit-learn matplotlib jieba redis pika pyquery request requests thrift cssselect xlrd MySQL-python readability-lxml
+for pylib in gevent click requests pycurl simplejson chardet lxml numpy scipy scikit-learn matplotlib jieba redis pika pyquery request requests thrift cssselect xlrd MySQL-python readability-lxml pillow
 do
 	check_py_lib $pylib && log_blue "Skip python lib $pylib" && continue
 	log_blue "Installing python lib $pylib"
