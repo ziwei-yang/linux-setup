@@ -4,6 +4,7 @@
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+INIT_MODE=$1
 source $DIR/../common/bootstrap.sh NORUBY
 
 USER_INSTALL="$HOME/install"
@@ -113,6 +114,8 @@ can_sudo && is_centos && (
 	)
 	echo "OK"
 ) || log_red "-------- Skip installing system tools --------"
+
+[[ $INIT_MODE == 'fast' ]] && echo "Fast mode finished." && exit 0
 
 # Downloading activities require wget
 cd $LINUX_SETUP_HOME/archived
