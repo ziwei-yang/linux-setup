@@ -47,7 +47,7 @@ if [[ $os == CentOS* ]]; then
 	status_exec yum -y remove nginx-mod-*
 	status_exec yum -y install nginx-module-*
 	echo "Installing certbot"
-	status_exec yum install python2-certbot-nginx
+	status_exec yum -y install python2-certbot-nginx
 elif [[ $os == Ubuntu* ]]; then
 	:
 elif [[ $os == "Darwin" ]]; then
