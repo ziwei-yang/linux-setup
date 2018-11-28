@@ -14,7 +14,7 @@ if [[ $USER != 'root' ]]; then
 	exit -1
 fi
 
-find_path "wget" && yum -y install wget
+find_path "wget" || yum -y install wget
 
 os=$( osinfo )
 if [[ $os == "CentOS release 6"* ]]; then
