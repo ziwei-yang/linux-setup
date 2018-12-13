@@ -2,7 +2,7 @@
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-source $DIR/../common/bootstrap.sh
+source $DIR/../common/bootstrap.sh NORUBY
 
 # Install beautifulsoup4
 check_py_lib "beautifulsoup4" "4.1.3"

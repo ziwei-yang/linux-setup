@@ -2,7 +2,7 @@
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 echo "$SOURCE received args: $@"
-source $DIR/../common/bootstrap.sh
+source $DIR/../common/bootstrap.sh NORUBY
 
 # Download and install tws_latest
 if [ ! -d $HOME/Jts ]; then

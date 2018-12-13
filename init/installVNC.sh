@@ -1,7 +1,7 @@
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-source $DIR/../common/bootstrap.sh
+source $DIR/../common/bootstrap.sh NORUBY
 
 # Check sudo privilege.
 ret=$( sudo -n echo a )
@@ -18,7 +18,7 @@ if [[ $os != CentOS* ]]; then
 	abort "Unsupport OS $os"
 fi
 
-sudo yum -y groups install "GNOME Desktop" 
+sudo yum -y groups install "MATE Desktop" 
 sudo yum -y groupinstall "X Window System"
 sudo yum -y install "tigervnc-server"
 sudo yum -y install "xterm"

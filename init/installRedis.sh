@@ -2,7 +2,7 @@
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-source $DIR/../common/bootstrap.sh
+source $DIR/../common/bootstrap.sh NORUBY
 
 log_green "-------- Installing Redis -------"
 check_path "redis-server" $USER_INSTALL/bin/redis-server
