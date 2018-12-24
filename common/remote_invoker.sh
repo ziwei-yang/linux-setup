@@ -1,7 +1,7 @@
 #!/bin/bash --login
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-source $DIR/bootstrap.sh
+source $DIR/bootstrap.sh NOARG
 log "$SOURCE received args: $@"
 
 setup_basic_ruby_env

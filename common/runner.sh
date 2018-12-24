@@ -2,7 +2,7 @@
 [[ -z $CURRENT_DIR ]] && CURRENT_DIR=$( pwd )
 SOURCE="${BASH_SOURCE[0]}"
 RUNNER_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-source $RUNNER_DIR/bootstrap.sh
+source $RUNNER_DIR/bootstrap.sh NOARG
 log "$SOURCE received args: $@"
 
 setup_basic_ruby_env
@@ -22,7 +22,7 @@ function record_status {
 	shift
 	_timestr=$( date +'%Y%m%d_%H%M%S_%N' )
 	log "Redis [$REDIS_HOST] hset: $_redis_hash $script_key -> $_timestr $@"
-	_value=$( builtin log -n $_timestr $@ | openssl base64 )
+	_value=$( builtin echo -n $_timestr $@ | openssl base64 )
 	ruby $APD_BIN/redis_cmd.rb -h "$_redis_hash" -k "$script_key" -v "$_value" -e base64
 	ruby $APD_BIN/redis_cmd.rb -k "$_redis_hash:$script_key" -v "$_value" -e base64 -m array_append
 }
@@ -177,13 +177,14 @@ if [ $loop -eq 1 ]; then
 else
 	# Trap fatal error for email, 'cd' after trap will make it useless?
 	trap "signal_caught $script $log_file" EXIT SIGKILL
-	log "Source: $script $@"
 	record_status $redis_hash 'START' $@
 	if [[ $max_time -gt 0 ]]; then
 		# With homebrew-installed coreutils on OS X
 		# the command is available as gtimeout
+		log "timeout $max_time $script $@ 2>&1"
 		timeout $max_time $script $@ 2>&1
 	else
+		log "$script $@ 2>&1"
 		$script $@ 2>&1
 	fi
 	ret=$?

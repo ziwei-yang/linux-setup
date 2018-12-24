@@ -1,5 +1,5 @@
 #!/bin/bash --login
-[[ $LINUX_SETUP_LOAD == '1' ]] && echo "Skip loading linux-setup again." && return
+declare -F status_exec && [[ $LINUX_SETUP_LOAD == '1' ]] && echo "Skip loading linux-setup again." && return
 source $HOME/.bash_profile
 source $HOME/.bashrc
 
@@ -7,7 +7,7 @@ export HOSTNAME=`hostname`
 echo "HOST:$HOSTNAME"
 
 echo "Setting up Linux environment at $( date )"
-[ ! -z $1 ] && echo "ARGS:$@"
+[ ! -z $1 ] && echo "bootstrap args:$@"
 
 __SOURCE="${BASH_SOURCE[0]}"
 __DIR="$( cd -P "$( dirname "$__SOURCE" )" && pwd )"
