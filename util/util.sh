@@ -362,6 +362,7 @@ function mail_file {
 		ruby $_mail_script -s "$_title" -r "$_recipient" -h "$_file"
 	elif [[ $_format == "ansi2html" ]]; then
 		log "Sending email to $_recipient with file $_file in $_format"
+		bname=$( basename $1 )
 		_file2html="/tmp/$bname.html"
 		aha -f $_file > $_file2html || abort "Failed in converting file to html"
 		ruby $_mail_script -s "$_title" -r "$_recipient" -h "$_file2html"
