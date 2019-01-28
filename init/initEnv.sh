@@ -582,10 +582,12 @@ log_blue "Skip pdftk" || (
 				$USER_INSTALL/bin/
 			rm -rf $USER_ARCHIVED/pdftk-*
 			echo "OK"
-		) || log_red "Installing pdftk is not implemented on $OS."
+		)
+		is_centos7 && \
+			status_exec yum -y localinstall 'https://www.linuxglobal.com/static/blog/pdftk-2.02-1.el7.x86_64.rpm'
 	) || log_red "pdftk file does not exist."
 )
-is_centos6 && is_failed find_path "pdftk" && abort "pdftk does not exist."
+is_centos && is_failed find_path "pdftk" && abort "pdftk does not exist."
 
 log_green "-------- Checking MongoDB --------"
 find_path "mongod" && \
