@@ -111,22 +111,26 @@ function check_newer_version {
 }
 
 function check_py_lib {
-	_lib=$1
-	_req_ver=$2
-	_sys_ver=`pip freeze | grep "$_lib=="`
-	if [[ -z $_sys_ver ]]; then
-		log_red "Python lib $1 not exist."
-		return 1
-	elif [[ -z $2 ]]; then
-		# Check lib existence is enough.
-		:
-	elif [[ "$_sys_ver" == "$_lib==$_req_ver" ]]; then
-		:
+	_py_ver=$1
+	_lib=$2
+	_req_ver=$3
+	if [[ $_py_ver == 2 ]]; then
+		_sys_ver=$( pip2 --disable-pip-version-check list | grep "$_lib " )
+	elif [[ $_py_ver == 3 ]]; then
+		_sys_ver=$( pip3 --disable-pip-version-check list --format=legacy | grep "$_lib " )
 	else
-		log_red "[$_lib] version [$_sys_ver] not match [$_req_ver]."
+		log_red "Unrecgonized python version [$_py_ver]"
 		return 1
 	fi
-	return 0
+	if [[ -z $_sys_ver ]]; then
+		log_red "Python$_py_ver lib $_lib $1 does not exist."
+		return 1
+	elif [[ "$_sys_ver" == "$_lib ($_req_ver"* ]]; then
+		return 0
+	else
+		log_red "Python$_py_ver [$_lib] version [$_sys_ver] not match [$_req_ver]."
+		return 1
+	fi
 }
 
 function check_gem {

@@ -60,7 +60,7 @@ can_sudo && is_centos && (
 	)
 	# Other library.
 	is_centos && (
-		for lib in lapack lapack-devel blas \
+		for lib in lapack lapack-devel blas atlas-devel \
 			blas-devel libxslt-devel libxslt libxml2-devel libxml2 \
 			ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj \
 			libgcj-devel gcc-c++ bzip2-devel shadowsocks-libev curlftpfs \
@@ -71,7 +71,7 @@ can_sudo && is_centos && (
 		done
 	)
 	is_ubuntu && (
-		for lib in liblapack3gf \
+		for lib in liblapack3gf libatlas-base-dev \
 			liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 \
 			libxml2-dev libxml2 gfortran imagemagick imagemagick-dev \
 			libpng-dev pdftk libbz2-dev curlftpfs protobuf-compiler \
