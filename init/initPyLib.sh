@@ -2,7 +2,10 @@
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-source $DIR/../common/setup_env.sh NORUBY
+source $DIR/../common/bootstrap.sh NORUBY
+
+# Upgrade pip
+pip2 install pip --upgrade
 
 # Install beautifulsoup4
 check_py_lib 2 "beautifulsoup4" "4.1.3"
@@ -23,7 +26,7 @@ else
 	pip2 install "https://pypi.python.org/packages/source/f/feedparser/feedparser-5.2.0.post1.tar.gz"
 fi
 # Install official lib
-for pylib in gevent click requests pycurl simplejson chardet lxml numpy scipy scikit-learn matplotlib jieba redis pika pyquery request requests thrift cssselect xlrd MySQL-python readability-lxml pillow
+for pylib in gevent Click requests pycurl simplejson chardet lxml numpy scipy scikit-learn matplotlib jieba redis pika pyquery request requests thrift cssselect xlrd MySQL-python readability-lxml Pillow
 do
 	check_py_lib 2 $pylib && log_blue "Skip python2 lib $pylib" && continue
 	log_blue "Installing python2 lib $pylib"

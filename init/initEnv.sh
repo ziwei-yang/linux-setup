@@ -7,7 +7,6 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 INIT_MODE=$1
 source $DIR/../common/bootstrap.sh NORUBY
 
-USER_INSTALL="$HOME/install"
 USER_ARCHIVED="$HOME/archived"
 mkdir -p $USER_INSTALL
 mkdir -p $USER_INSTALL/bin
