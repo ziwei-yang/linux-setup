@@ -7,6 +7,7 @@ source $DIR/../common/bootstrap.sh NORUBY NOPYTHON
 cd /tmp
 status_exec wget https://dl.eff.org/certbot-auto
 status_exec chmod u+x /tmp/certbot-auto
-sudo /var/nginx/certbot-auto certonly --webroot \
+echo "Applying cert for [$@]"
+sudo /tmp/certbot-auto certonly --webroot \
         --webroot-path=/var/nginx/www \
 	$@ # -d domain1 -d domain2
