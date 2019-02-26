@@ -75,7 +75,7 @@ status_exec dl $phantomjsURL
 mavenURL="http://ftp.cuhk.edu.hk/pub/packages/apache.org/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz"
 status_exec dl $mavenURL
 
-libsodiumURL="http://download.libsodium.org/libsodium/releases/libsodium-1.0.14.tar.gz"
+libsodiumURL="http://download.libsodium.org/libsodium/releases/libsodium-1.0.16.tar.gz"
 zeromqURL="https://github.com/zeromq/zeromq4-1/releases/download/v4.1.6/zeromq-4.1.6.tar.gz"
 status_exec dl $libsodiumURL
 status_exec dl $zeromqURL
