@@ -37,9 +37,14 @@ if [[ $uname == 'Linux' ]]; then
 		curl -L -s $jdk_download_url3 | \
 	        egrep -o "http\:\/\/download.oracle\.com\/otn-pub\/java\/jdk\/[8-9](u[0-9]+|\+).*\/jdk-${jdk_version}.*(-|_)linux-(x64|x64_bin).$ext"
 	)
+	jdk_downloaded=0
 	for u in $jdk_download_url4; do
 		status_exec dl_oracle $u
+		jdk_downloaded=1
 	done
+	if [[ $jdk_downloaded == 0 ]]; then
+		status_exec dl_oracle 'https://download.oracle.com/otn-pub/java/jdk/8u201-b09/42970487e3af4f5aa5bca3f542482c60/jdk-8u201-linux-x64.tar.gz'
+	fi
 	
 	pythonURL="https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tar.xz"
 	status_exec dl $pythonURL
