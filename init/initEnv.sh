@@ -68,6 +68,8 @@ can_sudo && is_centos && (
 		do
 			status_exec sudo yum install -y $lib
 		done
+		is_centos7 && \
+			status_exec sudo yum -y localinstall 'https://www.linuxglobal.com/static/blog/pdftk-2.02-1.el7.x86_64.rpm'
 	)
 	is_ubuntu && (
 		for lib in liblapack3gf libatlas-base-dev \
@@ -583,11 +585,9 @@ log_blue "Skip pdftk" || (
 			rm -rf $USER_ARCHIVED/pdftk-*
 			echo "OK"
 		)
-		is_centos7 && \
-			status_exec sudo yum -y localinstall 'https://www.linuxglobal.com/static/blog/pdftk-2.02-1.el7.x86_64.rpm'
 	) || log_red "pdftk file does not exist."
 )
-is_centos && is_failed find_path "pdftk" && abort "pdftk does not exist."
+is_centos && is_failed find_path "pdftk" && log_red "pdftk does not exist."
 
 log_green "-------- Checking MongoDB --------"
 find_path "mongod" && \
