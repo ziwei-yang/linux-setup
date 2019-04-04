@@ -318,6 +318,7 @@ function setup_basic_ruby_env {
 	log_green "-------- checking Basic Ruby Env --------"
 	log "APD_HOME: $APD_HOME"
 	assert_path "ruby"
+	[[ $@ == *FASTRUBY* ]] && return # FASTRUBY skip checking gems and libs.
 	assert_path "gem"
 	check_gem 'mail' || gem install 'mail' || abort "Gem mail installation failed."
 	_mail_script=$APD_HOME/bin/mail_task.rb
