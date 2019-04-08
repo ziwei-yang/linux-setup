@@ -634,7 +634,7 @@ log_blue "Skip ffmpeg" || (
 	)
 	is_ubuntu && can_sudo && (
 		status_exec sudo add-apt-repository ppa:jonathonf/ffmpeg-4
-		status_exec sudo apt-get install ffmpeg
+		status_exec sudo apt-get install ffmpeg -y
 	)
 )
 can_sudo && find_path "ffmpeg" || abort "ffmpeg does not exist"
