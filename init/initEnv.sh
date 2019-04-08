@@ -619,7 +619,7 @@ log_blue "Skip aha" || (
 )
 find_path "mongod" || abort "mongod does not exist"
 
-log_green "-------- FFmpeg--------"
+log_green "-------- FFmpeg --------"
 find_path "ffmpeg" && \
 log_blue "Skip ffmpeg" || (
 	is_centos6 && can_sudo && (
