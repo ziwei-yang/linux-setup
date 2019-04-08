@@ -43,7 +43,7 @@ can_sudo && is_centos && (
 	do
 		find_path $app && continue
 		is_centos && status_exec sudo yum -y install $app
-		is_ubuntu &&status_exec sudo apt-get -y install $app
+		is_ubuntu && status_exec sudo apt-get -y install $app
 		is_mac && [[ $app != 'sshfs' ]] && status_exec brew install $app
 	done
 	# Check unbuffer.
@@ -611,13 +611,33 @@ find_path "mongod" || abort "mongod does not exist"
 log_green "-------- Checking aha Ansi HTML Adapter --------"
 find_path "aha" && \
 log_blue "Skip aha" || (
-    cd $USER_ARCHIVED
-    status_exec rm -rf $USER_ARCHIVED/aha
-    status_exec git clone 'https://github.com/theZiz/aha.git'
-    cd $USER_ARCHIVED/aha
-    status_exec make install PREFIX=$USER_INSTALL
+	cd $USER_ARCHIVED
+	status_exec rm -rf $USER_ARCHIVED/aha
+	status_exec git clone 'https://github.com/theZiz/aha.git'
+	cd $USER_ARCHIVED/aha
+	status_exec make install PREFIX=$USER_INSTALL
 )
 find_path "mongod" || abort "mongod does not exist"
+
+log_green "-------- FFmpeg--------"
+find_path "ffmpeg" && \
+log_blue "Skip ffmpeg" || (
+	is_centos6 && can_sudo && (
+		status_exec sudo rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+		status_exec sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el6/x86_64/nux-dextop-release-0-2.el6.nux.noarch.rpm
+		status_exec sudo yum install ffmpeg ffmpeg-devel -y
+	)
+	is_centos7 && can_sudo && (
+		status_exec sudo rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+		status_exec sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+		status_exec sudo yum install ffmpeg ffmpeg-devel -y
+	)
+	is_ubuntu && can_sudo && (
+		status_exec sudo add-apt-repository ppa:jonathonf/ffmpeg-4
+		status_exec sudo apt-get install ffmpeg
+	)
+)
+can_sudo && find_path "ffmpeg" || abort "ffmpeg does not exist"
 
 log_green "-----------------------------------------------"
 log_green "Environment set up, reopen bash to take effect."
