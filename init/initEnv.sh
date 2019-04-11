@@ -343,7 +343,7 @@ log_green "-------- Checking Node.js --------"
 		[ $? != 0 ] && \
 			log_red "File $filehead does not exist" && \
 			continue
-		filename=$(basename $( builtin echo $filename | tail -1 ))
+		filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/$filehead* | head -1 ))
 		log_blue "Installing $filename"
 		rm -rf $USER_ARCHIVED/node-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
