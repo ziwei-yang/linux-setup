@@ -70,6 +70,10 @@ can_sudo && is_centos && (
 		done
 		is_centos7 && \
 			status_exec sudo yum -y localinstall $LINUX_SETUP_HOME/archived/pdftk-2.02-1.el7.x86_64.rpm
+		is_centos7 && \
+			status_exec yum_install centos-release-scl
+		is_centos7 && \
+			status_exec yum_install devtoolset-7-gcc-c++
 	)
 	is_ubuntu && (
 		for lib in liblapack3gf libatlas-base-dev \
@@ -353,10 +357,14 @@ log_green "-------- Checking Node.js --------"
 		dirname=$(basename $( ls $USER_ARCHIVED | grep '^node-' ))
 		dirname=${dirname%.tar.gz}
 		cd $USER_ARCHIVED/$dirname
-		status_exec $USER_ARCHIVED/$dirname/configure \
-			--prefix=$USER_INSTALL || abort "configure failed"
-		status_exec make install -j $CPU_CORE || \
-			status_exec make install
+		if is_centos7 ; then # Node-v10 needs C++ 14
+			scl enable devtoolset-7 "status_exec $USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL"
+			scl enable devtoolset-7 "status_exec make install -j"
+		else
+			status_exec $USER_ARCHIVED/$dirname/configure \
+				--prefix=$USER_INSTALL || abort "configure failed"
+			status_exec make install -j
+		fi
 		[ $? == "0" ] && break
 		log_red "Make failed, skip installing $filename"
 		log_blue "rm -rf $USER_ARCHIVED/$filehead*"
