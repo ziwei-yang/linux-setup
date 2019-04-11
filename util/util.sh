@@ -244,6 +244,16 @@ function is_failed {
 	[[ $? == '0' ]] && return 1
 	return 0
 }
+# Install only if missing.
+function yum_install {
+	[[ -z $1 ]] && "No package to install via yum" && return
+	package=$1
+	if status_exec yum list installed --cacheonly "$package" ; then
+		return 0
+	fi
+	can_sudo || abort "Can't sudo"
+	status_exec sudo yum install -y "$package"
+}
 
 function absolute_path {
 	[[ -z $1 ]] && echo $@ && return

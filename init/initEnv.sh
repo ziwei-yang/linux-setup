@@ -33,7 +33,7 @@ can_sudo && is_centos && (
 	[ $(yum grouplist groupinfo 'Development tools' | grep "Installed" | wc -l) == "0" ] && \
 		status_exec sudo yum -y groupinstall 'Development tools' || \
 	 	log_blue "OK"
-	status_exec sudo yum -y install epel-release
+	status_exec yum_install epel-release
 )
 
 ( can_sudo || is_mac ) && (
@@ -42,19 +42,19 @@ can_sudo && is_centos && (
 		basename tput gpg tree finger nload telnet cmake clang ant
 	do
 		find_path $app && continue
-		is_centos && status_exec sudo yum -y install $app
+		is_centos && status_exec yum_install $app
 		is_ubuntu && status_exec sudo apt-get -y install $app
 		is_mac && [[ $app != 'sshfs' ]] && status_exec brew install $app
 	done
 	# Check unbuffer.
 	echo "Checking unbuffer" && find_path "unbuffer" || (
-		is_centos && status_exec sudo yum -y install expect
+		is_centos && status_exec yum_install expect
 		is_ubuntu && status_exec sudo apt-get -y install expect-dev
 		is_mac && status_exec brew install expect
 	)
 	# Check dig
 	echo "Checking dig" && find_path "dig" || (
-		is_centos && status_exec sudo yum -y install bind-utils
+		is_centos && status_exec yum_install bind-utils
 		is_ubuntu && status_exec sudo apt-get -y install dnsutils
 	)
 	# Other library.
@@ -66,7 +66,7 @@ can_sudo && is_centos && (
 			golang gmp-devel protobuf protobuf-devel ncurses-devel \
 			openssl-devel libcurl-devel mysql-devel
 		do
-			status_exec sudo yum install -y $lib
+			status_exec yum_install $lib
 		done
 		is_centos7 && \
 			status_exec sudo yum -y localinstall $LINUX_SETUP_HOME/archived/pdftk-2.02-1.el7.x86_64.rpm
