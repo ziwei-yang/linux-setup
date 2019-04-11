@@ -136,7 +136,7 @@ is_mac && (
 is_linux && (
 	find_path "mosh" && \
 	log_blue "Skip Mosh" || (
-		filename=$(basename $( ls $LINUX_SETUP_HOME/archived/mosh-* )) && (
+		filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/mosh-* | head -n1 )) && (
 			rm -rf $USER_ARCHIVED/mosh-*
 			status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
@@ -227,7 +227,7 @@ APD_HOME="$DIR/../../aphrodite"
 log_green "-------- Checking PhantomJS --------"
 check_path "phantomjs" $USER_INSTALL/bin/phantomjs && \
 	log_blue "Skip PhantomJS" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/phantomjs-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/phantomjs-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/phantomjs-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
@@ -251,7 +251,7 @@ is_mac && (
 is_linux && (
 	check_path "python" $USER_INSTALL/bin/python && \
 	log_blue "Python $PYTHON_VER is exist." || (
-		filename=$(basename $( ls $LINUX_SETUP_HOME/archived/Python-2* )) && (
+		filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/Python-2* | head -n1 )) && (
 			rm -rf $USER_ARCHIVED/Python-2*
 			cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
@@ -288,7 +288,7 @@ is_mac && log_blue "Skip python3"
 is_linux && (
 	check_path "python3" $USER_INSTALL/bin/python3 && \
 	log_blue "Python $PYTHON_VER is exist." || (
-		filename=$(basename $( ls $LINUX_SETUP_HOME/archived/Python-3* )) && (
+		filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/Python-3* | head -n1 )) && (
 			rm -rf $USER_ARCHIVED/Python-3*
 			cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
@@ -347,7 +347,7 @@ log_green "-------- Checking Node.js --------"
 		[ $? != 0 ] && \
 			log_red "File $filehead does not exist" && \
 			continue
-		filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/$filehead* | head -1 ))
+		filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/$filehead* | head -n1 ))
 		log_blue "Installing $filename"
 		rm -rf $USER_ARCHIVED/node-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
@@ -381,7 +381,7 @@ log_blue "Current JAVA:$javaVer" || (
 	is_mac && \
 		brew cask install java
 	is_linux && (
-		filename=$(basename "$( ls $LINUX_SETUP_HOME/archived/jdk-8u* )" ) && (
+		filename=$(basename "$( ls -1t $LINUX_SETUP_HOME/archived/jdk-8u* | head -n1 )" ) && (
 			rm -rf $USER_ARCHIVED/jdk-*
 			status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
@@ -396,7 +396,7 @@ MVN_VER="3"
 log_green "-------- Checking Maven --------"
 check_version "mvn" $MVN_VER && \
 log_blue "Skip Maven" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/apache-maven-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/apache-maven-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/apache-maven-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
@@ -414,7 +414,7 @@ log_green "-------- Checking ANT --------"
 ANT_VER=`ant -version 2>&1 | grep Ant`
 [[ $ANT_VER == *1.10* ]] && \
 log_blue "Current ANT:$ANT_VER" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/apache-ant-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/apache-ant-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/apache-ant-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
@@ -431,7 +431,7 @@ log_green "-------- Checking libsodium --------"
 	[[ -f $USER_INSTALL/lib/libsodium.so && is_linux ]]
 ) && \
 log_blue "Skip libsodium." || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/libsodium-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/libsodium-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/libsodium-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
@@ -461,7 +461,7 @@ log_green "-------- Checking ZeroMQ --------"
 	[[ -f $USER_INSTALL/lib/libzmq.so && is_linux ]]
 ) && \
 log_blue "Skip ZeroMQ." || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/zeromq-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/zeromq-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/zeromq-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
@@ -499,12 +499,11 @@ log_green "-------- Checking jzmq --------"
 	[[ -f $USER_INSTALL/lib/libjzmq.so && is_linux ]]
 ) && \
 log_blue "Skip jzmq" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/jzmq-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/jzmq-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/jzmq-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
-		status_exec unzip -o $filename || \
-			abort "unzip failed"
+		status_exec unzip -o $filename || abort "unzip failed"
 		rm $filename
 		dirname=${filename%.zip}/jzmq-jni
 		cd $USER_ARCHIVED/$dirname
@@ -533,13 +532,13 @@ log_blue "Skip jzmq" || (
 log_green "-------- Installing Nanomsg --------"
 find_path "nanocat" && \
 log_blue "Skip nanomsg" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/nanomsg-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/nanomsg-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/nanomsg-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
-		status_exec tar -xf $filename
+		status_exec unzip -o $filename || abort "unzip failed"
 		rm $filename
-		dirname=${filename%.tar.gz}
+		dirname=${filename%.zip}
 		cd $USER_ARCHIVED/$dirname
 		builddir=$USER_ARCHIVED/$dirname/build
 		mkdir $builddir
@@ -563,18 +562,16 @@ log_blue "Skip nanomsg" || (
 find_path "nanocat" || abort "nanocat does not exist."
 
 log_green "-------- Checking wkhtmltox --------"
-find_path "wkhtmltopdf" && \
-log_blue "Skip wkhtmltox" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/wkhtmltox-* )) && (
-		status_exec tar xf $LINUX_SETUP_HOME/archived/$filename \
-			-C $USER_INSTALL --strip 1 wkhtmltox/
-	) || log_red "wkhtmltox file does not exist."
+# https://wkhtmltopdf.org/downloads.html
+find_path "wkhtmltopdf" && (
+	is_centos6 && sudo yum localinstall -y 'https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox-0.12.5-1.centos6.x86_64.rpm'
+	is_centos7 && sudo yum localinstall -y 'https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox-0.12.5-1.centos7.x86_64.rpm'
 )
 
 log_green "-------- Checking pdftk --------"
 find_path "pdftk" && \
 log_blue "Skip pdftk" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/pdftk-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/pdftk-* | head -n1 )) && (
 		is_centos6 && (
 			rm -rf $USER_ARCHIVED/pdftk-*
 			status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
@@ -600,7 +597,7 @@ is_centos && is_failed find_path "pdftk" && log_red "pdftk does not exist."
 log_green "-------- Checking MongoDB --------"
 find_path "mongod" && \
 log_blue "Skip MongoDB" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/mongodb-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/mongodb-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/mongodb-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
