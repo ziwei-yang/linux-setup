@@ -69,7 +69,7 @@ can_sudo && is_centos && (
 			status_exec sudo yum install -y $lib
 		done
 		is_centos7 && \
-			status_exec sudo yum -y localinstall 'https://www.linuxglobal.com/static/blog/pdftk-2.02-1.el7.x86_64.rpm'
+			status_exec sudo yum -y localinstall $LINUX_SETUP_HOME/archived/pdftk-2.02-1.el7.x86_64.rpm
 	)
 	is_ubuntu && (
 		for lib in liblapack3gf libatlas-base-dev \
@@ -337,9 +337,9 @@ log_green "-------- Checking Node.js --------"
 	[ -d $USER_INSTALL/lib/python$PYTHON_VER ] && \
 		ln -sf /usr/lib64/python*/lib-dynload/bz2.so \
 		$USER_INSTALL/lib/python$PYTHON_VER/
-	for filehead in node-v8 node-v7 node-v6 node-v5 node-v4 node-v0
+	for filehead in node-v10 node-v8 node-v7 node-v6 node-v5 node-v4 node-v0
 	do
-		filename=$( ls $LINUX_SETUP_HOME/archived/$filehead* )
+		filename=$( ls -1t $LINUX_SETUP_HOME/archived/$filehead* )
 		[ $? != 0 ] && \
 			log_red "File $filehead does not exist" && \
 			continue

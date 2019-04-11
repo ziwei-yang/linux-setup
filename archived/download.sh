@@ -65,6 +65,8 @@ nodejs6URL="https://nodejs.org/download/release/latest-v6.x/"
 wget -c --no-cookies --no-check-certificate -nc --execute robots=off --no-parent -nH --level=1 --recursive --cut-dirs=3 --accept '.tar.gz' --reject '*v?????????*.tar.gz' $nodejs6URL
 nodejs8URL="https://nodejs.org/download/release/latest-v8.x/"
 wget -c --no-cookies --no-check-certificate -nc --execute robots=off --no-parent -nH --level=1 --recursive --cut-dirs=3 --accept '.tar.gz' --reject '*v?????????*.tar.gz' $nodejs8URL
+nodejs10URL="https://nodejs.org/download/release/latest-v10.x/"
+wget -c --no-cookies --no-check-certificate -nc --execute robots=off --no-parent -nH --level=1 --recursive --cut-dirs=3 --accept '.tar.gz' --reject '*v?????????*.tar.gz' $nodejs10URL
 
 redisURL="http://download.redis.io/releases/redis-4.0.8.tar.gz"
 status_exec dl $redisURL
@@ -100,5 +102,8 @@ status_exec dl_dir --cut-dirs=2 -A 'bin.zip' $antURL
 
 moshURL='https://mosh.org/mosh-1.3.2.tar.gz'
 status_exec dl $moshURL
+
+pdftkURL='https://www.linuxglobal.com/static/blog/pdftk-2.02-1.el7.x86_64.rpm'
+status_exec dl $pdftkURL
 
 cd $PWD
