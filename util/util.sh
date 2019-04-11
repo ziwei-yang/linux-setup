@@ -8,45 +8,55 @@ function log {
 	builtin echo -n "$_time [$_filename]:"
 	builtin echo $@
 }
+export -f log
 
 function is_func {
 	declare -f $1 > /dev/null
 	return $?
 }
+export -f is_func
 
 function cursor_r {
 	builtin echo -n -e "\r"
 }
+export -f cursor_r
 
 # Internal functions.
 function log_red {
 	log "$(tput setaf 1)$@$(tput sgr0)"
 }
+export -f log_red
 
 function echo_red {
 	builtin echo "$(tput setaf 1)$@$(tput sgr0)"
 }
+export -f echo_red
 
 function log_green {
 	log "$(tput setaf 2)$@$(tput sgr0)"
 }
+export -f log_green
 
 function echo_green {
 	builtin echo "$(tput setaf 2)$@$(tput sgr0)"
 }
+export -f echo_green
 
 function log_blue {
 	log "$(tput setaf 4)$@$(tput sgr0)"
 }
+export -f log_blue
 
 function echo_blue {
 	builtin echo "$(tput setaf 4)$@$(tput sgr0)"
 }
+export -f echo_blue
 
 function abort() {
 	log_red "Script execution abort, reason: $@"
 	exit -1
 }
+export -f abort
 
 function find_path {
 	_bin=$1
@@ -58,6 +68,7 @@ function find_path {
 		return 0
 	fi
 }
+export -f find_path
 
 function assert_path {
 	_bin=$1
@@ -69,6 +80,7 @@ function assert_path {
 		return 0
 	fi
 }
+export -f assert_path
 
 function check_path {
 	_bin=$1
@@ -80,6 +92,7 @@ function check_path {
 		return 1
 	fi
 }
+export -f check_path
 
 function check_version {
 	_bin=$1
@@ -94,6 +107,7 @@ function check_version {
 		return 1
 	fi
 }
+export -f check_version
 
 function check_newer_version {
 	_bin=$1
@@ -109,6 +123,7 @@ function check_newer_version {
 		return 1
 	fi
 }
+export -f check_newer_version
 
 function check_py_lib {
 	_py_ver=$1
@@ -126,6 +141,7 @@ function check_py_lib {
 		return 1
 	fi
 }
+export -f check_py_lib
 
 function check_gem {
 	_lib=$1
@@ -145,6 +161,7 @@ function check_gem {
 	fi
 	return 0
 }
+export -f check_gem 
 
 function osinfo {
 	if [[ -f /etc/redhat-release ]]; then
@@ -155,10 +172,12 @@ function osinfo {
 		uname
 	fi
 }
+export -f osinfo 
 
 function ext_ip {
 	curl 'http://ipinfo.io/ip'
 }
+export -f ext_ip 
 
 function in_china {
 	[[ $GFW_FUCKED == '0' ]] && return 0
@@ -175,6 +194,7 @@ function in_china {
 		return 1
 	fi
 }
+export -f in_china 
 
 function can_sudo {
 	[[ $SUDO_PRIVILEGE == '1' ]] && return 0
@@ -190,11 +210,13 @@ function can_sudo {
 		return 1
 	fi
 }
+export -f can_sudo 
 
 function silent_exec {
 	$@ > /dev/null 2>&1
 	return $?
 }
+export -f silent_exec 
 
 function status_exec {
 	log -n "$@"
@@ -209,41 +231,50 @@ function status_exec {
 	fi
 	return $_ret
 }
+export -f status_exec 
 
 function is_centos {
 	[[ $OS == CentOS* ]] && return 0
 	return 1
 }
+export -f is_centos 
 function is_centos6 {
 	[[ $OS == "CentOS release 6"* ]] && return 0
 	return 1
 }
+export -f is_centos6 
 function is_centos7 {
 	[[ $OS == "CentOS Linux release 7"* ]] && return 0
 	return 1
 }
+export -f is_centos7 
 function is_mac {
 	[[ $OS == Darwin ]] && return 0
 	return 1
 }
+export -f is_mac 
 function is_ubuntu {
 	[[ $OS == Ubuntu* ]] && return 0
 	[[ $OS == "Linux Mint"* ]] && return 0
 	return 1
 }
+export -f is_ubuntu 
 function is_unknown_os {
 	is_centos || is_mac || is_ubuntu || return 0
 	return 1
 }
+export -f is_unknown_os 
 function is_linux {
 	[[ $( uname ) == 'Linux' ]] && return 0
 	return 1
 }
+export -f is_linux 
 function is_failed {
 	eval "$@"
 	[[ $? == '0' ]] && return 1
 	return 0
 }
+export -f is_failed 
 # Install only if missing.
 function yum_install {
 	[[ -z $1 ]] && "No package to install via yum" && return
@@ -254,6 +285,7 @@ function yum_install {
 	can_sudo || abort "Can't sudo"
 	status_exec sudo yum install -y "$package"
 }
+export -f yum_install 
 
 function absolute_path {
 	[[ -z $1 ]] && echo $@ && return
@@ -270,6 +302,7 @@ function absolute_path {
 		builtin echo $_dir
 	fi
 }
+export -f absolute_path 
 
 # If directory exists, return $dir/$file. Otherwise just echo same arguments.
 function absolute_dir_path {
@@ -281,6 +314,7 @@ function absolute_dir_path {
 	_dir=$( cd -P "$_dir" && pwd )
 	builtin echo $_dir
 }
+export -f absolute_dir_path 
 
 function setup_sys_env {
 	log_green "-------- checking system --------"
@@ -322,6 +356,7 @@ function setup_sys_env {
 	unset SUDO_PRIVILEGE
 	unset GFW_FUCKED
 }
+export -f setup_sys_env 
 
 # Check basic ruby environment for email script.
 function setup_basic_ruby_env {
@@ -349,6 +384,7 @@ function setup_basic_ruby_env {
 	status_exec mv $USER_ARCHIVED/aphrodite $APD_HOME || \
 		abort "Failed to mv aphrodite"
 }
+export -f setup_basic_ruby_env 
 
 # Send email with content in file.
 function mail_file {
@@ -383,6 +419,7 @@ function mail_file {
 		cat -v $_file | mail -s "$_title" $_recipient
 	fi
 }
+export -f mail_file 
 
 # Usage: mail_task_log recipient task_script start_time log_file (error_msgs)
 function mail_task_log {
@@ -413,6 +450,7 @@ function mail_task_log {
 
 	mail_file "$_log_file" "$_title" "$_recipient" 'ansi2html'
 }
+export -f mail_task_log 
 
 function find_process {
 	if [ -z $1 ]; then
@@ -430,3 +468,4 @@ function find_process {
 	_res=$(ps aux | grep -v grep | grep "^$_user" | grep -F $_keyword)
 	log $_res
 }
+export -f find_process 
