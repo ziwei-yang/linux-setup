@@ -89,6 +89,8 @@ fi
 
 [ "$1" = "--bg=dark" ] && { dark_bg=yes; shift; }
 
+[[ "$1" == "--meta="* ]] && { custom_meta=$1; custom_meta=${custom_meta:7} shift; }
+
 # Mac OSX's GNU sed is installed as gsed
 # use e.g. homebrew 'gnu-sed' to get it
 if ! sed --version >/dev/null 2>&1; then
@@ -103,6 +105,7 @@ fi
 printf '%s' "<html>
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>
+$custom_meta
 <style type=\"text/css\">
 .ef0,.f0 { color: #$P0; } .eb0,.b0 { background-color: #$P0; }
 .ef1,.f1 { color: #$P1; } .eb1,.b1 { background-color: #$P1; }
