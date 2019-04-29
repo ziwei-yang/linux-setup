@@ -7,7 +7,7 @@ export HOSTNAME=`hostname`
 echo "HOST:$HOSTNAME"
 
 echo "Setting up Linux environment at $( date )"
-[ ! -z $1 ] && echo "bootstrap args:$@"
+[ ! -z $1 ] && echo "linux-setup bootstrap args:$@"
 
 __SOURCE="${BASH_SOURCE[0]}"
 __DIR="$( cd -P "$( dirname "$__SOURCE" )" && pwd )"
@@ -21,7 +21,7 @@ export LINUX_SETUP_HOME=$( absolute_path $LINUX_SETUP_HOME )
 if [[ $@ != *NORUBY* ]]; then
 	export APD_HOME=$( absolute_path $LINUX_SETUP_HOME/../aphrodite )
 	export APD_BIN="$APD_HOME/bin"
-	setup_basic_ruby_env
+	setup_basic_ruby_env $@
 fi
 
 export USER_ARCHIVED="$HOME/archived"

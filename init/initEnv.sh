@@ -7,7 +7,6 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 INIT_MODE=$1
 source $DIR/../common/bootstrap.sh NORUBY
 
-USER_INSTALL="$HOME/install"
 USER_ARCHIVED="$HOME/archived"
 mkdir -p $USER_INSTALL
 mkdir -p $USER_INSTALL/bin
@@ -34,7 +33,7 @@ can_sudo && is_centos && (
 	[ $(yum grouplist groupinfo 'Development tools' | grep "Installed" | wc -l) == "0" ] && \
 		status_exec sudo yum -y groupinstall 'Development tools' || \
 	 	log_blue "OK"
-	status_exec sudo yum -y install epel-release
+	status_exec yum_install epel-release
 )
 
 ( can_sudo || is_mac ) && (
@@ -43,35 +42,41 @@ can_sudo && is_centos && (
 		basename tput gpg tree finger nload telnet cmake clang ant
 	do
 		find_path $app && continue
-		is_centos && status_exec sudo yum -y install $app
-		is_ubuntu &&status_exec sudo apt-get -y install $app
+		is_centos && status_exec yum_install $app
+		is_ubuntu && status_exec sudo apt-get -y install $app
 		is_mac && [[ $app != 'sshfs' ]] && status_exec brew install $app
 	done
 	# Check unbuffer.
 	echo "Checking unbuffer" && find_path "unbuffer" || (
-		is_centos && status_exec sudo yum -y install expect
+		is_centos && status_exec yum_install expect
 		is_ubuntu && status_exec sudo apt-get -y install expect-dev
 		is_mac && status_exec brew install expect
 	)
 	# Check dig
 	echo "Checking dig" && find_path "dig" || (
-		is_centos && status_exec sudo yum -y install bind-utils
+		is_centos && status_exec yum_install bind-utils
 		is_ubuntu && status_exec sudo apt-get -y install dnsutils
 	)
 	# Other library.
 	is_centos && (
-		for lib in lapack lapack-devel blas \
+		for lib in lapack lapack-devel blas atlas-devel \
 			blas-devel libxslt-devel libxslt libxml2-devel libxml2 \
 			ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj \
 			libgcj-devel gcc-c++ bzip2-devel shadowsocks-libev curlftpfs \
 			golang gmp-devel protobuf protobuf-devel ncurses-devel \
 			openssl-devel libcurl-devel mysql-devel
 		do
-			status_exec sudo yum install -y $lib
+			status_exec yum_install $lib
 		done
+		is_centos7 && \
+			status_exec sudo yum -y localinstall $LINUX_SETUP_HOME/archived/pdftk-2.02-1.el7.x86_64.rpm
+		is_centos7 && \
+			status_exec yum_install centos-release-scl
+		is_centos7 && \
+			status_exec yum_install devtoolset-7-gcc-c++
 	)
 	is_ubuntu && (
-		for lib in liblapack3gf \
+		for lib in liblapack3gf libatlas-base-dev \
 			liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 \
 			libxml2-dev libxml2 gfortran imagemagick imagemagick-dev \
 			libpng-dev pdftk libbz2-dev curlftpfs protobuf-compiler \
@@ -131,7 +136,7 @@ is_mac && (
 is_linux && (
 	find_path "mosh" && \
 	log_blue "Skip Mosh" || (
-		filename=$(basename $( ls $LINUX_SETUP_HOME/archived/mosh-* )) && (
+		filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/mosh-* | head -n1 )) && (
 			rm -rf $USER_ARCHIVED/mosh-*
 			status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
@@ -222,7 +227,7 @@ APD_HOME="$DIR/../../aphrodite"
 log_green "-------- Checking PhantomJS --------"
 check_path "phantomjs" $USER_INSTALL/bin/phantomjs && \
 	log_blue "Skip PhantomJS" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/phantomjs-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/phantomjs-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/phantomjs-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
@@ -246,7 +251,7 @@ is_mac && (
 is_linux && (
 	check_path "python" $USER_INSTALL/bin/python && \
 	log_blue "Python $PYTHON_VER is exist." || (
-		filename=$(basename $( ls $LINUX_SETUP_HOME/archived/Python-2* )) && (
+		filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/Python-2* | head -n1 )) && (
 			rm -rf $USER_ARCHIVED/Python-2*
 			cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
@@ -283,7 +288,7 @@ is_mac && log_blue "Skip python3"
 is_linux && (
 	check_path "python3" $USER_INSTALL/bin/python3 && \
 	log_blue "Python $PYTHON_VER is exist." || (
-		filename=$(basename $( ls $LINUX_SETUP_HOME/archived/Python-3* )) && (
+		filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/Python-3* | head -n1 )) && (
 			rm -rf $USER_ARCHIVED/Python-3*
 			cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
@@ -336,13 +341,13 @@ log_green "-------- Checking Node.js --------"
 	[ -d $USER_INSTALL/lib/python$PYTHON_VER ] && \
 		ln -sf /usr/lib64/python*/lib-dynload/bz2.so \
 		$USER_INSTALL/lib/python$PYTHON_VER/
-	for filehead in node-v8 node-v7 node-v6 node-v5 node-v4 node-v0
+	for filehead in node-v10 node-v8 node-v7 node-v6 node-v5 node-v4 node-v0
 	do
-		filename=$( ls $LINUX_SETUP_HOME/archived/$filehead* )
+		filename=$( ls -1t $LINUX_SETUP_HOME/archived/$filehead* )
 		[ $? != 0 ] && \
 			log_red "File $filehead does not exist" && \
 			continue
-		filename=$(basename $( builtin echo $filename | tail -1 ))
+		filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/$filehead* | head -n1 ))
 		log_blue "Installing $filename"
 		rm -rf $USER_ARCHIVED/node-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
@@ -352,10 +357,14 @@ log_green "-------- Checking Node.js --------"
 		dirname=$(basename $( ls $USER_ARCHIVED | grep '^node-' ))
 		dirname=${dirname%.tar.gz}
 		cd $USER_ARCHIVED/$dirname
-		status_exec $USER_ARCHIVED/$dirname/configure \
-			--prefix=$USER_INSTALL || abort "configure failed"
-		status_exec make install -j $CPU_CORE || \
-			status_exec make install
+		if is_centos7 ; then # Node-v10 needs C++ 14
+			scl enable devtoolset-7 "status_exec $USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL"
+			scl enable devtoolset-7 "status_exec make install -j"
+		else
+			status_exec $USER_ARCHIVED/$dirname/configure \
+				--prefix=$USER_INSTALL || abort "configure failed"
+			status_exec make install -j
+		fi
 		[ $? == "0" ] && break
 		log_red "Make failed, skip installing $filename"
 		log_blue "rm -rf $USER_ARCHIVED/$filehead*"
@@ -372,7 +381,7 @@ log_blue "Current JAVA:$javaVer" || (
 	is_mac && \
 		brew cask install java
 	is_linux && (
-		filename=$(basename "$( ls $LINUX_SETUP_HOME/archived/jdk-8u* )" ) && (
+		filename=$(basename "$( ls -1t $LINUX_SETUP_HOME/archived/jdk-8u* | head -n1 )" ) && (
 			rm -rf $USER_ARCHIVED/jdk-*
 			status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED
@@ -387,7 +396,7 @@ MVN_VER="3"
 log_green "-------- Checking Maven --------"
 check_version "mvn" $MVN_VER && \
 log_blue "Skip Maven" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/apache-maven-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/apache-maven-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/apache-maven-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
@@ -405,7 +414,7 @@ log_green "-------- Checking ANT --------"
 ANT_VER=`ant -version 2>&1 | grep Ant`
 [[ $ANT_VER == *1.10* ]] && \
 log_blue "Current ANT:$ANT_VER" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/apache-ant-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/apache-ant-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/apache-ant-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
@@ -422,7 +431,7 @@ log_green "-------- Checking libsodium --------"
 	[[ -f $USER_INSTALL/lib/libsodium.so && is_linux ]]
 ) && \
 log_blue "Skip libsodium." || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/libsodium-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/libsodium-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/libsodium-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
@@ -452,7 +461,7 @@ log_green "-------- Checking ZeroMQ --------"
 	[[ -f $USER_INSTALL/lib/libzmq.so && is_linux ]]
 ) && \
 log_blue "Skip ZeroMQ." || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/zeromq-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/zeromq-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/zeromq-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
@@ -490,12 +499,11 @@ log_green "-------- Checking jzmq --------"
 	[[ -f $USER_INSTALL/lib/libjzmq.so && is_linux ]]
 ) && \
 log_blue "Skip jzmq" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/jzmq-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/jzmq-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/jzmq-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
-		status_exec unzip -o $filename || \
-			abort "unzip failed"
+		status_exec unzip -o $filename || abort "unzip failed"
 		rm $filename
 		dirname=${filename%.zip}/jzmq-jni
 		cd $USER_ARCHIVED/$dirname
@@ -524,13 +532,13 @@ log_blue "Skip jzmq" || (
 log_green "-------- Installing Nanomsg --------"
 find_path "nanocat" && \
 log_blue "Skip nanomsg" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/nanomsg-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/nanomsg-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/nanomsg-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
-		status_exec tar -xf $filename
+		status_exec unzip -o $filename || abort "unzip failed"
 		rm $filename
-		dirname=${filename%.tar.gz}
+		dirname=${filename%.zip}
 		cd $USER_ARCHIVED/$dirname
 		builddir=$USER_ARCHIVED/$dirname/build
 		mkdir $builddir
@@ -554,18 +562,16 @@ log_blue "Skip nanomsg" || (
 find_path "nanocat" || abort "nanocat does not exist."
 
 log_green "-------- Checking wkhtmltox --------"
-find_path "wkhtmltopdf" && \
-log_blue "Skip wkhtmltox" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/wkhtmltox-* )) && (
-		status_exec tar xf $LINUX_SETUP_HOME/archived/$filename \
-			-C $USER_INSTALL --strip 1 wkhtmltox/
-	) || log_red "wkhtmltox file does not exist."
+# https://wkhtmltopdf.org/downloads.html
+find_path "wkhtmltopdf" && (
+	is_centos6 && sudo yum localinstall -y 'https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox-0.12.5-1.centos6.x86_64.rpm'
+	is_centos7 && sudo yum localinstall -y 'https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox-0.12.5-1.centos7.x86_64.rpm'
 )
 
 log_green "-------- Checking pdftk --------"
 find_path "pdftk" && \
 log_blue "Skip pdftk" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/pdftk-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/pdftk-* | head -n1 )) && (
 		is_centos6 && (
 			rm -rf $USER_ARCHIVED/pdftk-*
 			status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
@@ -583,15 +589,15 @@ log_blue "Skip pdftk" || (
 				$USER_INSTALL/bin/
 			rm -rf $USER_ARCHIVED/pdftk-*
 			echo "OK"
-		) || log_red "Installing pdftk is not implemented on $OS."
+		)
 	) || log_red "pdftk file does not exist."
 )
-is_centos6 && is_failed find_path "pdftk" && abort "pdftk does not exist."
+is_centos && is_failed find_path "pdftk" && log_red "pdftk does not exist."
 
 log_green "-------- Checking MongoDB --------"
 find_path "mongod" && \
 log_blue "Skip MongoDB" || (
-	filename=$(basename $( ls $LINUX_SETUP_HOME/archived/mongodb-* )) && (
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/mongodb-* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/mongodb-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
@@ -610,13 +616,33 @@ find_path "mongod" || abort "mongod does not exist"
 log_green "-------- Checking aha Ansi HTML Adapter --------"
 find_path "aha" && \
 log_blue "Skip aha" || (
-    cd $USER_ARCHIVED
-    status_exec rm -rf $USER_ARCHIVED/aha
-    status_exec git clone 'https://github.com/theZiz/aha.git'
-    cd $USER_ARCHIVED/aha
-    status_exec make install PREFIX=$USER_INSTALL
+	cd $USER_ARCHIVED
+	status_exec rm -rf $USER_ARCHIVED/aha
+	status_exec git clone 'https://github.com/theZiz/aha.git'
+	cd $USER_ARCHIVED/aha
+	status_exec make install PREFIX=$USER_INSTALL
 )
 find_path "mongod" || abort "mongod does not exist"
+
+log_green "-------- FFmpeg --------"
+find_path "ffmpeg" && \
+log_blue "Skip ffmpeg" || (
+	is_centos6 && can_sudo && (
+		status_exec sudo rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+		status_exec sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el6/x86_64/nux-dextop-release-0-2.el6.nux.noarch.rpm
+		status_exec sudo yum install ffmpeg ffmpeg-devel -y
+	)
+	is_centos7 && can_sudo && (
+		status_exec sudo rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+		status_exec sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+		status_exec sudo yum install ffmpeg ffmpeg-devel -y
+	)
+	is_ubuntu && can_sudo && (
+		status_exec sudo add-apt-repository ppa:jonathonf/ffmpeg-4
+		status_exec sudo apt-get install ffmpeg -y
+	)
+)
+can_sudo && find_path "ffmpeg" || abort "ffmpeg does not exist"
 
 log_green "-----------------------------------------------"
 log_green "Environment set up, reopen bash to take effect."

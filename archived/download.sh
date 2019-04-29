@@ -37,9 +37,14 @@ if [[ $uname == 'Linux' ]]; then
 		curl -L -s $jdk_download_url3 | \
 	        egrep -o "http\:\/\/download.oracle\.com\/otn-pub\/java\/jdk\/[8-9](u[0-9]+|\+).*\/jdk-${jdk_version}.*(-|_)linux-(x64|x64_bin).$ext"
 	)
+	jdk_downloaded=0
 	for u in $jdk_download_url4; do
 		status_exec dl_oracle $u
+		jdk_downloaded=1
 	done
+	if [[ $jdk_downloaded == 0 ]]; then
+		status_exec dl_oracle 'https://download.oracle.com/otn-pub/java/jdk/8u201-b09/42970487e3af4f5aa5bca3f542482c60/jdk-8u201-linux-x64.tar.gz'
+	fi
 	
 	pythonURL="https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tar.xz"
 	status_exec dl $pythonURL
@@ -60,6 +65,8 @@ nodejs6URL="https://nodejs.org/download/release/latest-v6.x/"
 wget -c --no-cookies --no-check-certificate -nc --execute robots=off --no-parent -nH --level=1 --recursive --cut-dirs=3 --accept '.tar.gz' --reject '*v?????????*.tar.gz' $nodejs6URL
 nodejs8URL="https://nodejs.org/download/release/latest-v8.x/"
 wget -c --no-cookies --no-check-certificate -nc --execute robots=off --no-parent -nH --level=1 --recursive --cut-dirs=3 --accept '.tar.gz' --reject '*v?????????*.tar.gz' $nodejs8URL
+nodejs10URL="https://nodejs.org/download/release/latest-v10.x/"
+wget -c --no-cookies --no-check-certificate -nc --execute robots=off --no-parent -nH --level=1 --recursive --cut-dirs=3 --accept '.tar.gz' --reject '*v?????????*.tar.gz' $nodejs10URL
 
 redisURL="http://download.redis.io/releases/redis-4.0.8.tar.gz"
 status_exec dl $redisURL
@@ -70,19 +77,16 @@ status_exec dl $phantomjsURL
 mavenURL="http://ftp.cuhk.edu.hk/pub/packages/apache.org/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz"
 status_exec dl $mavenURL
 
-libsodiumURL="http://download.libsodium.org/libsodium/releases/libsodium-1.0.14.tar.gz"
+libsodiumURL="http://download.libsodium.org/libsodium/releases/libsodium-1.0.16.tar.gz"
 zeromqURL="https://github.com/zeromq/zeromq4-1/releases/download/v4.1.6/zeromq-4.1.6.tar.gz"
 status_exec dl $libsodiumURL
 status_exec dl $zeromqURL
 
-jzmqURL="https://github.com/zeromq/jzmq/archive/master.zip"
-status_exec wget -nc -O jzmq-master.zip $jzmqURL
+jzmqURL="https://codeload.github.com/zeromq/jzmq/zip/v3.1.0"
+status_exec wget -nc -O jzmq-3.1.0.zip $jzmqURL
 
-nanomqURL="https://github.com/nanomsg/nanomsg/archive/0.9-beta.tar.gz"
-status_exec wget -nc -O nanomsg-0.9-beta.tar.gz $nanomqURL
-
-wkhtmlURL="https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz"
-status_exec wget -nc -O wkhtmltox-0.12.4_linux-generic-amd64.tar.xz $wkhtmlURL
+nanomqURL="https://github.com/nanomsg/nanomsg/tree/1.1.5"
+status_exec wget -nc -O nanomsg-1.1.5.zip $nanomqURL
 
 pdftkURL="https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/pdftk-2.02-src.zip"
 status_exec dl $pdftkURL
@@ -95,5 +99,8 @@ status_exec dl_dir --cut-dirs=2 -A 'bin.zip' $antURL
 
 moshURL='https://mosh.org/mosh-1.3.2.tar.gz'
 status_exec dl $moshURL
+
+pdftkURL='https://www.linuxglobal.com/static/blog/pdftk-2.02-1.el7.x86_64.rpm'
+status_exec dl $pdftkURL
 
 cd $PWD
