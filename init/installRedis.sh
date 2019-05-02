@@ -2,7 +2,8 @@
 PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-source $DIR/../common/bootstrap.sh NORUBY
+DIR=$DIR/../
+source $DIR/common/bootstrap.sh NORUBY
 
 log_green "-------- Installing Redis -------"
 check_path "redis-server" $USER_INSTALL/bin/redis-server
@@ -11,6 +12,7 @@ if [ $ret == "0" ]; then
 	log_blue "Skip redis."
 else
 	filename=$(basename $( ls $DIR/archived/redis-* ))
+	[ -d $USER_ARCHIVED ] || mkdir -p $USER_ARCHIVED
 	cp -v $DIR/archived/$filename $USER_ARCHIVED/
 	cd $USER_ARCHIVED
 	tar -xf $filename
