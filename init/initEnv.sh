@@ -642,7 +642,7 @@ log_blue "Skip ffmpeg" || (
 		status_exec sudo apt-get install ffmpeg -y
 	)
 )
-can_sudo && find_path "ffmpeg" || abort "ffmpeg does not exist"
+can_sudo && ( find_path "ffmpeg" || log_red "ffmpeg does not exist" )
 
 log_green "-----------------------------------------------"
 log_green "Environment set up, reopen bash to take effect."
