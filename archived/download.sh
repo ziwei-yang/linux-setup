@@ -44,7 +44,7 @@ if [[ $uname == 'Linux' ]]; then
 	done
 	if [[ $jdk_downloaded == 0 ]]; then
 		# Fallback to download from bithkex.
-		status_exec dl 'https://bithkex.com/download/jdk-8u201-linux-x64.tar.gz'
+		status_exec dl 'https://gigo.ai/download/jdk-8u201-linux-x64.tar.gz'
 	fi
 	
 	pythonURL="https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tar.xz"

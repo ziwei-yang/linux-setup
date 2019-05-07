@@ -350,6 +350,7 @@ function setup_sys_env {
 	) || (
 		_lastCPUID=$(cat /proc/cpuinfo | grep processor | tail -n 1 | awk '{print $3}')
 		CPU_CORE=$(($_lastCPUID + 1))
+		[[ $CPU_CORE > 8 ]] && CPU_CORE=8
 		log "CPU Core:$CPU_CORE"
 	)
 
