@@ -357,7 +357,8 @@ log_green "-------- Checking Node.js --------"
 		dirname=$(basename $( ls $USER_ARCHIVED | grep '^node-' ))
 		dirname=${dirname%.tar.gz}
 		cd $USER_ARCHIVED/$dirname
-		if is_centos7 ; then # Node-v10 needs C++ 14
+		# Node-v10 needs C++ 14
+		if is_centos7 && [[ $filehead == 'node-v10' ]]; then
 			scl enable devtoolset-7 "status_exec $USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL"
 			scl enable devtoolset-7 "status_exec make install -j"
 		else
