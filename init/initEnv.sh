@@ -71,7 +71,7 @@ can_sudo && is_centos && (
 		is_centos7 && \
 			status_exec sudo yum -y localinstall $LINUX_SETUP_HOME/archived/pdftk-2.02-1.el7.x86_64.rpm
 		is_centos7 && \
-			status_exec yum_install centos-release-scl
+			status_exec yum_install centos-release-scl scl-utils-build scl-utils
 		is_centos7 && \
 			status_exec yum_install devtoolset-7-gcc-c++
 	)
