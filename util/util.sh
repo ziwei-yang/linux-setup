@@ -375,7 +375,7 @@ function setup_basic_ruby_env {
 			log_blue "git diff exists inside $APD_HOME"
 		return
 	fi
-	log "Cloning aphrodite ruby repo: $APD_HOME"
+	log "$_mail_script is missing, cloning aphrodite ruby repo: $APD_HOME"
 	USER_ARCHIVED="$HOME/archived"
 	cd $USER_ARCHIVED
 	status_exec rm -rf $USER_ARCHIVED/aphrodite

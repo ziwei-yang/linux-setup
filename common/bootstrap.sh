@@ -18,11 +18,10 @@ source $LINUX_SETUP_HOME/util/util.sh
 export LINUX_SETUP_COMMON=$( absolute_path $LINUX_SETUP_HOME )
 export LINUX_SETUP_HOME=$( absolute_path $LINUX_SETUP_HOME )
 
-if [[ $@ != *NORUBY* ]]; then
-	export APD_HOME=$( absolute_path $LINUX_SETUP_HOME/../aphrodite )
-	export APD_BIN="$APD_HOME/bin"
-	setup_basic_ruby_env $@
-fi
+# Basic ruby env is required for sending emails in remote_invoker.
+export APD_HOME=$( absolute_path $LINUX_SETUP_HOME/../aphrodite )
+export APD_BIN="$APD_HOME/bin"
+setup_basic_ruby_env $@
 
 export USER_ARCHIVED="$HOME/archived"
 export USER_INSTALL="$HOME/install"
