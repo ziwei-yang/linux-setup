@@ -53,7 +53,7 @@ function signal_caught {
 }
 
 ######################### ARGS #########################
-start_datetime=$datetime
+start_datetime=$LINUX_SETUP_DATETIME
 log_file=''
 email_recipient=''
 redis_hash=''

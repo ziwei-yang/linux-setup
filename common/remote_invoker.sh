@@ -16,7 +16,7 @@ function finished {
 }
 
 ######################### ARGS #########################
-start_datetime=$datetime
+start_datetime=$LINUX_SETUP_DATETIME
 log_file=''
 email_recipient=''
 # Load email recipient by default.
@@ -80,7 +80,7 @@ shift
 # Prepare log dir.
 if [[ $log_file == '' ]]; then
 	log_dir="$script_dir/logs/$script_basename"
-	log_file="$log_dir/$datetime"
+	log_file="$log_dir/$start_datetime
 	[[ -d $log_dir ]] || \
 		mkdir -p $log_dir || \
 		finished "Log directory $log_dir can not be created!"

@@ -37,6 +37,9 @@ done
 datetime=$( date +"%Y%m%d_%H%M%S_%N" )
 datestr=$( date +"%Y%m%d" )
 datestr_underline=$( date +"%Y_%m_%d" )
+export LINUX_SETUP_DATETIME=$datetime
+export LINUX_SETUP_DATESTR=$datestr
+export LINUX_SETUP_DATESTR_UNDERLINE=$datestr_underline
 
 setup_sys_env
 
