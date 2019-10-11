@@ -5,7 +5,8 @@ PWD=$(pwd)
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 INIT_MODE=$1
-source $DIR/../common/bootstrap.sh NORUBY
+
+source $DIR/../common/bootstrap.sh INIT NORUBY
 
 USER_ARCHIVED="$HOME/archived"
 mkdir -p $USER_INSTALL
@@ -36,10 +37,17 @@ can_sudo && is_centos && (
 	status_exec yum_install epel-release
 )
 
+can_sudo && is_ubuntu && (
+	log_green "-------- Checking Ubuntu Development tools --------"
+	[ $(apt list --installed | grep "build-essential" | wc -l) == "0" ] && \
+		status_exec sudo apt-get -y install 'build-essential' || \
+	 	log_blue "OK"
+)
+
 ( can_sudo || is_mac ) && (
 	log_green "-------- Installing system tools --------"
 	for app in sshfs openssl vim jq awk sed man tmux screen git curl wget \
-		basename tput gpg tree finger nload telnet cmake clang ant
+		basename tput gpg tree finger nload telnet cmake clang ant unzip
 	do
 		find_path $app && continue
 		is_centos && status_exec yum_install $app
@@ -358,13 +366,14 @@ log_green "-------- Checking Node.js --------"
 		dirname=${dirname%.tar.gz}
 		cd $USER_ARCHIVED/$dirname
 		# Node-v10 needs C++ 14
+		# Use -j1 to avoid overheat.
 		if is_centos7 && [[ $filehead == 'node-v10' ]]; then
 			scl enable devtoolset-7 "status_exec $USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL"
-			scl enable devtoolset-7 "status_exec make install -j"
+			scl enable devtoolset-7 "status_exec make install -j1"
 		else
 			status_exec $USER_ARCHIVED/$dirname/configure \
 				--prefix=$USER_INSTALL || abort "configure failed"
-			status_exec make install -j
+			status_exec make install -j1
 		fi
 		[ $? == "0" ] && break
 		log_red "Make failed, skip installing $filename"
@@ -504,7 +513,7 @@ log_blue "Skip jzmq" || (
 		rm -rf $USER_ARCHIVED/jzmq-*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 		cd $USER_ARCHIVED
-		status_exec unzip -o $filename || abort "unzip failed"
+		status_exec unzip -o $filename || abort "unzip $filename failed"
 		rm $filename
 		dirname=${filename%.zip}/jzmq-jni
 		cd $USER_ARCHIVED/$dirname
@@ -639,7 +648,7 @@ log_blue "Skip ffmpeg" || (
 		status_exec sudo yum install ffmpeg ffmpeg-devel -y
 	)
 	is_ubuntu && can_sudo && (
-		status_exec sudo add-apt-repository ppa:jonathonf/ffmpeg-4
+		status_exec sudo add-apt-repository -y ppa:jonathonf/ffmpeg-4
 		status_exec sudo apt-get install ffmpeg -y
 	)
 )
