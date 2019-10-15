@@ -372,7 +372,7 @@ log_green "-------- Checking Node.js --------"
 			scl enable devtoolset-7 "status_exec make install -j1"
 		else
 			status_exec $USER_ARCHIVED/$dirname/configure \
-				--prefix=$USER_INSTALL || abort "configure failed"
+				--prefix=$USER_INSTALL && \
 			status_exec make install -j1
 		fi
 		[ $? == "0" ] && break
