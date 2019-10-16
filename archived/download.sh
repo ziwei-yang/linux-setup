@@ -57,18 +57,6 @@ if [[ $uname == 'Linux' ]]; then
 	status_exec dl $pyPipURL
 fi
 
-# Reject long name binary tar ball.
-nodejs0URL="https://nodejs.org/download/release/latest-v0.12.x/node-v0.12.18.tar.gz"
-status_exec dl $nodejs0URL
-nodejs4URL="https://nodejs.org/download/release/latest-v4.x/"
-wget -c --no-cookies --no-check-certificate -nc --execute robots=off --no-parent -nH --level=1 --recursive --cut-dirs=3 --accept '.tar.gz' --reject '*v?????????*.tar.gz' $nodejs4URL
-nodejs6URL="https://nodejs.org/download/release/latest-v6.x/"
-wget -c --no-cookies --no-check-certificate -nc --execute robots=off --no-parent -nH --level=1 --recursive --cut-dirs=3 --accept '.tar.gz' --reject '*v?????????*.tar.gz' $nodejs6URL
-nodejs8URL="https://nodejs.org/download/release/latest-v8.x/"
-wget -c --no-cookies --no-check-certificate -nc --execute robots=off --no-parent -nH --level=1 --recursive --cut-dirs=3 --accept '.tar.gz' --reject '*v?????????*.tar.gz' $nodejs8URL
-nodejs10URL="https://nodejs.org/download/release/latest-v10.x/"
-wget -c --no-cookies --no-check-certificate -nc --execute robots=off --no-parent -nH --level=1 --recursive --cut-dirs=3 --accept '.tar.gz' --reject '*v?????????*.tar.gz' $nodejs10URL
-
 redisURL="http://download.redis.io/releases/redis-4.0.8.tar.gz"
 status_exec dl $redisURL
 

@@ -332,55 +332,27 @@ log_green "-------- Checking pyenv --------"
 [ -d $HOME/.pyenv ] || \
 	status_exec git clone https://github.com/pyenv/pyenv.git $HOME/.pyenv
 
-log_green "-------- Checking Node.js --------"
-# Only install Node.js within current user.
-# To install Node.js in Centos as root, check this:
-# https://nodejs.org/en/download/package-manager/
-(
-	check_version "node" 'v10' || \
-	check_version "node" 'v8' || \
-	check_version "node" 'v7' || \
-	check_version "node" 'v6' || \
-	check_version "node" 'v5' || \
-	check_version "node" 'v4' || \
-	check_path "node" $USER_INSTALL/bin/node
-) && log_blue "Skip Nodejs." || (
-	# Copy system libs for python
-	[ -d $USER_INSTALL/lib/python$PYTHON_VER ] && \
-		ln -sf /usr/lib64/python*/lib-dynload/bz2.so \
-		$USER_INSTALL/lib/python$PYTHON_VER/
-	for filehead in node-v10 node-v8 node-v7 node-v6 node-v5 node-v4 node-v0
-	do
-		filename=$( ls -1t $LINUX_SETUP_HOME/archived/$filehead* )
-		[ $? != 0 ] && \
-			log_red "File $filehead does not exist" && \
-			continue
-		filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/$filehead* | head -n1 ))
-		log_blue "Installing $filename"
-		rm -rf $USER_ARCHIVED/node-*
-		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
-		cd $USER_ARCHIVED
-		status_exec tar -xf $filename
-		rm $USER_ARCHIVED/$filename
-		dirname=$(basename $( ls $USER_ARCHIVED | grep '^node-' ))
-		dirname=${dirname%.tar.gz}
-		cd $USER_ARCHIVED/$dirname
-		# Node-v10 needs C++ 14
-		# Use -j1 to avoid overheat.
-		if is_centos7 && [[ $filehead == 'node-v10' ]]; then
-			scl enable devtoolset-7 "status_exec $USER_ARCHIVED/$dirname/configure --prefix=$USER_INSTALL"
-			scl enable devtoolset-7 "status_exec make install -j1"
-		else
-			status_exec $USER_ARCHIVED/$dirname/configure \
-				--prefix=$USER_INSTALL && \
-			status_exec make install -j1
-		fi
-		[ $? == "0" ] && break
-		log_red "Make failed, skip installing $filename"
-		log_blue "rm -rf $USER_ARCHIVED/$filehead*"
-		rm -rf $USER_ARCHIVED/node-*
-	done
+log_green "-------- Checking Node Version Manager --------"
+type nvm > /dev/null && \
+	log_blue "Skip NVM." || (
+	log_green "-------- Installing NVM --------"
+	is_centos6 && ( curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.33.6/install.sh | bash )
+	is_centos6 || ( curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash )
 )
+type nvm > /dev/null || source "$HOME/.bashrc"
+type nvm > /dev/null || abort "Failed in installing NVM"
+
+NODE_VER="12"
+is_centos6 && NODE_VER='10'
+log_green "-------- Checking Node.js $NODE_VER --------"
+nvm use $NODE_VER && \
+	log_blue "Skip installing Node.js $NODE_VER" || (
+		log_blue "nvm install $NODE_VER"
+		nvm install $NODE_VER
+		nvm use $NODE_VER
+	)
+nvm use $NODE_VER
+check_version "node" "v$NODE_VER." || abort "Node.js version is still not $NODE_VER"
 assert_path "node"
 assert_path "npm"
 
