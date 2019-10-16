@@ -84,12 +84,12 @@ can_sudo && is_ubuntu && (
 			status_exec yum_install devtoolset-7-gcc-c++
 	)
 	is_ubuntu && (
-		for lib in liblapack3gf libatlas-base-dev \
-			liblapack-dev libblas3gf libblas-dev libxslt1-dev libxslt1.1 \
+		for lib in liblapack3 libatlas-base-dev \
+			liblapack-dev libblas3 libblas-dev libxslt1-dev libxslt1.1 \
 			libxml2-dev libxml2 gfortran imagemagick imagemagick-dev \
 			libpng-dev pdftk libbz2-dev curlftpfs protobuf-compiler \
 			libprotobuf-dev libprotobuf-c-dev libncursesw5-dev \
-			libopenssl-dev libssl-dev libcurl4-openssl-dev \
+			libssl-dev libcurl4-openssl-dev \
 			libmysqlclient-dev libncurses5-dev libncursesw5-dev
 		do
 			status_exec sudo apt-get -y install $lib
