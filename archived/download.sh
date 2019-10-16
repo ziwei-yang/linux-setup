@@ -67,7 +67,9 @@ mavenURL="http://ftp.cuhk.edu.hk/pub/packages/apache.org/maven/maven-3/3.5.4/bin
 status_exec dl $mavenURL
 
 libsodiumURL="http://download.libsodium.org/libsodium/releases/libsodium-1.0.16.tar.gz"
-zeromqURL="https://github.com/zeromq/libzmq/releases/download/v4.3.1/zeromq-4.3.1.tar.gz"
+zeromqURL="https://github.com/zeromq/libzmq/releases/download/v4.3.2/zeromq-4.3.2.tar.gz"
+is_centos6 && \
+	zeromqURL="https://github.com/zeromq/zeromq4-1/releases/download/v4.1.6/zeromq-4.1.6.tar.gz"
 status_exec dl $libsodiumURL
 status_exec dl $zeromqURL
 
