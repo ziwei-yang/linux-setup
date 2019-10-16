@@ -40,7 +40,7 @@ can_sudo && is_centos && (
 can_sudo && is_ubuntu && (
 	log_green "-------- Checking Ubuntu Development tools --------"
 	[ $(apt list --installed | grep "build-essential" | wc -l) == "0" ] && \
-		status_exec sudo apt-get -y install 'build-essential' || \
+		status_exec sudo apt-get -y install 'build-essential' 'libc++-dev' || \
 	 	log_blue "OK"
 )
 
