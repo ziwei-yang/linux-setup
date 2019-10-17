@@ -6,8 +6,6 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
-export LC_ALL="en_US.utf8"
-
 # Global variables.
 export JMX_ARGS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port="
 
@@ -23,6 +21,15 @@ elif [[ $uname == "Darwin" ]]; then
 	export JAVA_HOME="/Library/Java/JavaVirtualMachines/$JAVA_HOME/Contents/Home"
 	VIMRUNTIME=$( ls /usr/share/vim/ | grep -E 'vim[0-9]{2}' | tail -1 )
 	export VIMRUNTIME="/usr/share/vim/$VIMRUNTIME"
+	# Add path for brew
+	export PATH=/usr/local/bin:$PATH
+	export CPATH=/usr/local/include:$CPATH
+	export LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH
+	export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+	export LD_RUN_PATH=/usr/local/lib:$LD_RUN_PATH
+
+	export LC_ALL=en_US.UTF-8  
+	export LANG=en_US.UTF-8
 fi
 
 # PATH
@@ -31,7 +38,7 @@ export M2_HOME=$HOME/archived/$M2_HOME
 export M2="$M2_HOME/bin"
 export PYENV_ROOT=$HOME/.pyenv
 export AWS_ROOT=$HOME/.local
-export PATH=$PYENV_ROOT/bin:$M2:$ANT_HOME/bin:$JAVA_HOME/bin:$HOME/install/bin:$HOME/.rvm/bin:$PATH:$AWS_ROOT/bin
+export PATH=$PYENV_ROOT/bin:$M2:$ANT_HOME/bin:$JAVA_HOME/bin:$HOME/install/bin:$HOME/.rvm/bin:$AWS_ROOT/bin:$PATH
 export CPATH=$HOME/install/include:$CPATH
 export LIBRARY_PATH=$HOME/install/lib:$LIBRARY_PATH
 export LD_LIBRARY_PATH=$HOME/install/lib:$LD_LIBRARY_PATH
