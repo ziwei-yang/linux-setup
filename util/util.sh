@@ -245,6 +245,7 @@ function is_centos6 {
 export -f is_centos6 
 function is_centos7 {
 	[[ $OS == "CentOS Linux release 7"* ]] && return 0
+	[[ $OS == "CentOS Linux release 8"* ]] && return 0
 	return 1
 }
 export -f is_centos7 
