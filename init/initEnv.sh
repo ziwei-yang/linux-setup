@@ -31,10 +31,17 @@ log_green "-------- Refresh bash enviroment -------"
 
 can_sudo && is_centos && (
 	log_green "-------- Checking CentOS Development tools --------"
-	[ $(yum grouplist groupinfo 'Development tools' | grep "Installed" | wc -l) == "0" ] && \
-		status_exec sudo yum -y groupinstall 'Development tools' || \
-	 	log_blue "OK"
-	status_exec yum_install epel-release
+	is_centos8 && (
+		[ $(yum grouplist --installed | grep "Development" | wc -l) == "0" ] && \
+			status_exec sudo yum -y groupinstall 'Development tools' || \
+			log_blue "OK"
+		status_exec yum_install epel-release
+	) || (
+		[ $(yum grouplist groupinfo 'Development tools' | grep "Installed" | wc -l) == "0" ] && \
+			status_exec sudo yum -y groupinstall 'Development tools' || \
+			log_blue "OK"
+		status_exec yum_install epel-release
+	)
 )
 
 can_sudo && is_ubuntu && (
@@ -47,7 +54,8 @@ can_sudo && is_ubuntu && (
 ( can_sudo || is_mac ) && (
 	log_green "-------- Installing system tools --------"
 	for app in sshfs openssl vim jq awk sed man tmux screen git curl wget \
-		basename tput gpg tree finger nload telnet cmake clang ant unzip
+		basename tput gpg tree finger nload telnet cmake clang ant \
+		unzip mosh
 	do
 		find_path $app && continue
 		is_centos && status_exec yum_install $app

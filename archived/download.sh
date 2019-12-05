@@ -47,10 +47,11 @@ if [[ $uname == 'Linux' ]]; then
 		status_exec dl 'https://gigo.ai/download/jdk-8u201-linux-x64.tar.gz'
 	fi
 	
-	pythonURL="https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tar.xz"
+	# 2.7.14 could not be compiled on CentOS 8, 2.7.17 could make it.
+	pythonURL="https://www.python.org/ftp/python/2.7.17/Python-2.7.17.tar.xz"
 	status_exec dl $pythonURL
 	
-	python3URL="https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tar.xz"
+	python3URL="https://www.python.org/ftp/python/3.5.9/Python-3.5.9.tar.xz"
 	status_exec dl $python3URL
 	
 	pyPipURL="https://bootstrap.pypa.io/get-pip.py"
