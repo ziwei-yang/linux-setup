@@ -80,7 +80,7 @@ can_sudo && is_ubuntu && (
 			ImageMagick ImageMagick-devel libpng-devel gcc gcc-java libgcj \
 			libgcj-devel gcc-c++ bzip2-devel shadowsocks-libev curlftpfs \
 			golang gmp-devel protobuf protobuf-devel ncurses-devel \
-			openssl-devel libcurl-devel mysql-devel
+			openssl-devel libcurl-devel mysql-devel libevent-devel
 		do
 			status_exec yum_install $lib
 		done
@@ -98,7 +98,8 @@ can_sudo && is_ubuntu && (
 			libpng-dev pdftk libbz2-dev curlftpfs protobuf-compiler \
 			libprotobuf-dev libprotobuf-c-dev libncursesw5-dev \
 			libssl-dev libcurl4-openssl-dev \
-			libmysqlclient-dev libncurses5-dev libncursesw5-dev
+			libmysqlclient-dev libncurses5-dev libncursesw5-dev \
+			libevent-dev
 		do
 			status_exec sudo apt-get -y install $lib
 		done
@@ -633,6 +634,27 @@ log_blue "Skip ffmpeg" || (
 	)
 )
 can_sudo && ( find_path "ffmpeg" || log_red "ffmpeg does not exist" )
+
+TMUX_VER=2.9
+check_version "tmux" $TMUX_VER || (
+	log_green "-------- Installing tmux --------"
+	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/tmux* | head -n1 )) && (
+		rm -rf $USER_ARCHIVED/tmux*
+		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
+		cd $USER_ARCHIVED
+		status_exec tar xf $USER_ARCHIVED/$filename || \
+			abort "Uncompressing tmux failed"
+		status_exec rm $USER_ARCHIVED/$filename
+		dirname=$(basename $USER_ARCHIVED/tmux*)
+		cd $USER_ARCHIVED/$dirname/
+		status_exec $USER_ARCHIVED/$dirname/configure \
+			--prefix=$USER_INSTALL
+		status_exec make install || \
+			abort "Making tmux failed"
+		rm -rf $USER_ARCHIVED/$dirname
+		echo "OK"
+	)
+)
 
 log_green "-----------------------------------------------"
 log_green "Environment set up, reopen bash to take effect."

@@ -48,51 +48,54 @@ if [[ $uname == 'Linux' ]]; then
 	fi
 	
 	# 2.7.14 could not be compiled on CentOS 8, 2.7.17 could make it.
-	pythonURL="https://www.python.org/ftp/python/2.7.17/Python-2.7.17.tar.xz"
-	status_exec dl $pythonURL
+	python_url="https://www.python.org/ftp/python/2.7.17/Python-2.7.17.tar.xz"
+	status_exec dl $python_url
 	
-	python3URL="https://www.python.org/ftp/python/3.5.9/Python-3.5.9.tar.xz"
-	status_exec dl $python3URL
+	python3_url="https://www.python.org/ftp/python/3.5.9/Python-3.5.9.tar.xz"
+	status_exec dl $python3_url
 	
-	pyPipURL="https://bootstrap.pypa.io/get-pip.py"
-	status_exec dl $pyPipURL
+	pyPip_url="https://bootstrap.pypa.io/get-pip.py"
+	status_exec dl $pyPip_url
 fi
 
-redisURL="http://download.redis.io/releases/redis-4.0.8.tar.gz"
-status_exec dl $redisURL
+redis_url="http://download.redis.io/releases/redis-4.0.8.tar.gz"
+status_exec dl $redis_url
 
-phantomjsURL="http://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2"
-status_exec dl $phantomjsURL
+phantomjs_url="http://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2"
+status_exec dl $phantomjs_url
 
-mavenURL="http://ftp.cuhk.edu.hk/pub/packages/apache.org/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz"
-status_exec dl $mavenURL
+maven_url="http://ftp.cuhk.edu.hk/pub/packages/apache.org/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz"
+status_exec dl $maven_url
 
-libsodiumURL="http://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz"
-zeromqURL="https://github.com/zeromq/libzmq/releases/download/v4.3.2/zeromq-4.3.2.tar.gz"
+libsodium_url="http://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz"
+zeromq_url="https://github.com/zeromq/libzmq/releases/download/v4.3.2/zeromq-4.3.2.tar.gz"
 is_centos6 && \
-	zeromqURL="https://github.com/zeromq/zeromq4-1/releases/download/v4.1.6/zeromq-4.1.6.tar.gz"
-status_exec dl $libsodiumURL
-status_exec dl $zeromqURL
+	zeromq_url="https://github.com/zeromq/zeromq4-1/releases/download/v4.1.6/zeromq-4.1.6.tar.gz"
+status_exec dl $libsodium_url
+status_exec dl $zeromq_url
 
-jzmqURL="https://github.com/zeromq/jzmq/archive/master.zip"
-status_exec wget -nc -O jzmq-master.zip $jzmqURL
+jzmq_url="https://github.com/zeromq/jzmq/archive/master.zip"
+status_exec wget -nc -O jzmq-master.zip $jzmq_url
 
-nanomqURL="https://github.com/nanomsg/nanomsg/archive/1.1.5.zip"
-status_exec wget -nc -O nanomsg-1.1.5.zip $nanomqURL
+nanomq_url="https://github.com/nanomsg/nanomsg/archive/1.1.5.zip"
+status_exec wget -nc -O nanomsg-1.1.5.zip $nanomq_url
 
-pdftkURL="https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/pdftk-2.02-src.zip"
-status_exec dl $pdftkURL
+pdftk_url="https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/pdftk-2.02-src.zip"
+status_exec dl $pdftk_url
 
-mongoURL="https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.2.tgz"
-status_exec dl $mongoURL
+mongo_url="https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.2.tgz"
+status_exec dl $mongo_url
 
-antURL="http://apache.communilink.net/ant/binaries/"
-status_exec dl_dir --cut-dirs=2 -A 'bin.zip' $antURL
+ant_url="http://apache.communilink.net/ant/binaries/"
+status_exec dl_dir --cut-dirs=2 -A 'bin.zip' $ant_url
 
-moshURL='https://mosh.org/mosh-1.3.2.tar.gz'
-status_exec dl $moshURL
+mosh_url='https://mosh.org/mosh-1.3.2.tar.gz'
+status_exec dl $mosh_url
 
-pdftkURL='https://www.linuxglobal.com/static/blog/pdftk-2.02-1.el7.x86_64.rpm'
-status_exec dl $pdftkURL
+pdftk_url='https://www.linuxglobal.com/static/blog/pdftk-2.02-1.el7.x86_64.rpm'
+status_exec dl $pdftk_url
+
+tmux_url='https://github.com/tmux/tmux/releases/download/2.9a/tmux-2.9a.tar.gz'
+status_exec dl $tmux_url
 
 cd $PWD
