@@ -12,12 +12,12 @@ export JMX_ARGS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.l
 # Platform specified aliases.
 if [[ $uname == "Linux" ]]; then
         # Only when java/ant missing by default, or is pointed to ~/archived/ already.
-        which java || java_missed=1
+        which java 2>&1 > /dev/null || java_missed=1
         if [[ $java_missed == 1 ]] || [[ $( which java ) == $HOME/archived/* ]]; then
                 JAVA_HOME=$( ls $HOME/archived/ | grep jdk | grep -v .gz | tail -1 )
                 export JAVA_HOME=$HOME/archived/$JAVA_HOME
         fi
-        which ant || ant_missed=1
+        which ant 2>&1 > /dev/null || ant_missed=1
         if [[ $ant_missed == 1 ]] || [[ $( which ant ) == $HOME/archived/* ]]; then
                 ANT_HOME=$( ls $HOME/archived/ | grep apache-ant| grep -v .zip | tail -1 )
                 export ANT_HOME=$HOME/archived/$ANT_HOME

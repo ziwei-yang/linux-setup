@@ -370,10 +370,10 @@ check_version "node" "v$NODE_VER." || abort "Node.js version is still not $NODE_
 assert_path "node"
 assert_path "npm"
 
-log_green "-------- CheckingJava 8+ -------"
+log_green "-------- Checking Java 8+ -------"
 java_ver=`java -version 2>&1 | grep 'java version'`
-full_java_ver=`java -version 2>&1 `
-([[ $java_ver == *1.8.* ]] || [[ $full_java_ver == "openjdk "??.* ]]) && \
+full_java_ver=`java -version 2>&1`
+([[ $java_ver == *1.8.* ]] || [[ $full_java_ver == 'openjdk version "'??.* ]]) && \
 log_blue "Current JAVA:$full_java_ver" || (
 	is_mac && \
 		brew cask install java
