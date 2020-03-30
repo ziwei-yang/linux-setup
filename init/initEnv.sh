@@ -58,7 +58,7 @@ can_sudo && is_ubuntu && (
 
 ( can_sudo || is_mac ) && (
 	log_green "-------- Installing system tools --------"
-	for app in sshfs openssl vim jq awk sed man tmux screen git curl wget \
+	for app in sshfs openssl vim jq gawk awk sed man tmux screen git curl wget \
 		basename tput gpg tree finger nload telnet cmake clang ant \
 		unzip mosh
 	do
@@ -138,6 +138,10 @@ can_sudo && is_ubuntu && (
 		echo "Checking scipy in brew" && \
 			[ $(echo $list | grep scipy | wc -l) == '0' ] && \
 			status_exec brew install scipy --with-openblas
+                # Mac OSX's GNU sed is installed as gsed, homebrew 'gnu-sed' to get it
+		echo "Checking gnu-sed in brew" && \
+			[ $(echo $list | grep 'gnu-sed' | wc -l) == '0' ] && \
+			status_exec brew install gnu-sed
 	)
 	echo "OK"
 ) || log_red "-------- Skip installing system tools --------"
