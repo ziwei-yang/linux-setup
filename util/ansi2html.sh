@@ -93,9 +93,10 @@ fi
 
 # Mac OSX's GNU sed is installed as gsed
 # use e.g. homebrew 'gnu-sed' to get it
+sed_bin=sed
 if ! sed --version >/dev/null 2>&1; then
   if gsed --version >/dev/null 2>&1; then
-    alias sed=gsed
+    sed_bin=gsed
   else
     echo "Error, can't find an acceptable GNU sed." >&2
     exit 1
@@ -182,7 +183,7 @@ p='\x1b\['        #shortcut to match escape codes
 
 # Handle various xterm control sequences.
 # See /usr/share/doc/xterm-*/ctlseqs.txt
-sed "
+$sed_bin "
 # escape ampersand and quote
 s#&#\&amp;#g; s#\"#\&quot;#g;
 s#\x1b[^\x1b]*\x1b\\\##g  # strip anything between \e and ST
@@ -212,7 +213,7 @@ s#${p}[0-9;?]*[^0-9;?m]##g
 " |
 
 # Normalize the input before transformation
-sed "
+$sed_bin "
 # escape HTML (ampersand and quote done above)
 s#>#\&gt;#g; s#<#\&lt;#g;
 
@@ -242,7 +243,7 @@ s#${p}0m#\"R;#g
 " |
 
 # Convert SGR sequences to HTML
-sed "
+$sed_bin "
 # common combinations to minimise html (optional)
 :f
 s#${p}3[0-7]m${p}3\([0-7]\)m#${p}3\1m#g; t f
@@ -279,7 +280,7 @@ s#${p}[0-9;]*m##g # strip unhandled codes
 #  3. never transliterate between &; or <> chars
 #  4. track x,y movements and active display mode at each position
 #  5. buffer line/screen and dump when required
-sed "
+$sed_bin "
 # change 'smacs' and 'rmacs' to a single char so that we can easily do
 # negative matching, without using look-behind expressions etc.
 s#\x1b(0#\"T1;#g;
