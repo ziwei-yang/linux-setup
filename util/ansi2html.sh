@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Convert ANSI (terminal) colours and attributes to HTML
 
@@ -89,7 +89,7 @@ fi
 
 [ "$1" = "--bg=dark" ] && { dark_bg=yes; shift; }
 
-[[ "$1" == "--meta="* ]] && { custom_meta=$1; custom_meta=${custom_meta:7} shift; }
+[[ "$1" == "--meta="* ]] && { custom_meta=$1; custom_meta=${custom_meta:7}; shift; }
 
 # Mac OSX's GNU sed is installed as gsed
 # use e.g. homebrew 'gnu-sed' to get it
