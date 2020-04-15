@@ -142,7 +142,7 @@ inoremap <C-h> <Esc>:tabnext<CR>
 
 " Display extra whitespace and tab
 " set list listchars=tab:»·,trail:·
-set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
+" set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
 
 " highlight 80 width char
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
@@ -186,6 +186,7 @@ let @t = '0i	j'
 " Automatic indentation for different languange.
 autocmd FileType html setlocal shiftwidth=2 tabstop=2
 autocmd FileType ruby setlocal shiftwidth=2 tabstop=2
+autocmd FileType python setlocal shiftwidth=4 tabstop=4
 autocmd Filetype javascript setlocal ts=4 sw=4 sts=0
 autocmd Filetype coffeescript setlocal ts=4 sw=4 sts=0
 autocmd Filetype jade setlocal ts=4 sw=4 sts=0
