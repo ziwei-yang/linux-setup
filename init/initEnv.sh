@@ -645,7 +645,7 @@ log_blue "Skip ffmpeg" || (
 )
 can_sudo && ( find_path "ffmpeg" || log_red "ffmpeg does not exist" )
 
-TMUX_VER=2.9
+TMUX_VER=3.1
 check_version "tmux" $TMUX_VER || (
 	log_green "-------- Installing tmux --------"
 	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/tmux* | head -n1 )) && (
