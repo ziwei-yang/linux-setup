@@ -285,6 +285,7 @@ is_linux && (
 			dirname=${filename%.tar.xz}
 			cd $USER_ARCHIVED/$dirname
 			status_exec $USER_ARCHIVED/$dirname/configure \
+                                --enable-unicode=ucs4 \
 				--prefix=$USER_INSTALL \
 				--exec-prefix=$USER_INSTALL || \
 				abort "configure failed"
