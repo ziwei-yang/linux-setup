@@ -16,11 +16,13 @@ if [[ $uname == "Linux" ]]; then
         if [[ $java_missed == 1 ]] || [[ $( which java ) == $HOME/archived/* ]]; then
                 JAVA_HOME=$( ls $HOME/archived/ | grep jdk | grep -v .gz | tail -1 )
                 export JAVA_HOME=$HOME/archived/$JAVA_HOME
+                export PATH=$JAVA_HOME/bin:$PATH
         fi
         which ant 2>&1 > /dev/null || ant_missed=1
         if [[ $ant_missed == 1 ]] || [[ $( which ant ) == $HOME/archived/* ]]; then
                 ANT_HOME=$( ls $HOME/archived/ | grep apache-ant| grep -v .zip | tail -1 )
                 export ANT_HOME=$HOME/archived/$ANT_HOME
+                export PATH=$ANT_HOME/bin:$PATH
         fi
 elif [[ $uname == "Darwin" ]]; then
 	export PS1='\u:\W$'
@@ -45,7 +47,7 @@ export M2_HOME=$HOME/archived/$M2_HOME
 export M2="$M2_HOME/bin"
 export PYENV_ROOT=$HOME/.pyenv
 export AWS_ROOT=$HOME/.local
-export PATH=$PYENV_ROOT/bin:$M2:$ANT_HOME/bin:$JAVA_HOME/bin:$HOME/install/bin:$HOME/.rvm/bin:$AWS_ROOT/bin:$PATH
+export PATH=$PYENV_ROOT/bin:$M2:$HOME/install/bin:$HOME/.rvm/bin:$AWS_ROOT/bin:$PATH
 export CPATH=$HOME/install/include:$CPATH
 export LIBRARY_PATH=$HOME/install/lib:$LIBRARY_PATH
 export LD_LIBRARY_PATH=$HOME/install/lib:$LD_LIBRARY_PATH
