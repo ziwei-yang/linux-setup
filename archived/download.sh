@@ -51,7 +51,7 @@ if [[ $uname == 'Linux' ]]; then
 	python_url="https://www.python.org/ftp/python/2.7.17/Python-2.7.17.tar.xz"
 	status_exec dl $python_url
 	
-	python3_url="https://www.python.org/ftp/python/3.5.9/Python-3.5.9.tar.xz"
+	python3_url="https://www.python.org/ftp/python/3.7.8/Python-3.7.8.tar.xz"
 	status_exec dl $python3_url
 	
 	pyPip_url="https://bootstrap.pypa.io/get-pip.py"
