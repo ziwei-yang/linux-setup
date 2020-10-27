@@ -8,9 +8,9 @@ source $DIR/../common/bootstrap.sh NORUBY
 # use; install
 if [[ $os == CentOS* ]]; then
   if $1 == "install"; then
-    status_exec conda create --name $2 $3
+    status_exec ~/miniconda/bin/conda create --name $2 $3
   elif $1 == "use"; then
-    status_exec source activate $2
+    status_exec source ~/miniconda/bin/activate $2
   elif $1 == "help"; then
     echo "install env_name python_ver"
     echo "use env_name"
