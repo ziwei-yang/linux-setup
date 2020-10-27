@@ -6,22 +6,22 @@ source $DIR/../common/bootstrap.sh NORUBY
 
 os=$( osinfo )
 USER=$( whoami )
-if [[ $USER != 'root' ]]; then
-	echo Current user must be root.
-	exit -1
-fi
 
 for app in conda
 do
 	find_path $app && continue
 	if [[ $os == CentOS* ]]; then
-		can_sudo || abort "Must be allowed"
-		status_exec yum -y install $app
+		status_exec wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
+		status_exec bash ~/miniconda.sh -b -p $HOME/miniconda
 	elif [[ $os == Ubuntu* ]]; then
-		can_sudo || abort "Must be allowed"
-		status_exec apt-get -y install $app
+		status_exec wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
+		status_exec bash ~/miniconda.sh -b -p $HOME/miniconda
 	elif [[ $os == "Darwin" ]]; then
-		status_exec brew install $app
+		status_exec wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
+		status_exec bash ~/miniconda.sh -b -p $HOME/miniconda
+	elif [[ $os == MacOS* ]]; then
+	  status_exec wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O ~/miniconda.sh
+	  status_exec bash ~/miniconda.sh -b -p $HOME/miniconda
 	fi
 done
 
