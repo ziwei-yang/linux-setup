@@ -5,6 +5,8 @@ SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 source $DIR/../common/bootstrap.sh NORUBY
 
+os=$( osinfo )
+
 # use; install
 if [[ $os == CentOS* ]]; then
   if $1 == "install"; then
