@@ -93,6 +93,8 @@ elif [[ $uname == "Darwin" ]]; then
 	alias RAM_DISK="diskutil erasevolume HFS+ 'RAM Disk' \`hdiutil attach -nomount ram://1048576\`"
 fi
 
+export CONDA_HOME=$HOME/miniconda
+# [ -d $HOME/miniconda/bin ] && export PATH=$HOME/miniconda/bin:$PATH
 
 [ -z $GEM_HOME ] || PATH=$GEM_HOME/bin:$PATH
 
