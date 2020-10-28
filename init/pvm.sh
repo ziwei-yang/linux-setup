@@ -13,7 +13,7 @@ echo "Sourcing init_conda.sh"
 [ ! -f $CONDA_HOME/bin/init_conda.sh ] && abort "Error in sourcing init_conda.sh"
 source $CONDA_HOME/bin/init_conda.sh
 
-source "/home/adam/miniconda/etc/profile.d/conda.sh"
+source "$HOME/miniconda/etc/profile.d/conda.sh"
 
 # use; install
 if [[ $os == CentOS* ]]; then
