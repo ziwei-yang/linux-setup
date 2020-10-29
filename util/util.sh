@@ -374,10 +374,13 @@ function setup_basic_ruby_env {
 	check_gem 'mail' || gem install 'mail' || abort "Gem mail installation failed."
 	_mail_script=$APD_HOME/bin/mail_task.rb
 	if [[ -f $_mail_script ]]; then
-		# Try to pull latest version if no diff exists.
+		# Try to pull latest version in background if no diff exists.
 		_diff=$( cd $APD_HOME && git diff )
-		[[ -z $_diff ]] && ( cd $APD_HOME && status_exec git pull ) || \
+		if [[ -z $_diff ]]; then
+			( cd $APD_HOME && status_exec git pull & )
+		else
 			log_blue "git diff exists inside $APD_HOME"
+		fi
 		return
 	fi
 	log "$_mail_script is missing, cloning aphrodite ruby repo: $APD_HOME"
