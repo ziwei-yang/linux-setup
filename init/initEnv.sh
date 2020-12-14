@@ -119,25 +119,27 @@ can_sudo && is_ubuntu && (
 # 		echo "Checking brew tap homebrew/python" && \
 # 			[ $(echo $taps | grep homebrew/python | wc -l) == '0' ] && \
 # 			status_exec brew tap homebrew/python
-		echo "Checking brew list"
-		list=$(brew list)
-		for app in python lapack openblas \
-			imagemagick graphviz py2cairo qt pyqt
+		echo "Checking brew list --formula"
+		# Skip python libraries and numpy on macos
+		list=$(brew list --formula)
+		for app in python \
+			# lapack openblas \
+			# imagemagick graphviz py2cairo qt pyqt
 			# mysql-connector-c
 		do
 			echo "Checking $app in brew" && \
 				[ $(echo $list | grep $app | wc -l) == '0' ] && \
 				status_exec brew install $app
 		done
-		echo "Checking cairo in brew" && \
-			[ $(echo $list | grep cairo | wc -l) == '0' ] && \
-			status_exec brew install cairo --without-x
-		echo "Checking numpy in brew" && \
-			[ $(echo $list | grep numpy| wc -l) == '0' ] && \
-			status_exec brew install numpy --with-openblas
-		echo "Checking scipy in brew" && \
-			[ $(echo $list | grep scipy | wc -l) == '0' ] && \
-			status_exec brew install scipy --with-openblas
+# 		echo "Checking cairo in brew" && \
+# 			[ $(echo $list | grep cairo | wc -l) == '0' ] && \
+# 			status_exec brew install cairo --without-x
+# 		echo "Checking numpy in brew" && \
+# 			[ $(echo $list | grep numpy| wc -l) == '0' ] && \
+# 			status_exec brew install numpy --with-openblas
+# 		echo "Checking scipy in brew" && \
+# 			[ $(echo $list | grep scipy | wc -l) == '0' ] && \
+# 			status_exec brew install scipy --with-openblas
                 # Mac OSX's GNU sed is installed as gsed, homebrew 'gnu-sed' to get it
 		echo "Checking gnu-sed in brew" && \
 			[ $(echo $list | grep 'gnu-sed' | wc -l) == '0' ] && \
@@ -210,7 +212,7 @@ check_path "rvm" $HOME/.rvm/bin/rvm && \
 # To start using RVM you need to run source ~/.rvm/scripts/rvm
 source $HOME/.rvm/scripts/rvm
 
-RUBY_VER="2.4"
+RUBY_VER="2.7"
 log_green "-------- Checking Ruby $RUBY_VER --------"
 rvm use $RUBY_VER && \
 	log_blue "Skip installing Ruby $RUBY_VER" || (
@@ -270,9 +272,10 @@ check_path "phantomjs" $USER_INSTALL/bin/phantomjs && \
 log_green "-------- Checking Python 2.7 --------"
 PYTHON_VER="2.7"
 is_mac && (
-	check_version "python" $PYTHON_VER && \
-		log_blue "Skip python $PYTHON_VER" || \
-		status_exec brew install python
+	log_blue "Skip legacy python $PYTHON_VER for macos"
+# 	check_version "python" $PYTHON_VER && \
+# 		log_blue "Skip python $PYTHON_VER" || \
+# 		status_exec brew install python
 )
 is_linux && (
 	check_path "python" $USER_INSTALL/bin/python && \
@@ -297,17 +300,17 @@ is_linux && (
 		) || log_red "Python 2 files does not exist"
 	)
 )
-check_version "python" $PYTHON_VER || abort "Python $PYTHON_VER is not in bin path."
+if [[ is_linux ]]; then
+	check_version "python" $PYTHON_VER || abort "Python $PYTHON_VER is not in bin path."
 
-log_green "-------- Checking Python pip --------"
-is_linux && (
+	log_green "-------- Checking legacy Python pip --------"
 	check_path "pip" $USER_INSTALL/bin/pip && \
 	log_blue "pip for Python $PYTHON_VER is exist." || (
 		[ -f $LINUX_SETUP_HOME/archived/get-pip.py ] && \
 			status_exec python $LINUX_SETUP_HOME/archived/get-pip.py || \
 			log_red "File $LINUX_SETUP_HOME/archived/get-pip.py does not exist"
 	)
-)
+fi
 
 log_green "-------- Checking Python 3.X --------"
 PYTHON3_VER="3."
@@ -347,16 +350,17 @@ is_linux && (
 	)
 )
 
-log_green "-------- Checking pyenv --------"
-[ -d $HOME/.pyenv ] || \
-	status_exec git clone https://github.com/pyenv/pyenv.git $HOME/.pyenv
+# Use installConda.sh instead of pyenv
+# log_green "-------- Checking pyenv --------"
+# [ -d $HOME/.pyenv ] || \
+# 	status_exec git clone https://github.com/pyenv/pyenv.git $HOME/.pyenv
 
 log_green "-------- Checking Node Version Manager --------"
 type nvm > /dev/null && \
 	log_blue "Skip NVM." || (
 	log_green "-------- Installing NVM --------"
 	is_centos6 && ( curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.33.6/install.sh | bash )
-	is_centos6 || ( curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash )
+	is_centos6 || ( curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash )
 )
 type nvm > /dev/null || source "$HOME/.bashrc"
 type nvm > /dev/null || abort "Failed in installing NVM"
@@ -378,10 +382,12 @@ assert_path "npm"
 log_green "-------- Checking Java 8+ -------"
 java_ver=`java -version 2>&1 | grep 'java version'`
 full_java_ver=`java -version 2>&1`
-([[ $java_ver == *1.8.* ]] || [[ $full_java_ver == 'openjdk version "'??.* ]]) && \
+([[ $java_ver == *1.8.* ]] || \
+	[[ $full_java_ver == 'openjdk version "'??.* ]] || \
+	[[ $full_java_ver == 'java version "'??.* ]]) && \
 log_blue "Current JAVA:$full_java_ver" || (
 	is_mac && \
-		brew cask install java
+		brew install --cask oracle-jdk
 	is_linux && (
 		filename=$(basename "$( ls -1t $LINUX_SETUP_HOME/archived/jdk-8u* | head -n1 )" ) && (
 			rm -rf $USER_ARCHIVED/jdk-*
@@ -596,24 +602,24 @@ log_blue "Skip pdftk" || (
 )
 is_centos && is_failed find_path "pdftk" && log_red "pdftk does not exist."
 
-log_green "-------- Checking MongoDB --------"
-find_path "mongod" && \
-log_blue "Skip MongoDB" || (
-	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/mongodb-* | head -n1 )) && (
-		rm -rf $USER_ARCHIVED/mongodb-*
-		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
-		cd $USER_ARCHIVED
-		status_exec tar -zxf $USER_ARCHIVED/$filename || \
-			abort "Extract mongodb failed"
-		rm $USER_ARCHIVED/$filename
-		dirname=$(basename $USER_ARCHIVED/mongodb-*)
-		cp -v $USER_ARCHIVED/$dirname/bin/* $USER_INSTALL/bin/ || \
-			abort "Extract mongodb failed"
-		rm -rf $USER_ARCHIVED/$dirname
-		echo "OK"
-	) || log_red "MongoDB file does not exist."
-)
-find_path "mongod" || abort "mongod does not exist"
+# log_green "-------- Checking MongoDB --------"
+# find_path "mongod" && \
+# log_blue "Skip MongoDB" || (
+# 	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/mongodb-* | head -n1 )) && (
+# 		rm -rf $USER_ARCHIVED/mongodb-*
+# 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
+# 		cd $USER_ARCHIVED
+# 		status_exec tar -zxf $USER_ARCHIVED/$filename || \
+# 			abort "Extract mongodb failed"
+# 		rm $USER_ARCHIVED/$filename
+# 		dirname=$(basename $USER_ARCHIVED/mongodb-*)
+# 		cp -v $USER_ARCHIVED/$dirname/bin/* $USER_INSTALL/bin/ || \
+# 			abort "Extract mongodb failed"
+# 		rm -rf $USER_ARCHIVED/$dirname
+# 		echo "OK"
+# 	) || log_red "MongoDB file does not exist."
+# )
+# find_path "mongod" || abort "mongod does not exist"
 
 log_green "-------- Checking aha Ansi HTML Adapter --------"
 find_path "aha" && \
@@ -624,7 +630,7 @@ log_blue "Skip aha" || (
 	cd $USER_ARCHIVED/aha
 	status_exec make install PREFIX=$USER_INSTALL
 )
-find_path "mongod" || abort "mongod does not exist"
+find_path "aha" || abort "aha does not exist"
 
 log_green "-------- FFmpeg --------"
 find_path "ffmpeg" && \
