@@ -19,8 +19,11 @@ echo "Sourcing $CONDA_HOME/etc/profile.d/conda.sh"
 	abort "Error in sourcing $CONDA_HOME/etc/profile.d/conda.sh"
 source "$CONDA_HOME/etc/profile.d/conda.sh"
 
+py_ver=$2
+[ ! -z $3 ] && py_ver=$3
+
 if [[ $1 == "install" ]]; then
-	$CONDA_HOME/bin/conda create --name $2 python=$2
+	$CONDA_HOME/bin/conda create --name $2 python=$py_ver
 elif [[ $1 == "use" ]]; then
 	echo $CONDA_HOME/bin/conda activate $2
 	source $CONDA_HOME/bin/activate $2
@@ -28,6 +31,7 @@ elif [[ $1 == "envs" ]]; then
 	$CONDA_HOME/bin/conda info --envs
 elif [[ $1 == "help" ]]; then
 	echo "install env_name python_ver. Example: install py3.8 3.8"
+	echo "install python_ver. Example: install 3.8"
 	echo "use env_name. Example: use py3.8"
 	echo "envs. Example: envs"
 else
