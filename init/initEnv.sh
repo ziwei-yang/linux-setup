@@ -36,6 +36,7 @@ can_sudo && is_centos && (
 			status_exec sudo yum -y groupinstall 'Development tools' || \
 			log_blue "OK"
 		status_exec yum_install epel-release
+		status_exec yum config-manager --set-enabled PowerTools # CentOS 8 Only
 	) || (
 		[ $(yum grouplist groupinfo 'Development tools' | grep "Installed" | wc -l) == "0" ] && \
 			status_exec sudo yum -y groupinstall 'Development tools' || \
