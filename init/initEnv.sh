@@ -100,7 +100,8 @@ can_sudo && is_ubuntu && (
 	is_ubuntu && (
 		for lib in liblapack3 libatlas-base-dev \
 			liblapack-dev libblas3 libblas-dev libxslt1-dev libxslt1.1 \
-			libxml2-dev libxml2 gfortran imagemagick imagemagick-dev \
+			libxml2-dev libxml2 gfortran \
+			imagemagick imagemagick-dev libmagickwand-dev \
 			libpng-dev pdftk libbz2-dev curlftpfs protobuf-compiler \
 			libprotobuf-dev libprotobuf-c-dev libncursesw5-dev \
 			libssl-dev libcurl4-openssl-dev \
