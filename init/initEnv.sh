@@ -79,7 +79,7 @@ can_sudo && is_ubuntu && (
 		is_centos && status_exec yum_install bind-utils
 		is_ubuntu && status_exec sudo apt-get -y install dnsutils
 	)
-	# Other library.
+	# Other libraries.
 	is_centos && (
 		for lib in lapack lapack-devel blas atlas-devel \
 			blas-devel libxslt-devel libxslt libxml2-devel libxml2 \
@@ -146,6 +146,9 @@ can_sudo && is_ubuntu && (
 		echo "Checking gnu-sed in brew" && \
 			[ $(echo $list | grep 'gnu-sed' | wc -l) == '0' ] && \
 			status_exec brew install gnu-sed
+		echo "Checking imagemagick in brew" && \
+			[ $(echo $list | grep 'imagemagick' | wc -l) == '0' ] && \
+			status_exec brew install imagemagick
 	)
 	echo "OK"
 ) || log_red "-------- Skip installing system tools --------"
