@@ -657,9 +657,12 @@ log_blue "Skip ffmpeg" || (
 )
 can_sudo && ( find_path "ffmpeg" || log_red "ffmpeg does not exist" )
 
-TMUX_VER=3.1
-find_path "tmux" || (
-	log_green "-------- Installing tmux --------"
+TMUX_VER=3.1 # From 3.1, tmux can auto-scale size to active window
+tmux_ver=$( tmux -V )
+log_blue $tmux_ver
+find_path "tmux" && [[ $tmux_ver > 'tmux 3.1' ]] && log_green "tmux version looks good"
+( find_path "tmux" && tmux_ver=$( tmux -V ) && [[ $tmux_ver > 'tmux 3.1' ]] ) || (
+	log_green "-------- Installing tmux $TMUX_VER --------"
 	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/tmux* | head -n1 )) && (
 		rm -rf $USER_ARCHIVED/tmux*
 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
