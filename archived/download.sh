@@ -95,7 +95,8 @@ status_exec dl $mosh_url
 pdftk_url='https://www.linuxglobal.com/static/blog/pdftk-2.02-1.el7.x86_64.rpm'
 status_exec dl $pdftk_url
 
-tmux_url='https://github.com/tmux/tmux/releases/download/2.9a/tmux-2.9a.tar.gz'
+tmux_url='https://github.com/tmux/tmux/releases/download/3.1c/tmux-3.1c.tar.gz'
+rm -f tmux-2*.tar.gz # Delete old version
 status_exec dl $tmux_url
 
 cd $PWD
