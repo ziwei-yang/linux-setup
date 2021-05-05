@@ -64,7 +64,8 @@ status_exec dl $redis_url
 phantomjs_url="http://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2"
 status_exec dl $phantomjs_url
 
-maven_url="http://ftp.cuhk.edu.hk/pub/packages/apache.org/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz"
+maven_url="https://downloads.apache.org/maven/maven-3/3.8.1/binaries/apache-maven-3.8.1-bin.tar.gz"
+rm -f apache-maven-3.5*.gar.gz # Delete old version
 status_exec dl $maven_url
 
 libsodium_url="http://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz"
@@ -96,7 +97,7 @@ pdftk_url='https://www.linuxglobal.com/static/blog/pdftk-2.02-1.el7.x86_64.rpm'
 status_exec dl $pdftk_url
 
 tmux_url='https://github.com/tmux/tmux/releases/download/3.1c/tmux-3.1c.tar.gz'
-rm -f tmux-2*.tar.gz # Delete old version
+rm -f tmux-2*.tar.gz
 status_exec dl $tmux_url
 
 cd $PWD
