@@ -13,6 +13,7 @@ export JMX_ARGS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.l
 if [[ $uname == "Linux" ]]; then
         # Only when java/ant missing by default, or is pointed to ~/archived/ already.
         which java 2>&1 > /dev/null || java_missed=1
+	[ -z $JAVA_HOME ] && java_missed=1
         if [[ $java_missed == 1 ]] || [[ $( which java ) == $HOME/archived/* ]]; then
                 JAVA_HOME=$( ls $HOME/archived/ | grep jdk | grep -v .gz | tail -1 )
                 export JAVA_HOME=$HOME/archived/$JAVA_HOME
