@@ -23,7 +23,7 @@ mkdir -p $HOME/conf
 cp $LINUX_SETUP_HOME/conf/home/.bash* $HOME/
 cp $LINUX_SETUP_HOME/conf/home/.*rc $HOME/
 cp $LINUX_SETUP_HOME/conf/home/.tmux*.conf $HOME/
-cp $LINUX_SETUP_HOME/conf/home/tmux_dev.sh $HOME/
+cp $LINUX_SETUP_HOME/conf/home/tmux.sh $HOME/
 cp $LINUX_SETUP_HOME/conf/home/.profile $HOME/
 source $HOME/.bashrc
 
@@ -124,7 +124,7 @@ can_sudo && is_ubuntu && (
 		echo "Checking brew list --formula"
 		# Skip python libraries and numpy on macos
 		list=$(brew list --formula)
-		for app in python \
+		for app in python mysql \
 			# lapack openblas \
 			# imagemagick graphviz py2cairo qt pyqt
 			# mysql-connector-c
