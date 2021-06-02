@@ -61,7 +61,7 @@ can_sudo && is_ubuntu && (
 	log_green "-------- Installing system tools --------"
 	for app in sshfs openssl vim jq gawk awk sed man tmux screen git curl wget \
 		basename tput gpg tree finger nload telnet cmake clang ant \
-		unzip mosh watch
+		unzip mosh watch htop top
 	do
 		find_path $app && continue
 		is_centos && status_exec yum_install $app
