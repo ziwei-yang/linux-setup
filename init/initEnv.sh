@@ -384,13 +384,9 @@ check_version "node" "v$NODE_VER." || abort "Node.js version is still not $NODE_
 assert_path "node"
 assert_path "npm"
 
-log_green "-------- Checking Java 8+ -------"
-java_ver=`java -version 2>&1 | grep 'java version'`
-full_java_ver=`java -version 2>&1`
-([[ $java_ver == *1.8.* ]] || \
-	[[ $full_java_ver == 'openjdk version "'??.* ]] || \
-	[[ $full_java_ver == 'java version "'??.* ]]) && \
-log_blue "Current JAVA:$full_java_ver" || (
+log_green "-------- Checking Java compiler 8+ -------"
+javac_ver=`javac -version 2>&1 | grep 'javac'`
+[[ $javac_ver == *1.8.* ]] && log_blue "Current JAVAC:$javac_ver" || (
 	is_mac && \
 		brew install --cask oracle-jdk
 	is_linux && (
