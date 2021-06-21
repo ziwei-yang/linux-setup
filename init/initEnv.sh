@@ -389,8 +389,8 @@ javac_ver=`javac -version 2>&1 | grep 'javac'`
 [[ $javac_ver == *1.8.* ]] && log_blue "Current JAVAC:$javac_ver" || (
 	is_mac && \
 		brew install --cask oracle-jdk
-	is_linux && (
-		filename=$(basename "$( ls -1t $LINUX_SETUP_HOME/archived/jdk-8u* | head -n1 )" ) && (
+	is_linux && ( # Install jdk 8u2xx
+		filename=$(basename "$( ls -1t $LINUX_SETUP_HOME/archived/jdk-8u2* | head -n1 )" ) && (
 			rm -rf $USER_ARCHIVED/jdk-*
 			status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
 			cd $USER_ARCHIVED

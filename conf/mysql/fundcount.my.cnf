@@ -1,0 +1,58 @@
+# Copyright (c) 2015, 2021, Oracle and/or its affiliates.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2.0,
+# as published by the Free Software Foundation.
+#
+# This program is also distributed with certain software (including
+# but not limited to OpenSSL) that is licensed under separate terms,
+# as designated in a particular file or component or in included license
+# documentation.  The authors of MySQL hereby grant you an additional
+# permission to link the program and your derivative works with the
+# separately licensed software that they have included with MySQL.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License, version 2.0, for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA
+
+#
+# The MySQL  Server configuration file.
+#
+# For explanations see
+# http://dev.mysql.com/doc/mysql/en/server-system-variables.html
+
+# * IMPORTANT: Additional settings that can override those from this file!
+#   The files must end with '.cnf', otherwise they'll be ignored.
+#
+!includedir /etc/mysql/conf.d/
+!includedir /etc/mysql/mysql.conf.d/
+
+# https://community.fundcount.com/knowledgebase/Installing_a_Client_Server_Setup_on_Linux
+[mysqld]
+innodb_buffer_pool_size=2G
+innodb_data_file_path=ibdata1:1024M:autoextend
+innodb_log_file_size=256M
+innodb_log_buffer_size=64M
+innodb_flush_log_at_trx_commit=0
+max_allowed_packet=256M
+max_connections=1000
+table_open_cache=512
+sort_buffer_size=32M
+read_buffer_size=8M
+read_rnd_buffer_size=8M
+thread_cache_size=16
+max_heap_table_size=32M
+key_buffer_size=256M
+skip-log-bin
+range_optimizer_max_mem_size=0
+sql-mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
+default_authentication_plugin=mysql_native_password
+lower_case_table_names=1
+
+[mysqldump]
+column-statistics=0

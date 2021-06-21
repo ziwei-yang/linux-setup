@@ -44,7 +44,7 @@ if [[ $uname == 'Linux' ]]; then
 	done
 	if [[ $jdk_downloaded == 0 ]]; then
 		# Fallback to download from bithkex.
-		status_exec dl 'https://gigo.ai/download/jdk-8u201-linux-x64.tar.gz'
+		status_exec dl 'https://gigo.ai/download/jdk-8u202-linux-x64.tar.gz'
 	fi
 	
 	# 2.7.14 could not be compiled on CentOS 8, 2.7.17 could make it.
