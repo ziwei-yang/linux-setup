@@ -61,8 +61,8 @@ else
 	# Overwrite with predefined conf.
 	# https://community.fundcount.com/knowledgebase/Installing_a_Client_Server_Setup_on_Linux?srid
 	status_exec sudo cp $DIR/../conf/mysql/fundcount.my.cnf /etc/mysql/my.cnf || abort "Failed in writing mysql conf"
-	status_exec sudo sudo systemctl enable mysql || abort "Failed to autostart mysql"
-	status_exec sudo sudo systemctl restart mysql || abort "Failed to restart mysql, maybe data need to be purged by rm -rv /var/lib/mysql/"
+	status_exec sudo systemctl enable mysql || abort "Failed to autostart mysql"
+	status_exec sudo systemctl restart mysql || abort "Failed to restart mysql, maybe data need to be purged by rm -rv /var/lib/mysql/"
 fi
 
 # The instructions below describe the process of creating a user if your MySQL server and FC Application Server are installed on the same machine:
