@@ -25,4 +25,5 @@ sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 
 echo "Renew cert for [$@]"
-sudo /usr/bin/certbot renew
+sudo /usr/bin/certbot renew || abort "Renew failed"
+systemctl restart nginx
