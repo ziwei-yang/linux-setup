@@ -26,4 +26,4 @@ sudo ln -s /snap/bin/certbot /usr/bin/certbot
 
 echo "Renew cert for [$@]"
 sudo /usr/bin/certbot renew || abort "Renew failed"
-systemctl restart nginx
+sudo systemctl restart nginx
