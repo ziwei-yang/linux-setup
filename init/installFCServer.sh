@@ -163,13 +163,14 @@ fi
 status_exec sudo systemctl enable xvfb.service
 sudo systemctl start xvfb.service || abort "Failed in starting xvfb service"
 
+# Install FC server 3.40.3
 if [[ -f /etc/init.d/fcoffice ]]; then
 	echo "Required fcoffice service found, skip installation"
 else
 	cd /tmp/
-	status_exec dl 'https://gigo.ai/download/fc_setup-3.39.2.sh' || abort "Failed in downloading FC script"
-	chmod u+x /tmp/fc_setup-3.39.2.sh
-	sudo /tmp/fc_setup-3.39.2.sh
+	status_exec dl 'https://gigo.ai/download/fc_setup-3.40.3.sh' || abort "Failed in downloading FC script"
+	chmod u+x /tmp/fc_setup-3.40.3.sh
+	sudo /tmp/fc_setup-3.40.3.sh
 fi
 
 # Enable OrientDB in /opt/fcoffice/FC Office/FC Office.cfg
