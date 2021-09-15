@@ -43,10 +43,17 @@ fi
 ##################################################
 # MySQL 8.0.xx
 ##################################################
-mysql_version=$( sudo mysql --version 2>&1 )
-if [[ $mysql_version == *8.0.* ]]; then
-	echo_blue $mysql_version
+mysql_version=
+find_path mysql && mysql_version=$( sudo mysql --version 2>&1 )
+
+if [[ ! -z $mysql_version ]]; then
+	if [[ $mysql_version == *8.0.* ]]; then
+		echo_blue $mysql_version
+	else
+		abort "Mysql exists and version is not 8.0, please uninstall this first"
+	fi
 else
+	echo "No mysql found, install 8.0 now"
 	# https://dev.mysql.com/downloads/repo/apt/
 	cd /tmp/
 	status_exec dl 'https://gigo.ai/download/mysql-apt-config_0.8.17-1_all.deb' || abort "Failed in downloading mysql apt deb"
@@ -163,14 +170,14 @@ fi
 status_exec sudo systemctl enable xvfb.service
 sudo systemctl start xvfb.service || abort "Failed in starting xvfb service"
 
-# Install FC server 3.40.3
+# Install FC server 3.43.0
 if [[ -f /etc/init.d/fcoffice ]]; then
 	echo "Required fcoffice service found, skip installation"
 else
 	cd /tmp/
-	status_exec dl 'https://gigo.ai/download/fc_setup-3.40.3.sh' || abort "Failed in downloading FC script"
-	chmod u+x /tmp/fc_setup-3.40.3.sh
-	sudo /tmp/fc_setup-3.40.3.sh
+	status_exec dl 'https://gigo.ai/download/fc_setup-3.43.0.sh' || abort "Failed in downloading FC script"
+	chmod u+x /tmp/fc_setup-3.43.0.sh
+	sudo /tmp/fc_setup-3.43.0.sh
 fi
 
 # Enable OrientDB in /opt/fcoffice/FC Office/FC Office.cfg
