@@ -43,10 +43,17 @@ fi
 ##################################################
 # MySQL 8.0.xx
 ##################################################
-mysql_version=$( sudo mysql --version 2>&1 )
-if [[ $mysql_version == *8.0.* ]]; then
-	echo_blue $mysql_version
+mysql_version=
+find_path mysql && mysql_version=$( sudo mysql --version 2>&1 )
+
+if [[ ! -z $mysql_version ]]; then
+	if [[ $mysql_version == *8.0.* ]]; then
+		echo_blue $mysql_version
+	else
+		abort "Mysql exists and version is not 8.0, please uninstall this first"
+	fi
 else
+	echo "No mysql found, install 8.0 now"
 	# https://dev.mysql.com/downloads/repo/apt/
 	cd /tmp/
 	status_exec dl 'https://gigo.ai/download/mysql-apt-config_0.8.17-1_all.deb' || abort "Failed in downloading mysql apt deb"
@@ -112,7 +119,7 @@ else
 	vim $file
 fi
 
-# Setup service
+# Setup orientdb.service
 cd $HOME/server
 if [[ -f /etc/systemd/system/orientdb.service ]]; then
 	echo "Required OrientDB service found, skip adding service file"
@@ -143,19 +150,34 @@ status_exec sudo apt install -y tightvncserver || abort "Required tightvncserver
 # This might take long time and user interaction UI, show progress.
 sudo apt install -y ubuntu-mate-desktop || abort "Required DE could not be installed"
 
-echo_blue "Please run 'Xvfb :1 -screen 0 640x480x8 -nolisten tcp' in a tmux session"
-echo_blue "Xvfb is not started automatically at boot"
-echo_blue "Either start it manually at every startup or automate this process."
-echo_blue "Press enter if Xvfb is running"
-read
+# Setup xvfb.service
+cd $HOME/server
+if [[ -f /etc/systemd/system/xvfb.service ]]; then
+	echo "Required xvfb service found, skip adding service file"
+else
+	file=orientdb-community-tp2-3.0.2/bin/orientdb.service
+	cp $file xvfb.service
+	file=xvfb.service
+	echo_red "Will edit $file"
+	echo_blue "EDIT User=$( whoami )"
+	echo_blue "EDIT Group=$( whoami )"
+	echo_blue "ExecStart=Xvfb :1 -screen 0 640x480x8 -nolisten tcp"
+	echo_red "Please copy lines and press enter"
+	read
+	vim $file
+	status_exec sudo cp $file /etc/systemd/system/xvfb.service
+fi
+status_exec sudo systemctl enable xvfb.service
+sudo systemctl start xvfb.service || abort "Failed in starting xvfb service"
 
+# Install FC server 3.43.0
 if [[ -f /etc/init.d/fcoffice ]]; then
 	echo "Required fcoffice service found, skip installation"
 else
 	cd /tmp/
-	status_exec dl 'https://gigo.ai/download/fc_setup-3.39.2.sh' || abort "Failed in downloading FC script"
-	chmod u+x /tmp/fc_setup-3.39.2.sh
-	sudo /tmp/fc_setup-3.39.2.sh
+	status_exec dl 'https://gigo.ai/download/fc_setup-3.43.0.sh' || abort "Failed in downloading FC script"
+	chmod u+x /tmp/fc_setup-3.43.0.sh
+	sudo /tmp/fc_setup-3.43.0.sh
 fi
 
 # Enable OrientDB in /opt/fcoffice/FC Office/FC Office.cfg
