@@ -5,7 +5,7 @@ SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 source $DIR/../common/bootstrap.sh NORUBY
 
-is_centos || abort "Only works for CentOS"
+is_centos || is_ubuntu || abort "Only works on CentOS and Ubuntu"
 
 [ -z $CONDA_HOME ] && export CONDA_HOME=$HOME/miniconda/
 
