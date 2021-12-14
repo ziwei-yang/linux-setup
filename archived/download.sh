@@ -64,7 +64,7 @@ status_exec dl $redis_url
 phantomjs_url="http://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2"
 status_exec dl $phantomjs_url
 
-maven_url="https://downloads.apache.org/maven/maven-3/3.8.1/binaries/apache-maven-3.8.1-bin.tar.gz"
+maven_url="https://downloads.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz"
 rm -f apache-maven-3.5*.gar.gz # Delete old version
 status_exec dl $maven_url
 
@@ -87,8 +87,8 @@ status_exec dl $pdftk_url
 mongo_url="https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.2.tgz"
 status_exec dl $mongo_url
 
-ant_url="http://apache.communilink.net/ant/binaries/"
-status_exec dl_dir --cut-dirs=2 -A 'bin.zip' $ant_url
+ant_url="https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.12-bin.zip"
+status_exec dl $ant_url
 
 mosh_url='https://mosh.org/mosh-1.3.2.tar.gz'
 status_exec dl $mosh_url
