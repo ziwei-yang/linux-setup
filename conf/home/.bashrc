@@ -15,9 +15,12 @@ if [[ $uname == "Linux" ]]; then
         which java 2>&1 > /dev/null || java_missed=1
 	[ -z $JAVA_HOME ] && java_missed=1
         if [[ $java_missed == 1 ]] || [[ $( which java ) == $HOME/archived/* ]]; then
-                JAVA_HOME=$( ls $HOME/archived/ | grep jdk | grep -v .gz | tail -1 )
-                export JAVA_HOME=$HOME/archived/$JAVA_HOME
-                export PATH=$JAVA_HOME/bin:$PATH
+                java_home_ct=$( ls $HOME/archived/ | grep jdk | grep -v .gz | wc -l )
+		if [[ $java_home_ct > 0 ]]; then
+			JAVA_HOME=$( ls $HOME/archived/ | grep jdk | grep -v .gz | tail -1 )
+			export JAVA_HOME=$HOME/archived/$JAVA_HOME
+			export PATH=$JAVA_HOME/bin:$PATH
+		fi
         fi
         which ant 2>&1 > /dev/null || ant_missed=1
         if [[ $ant_missed == 1 ]] || [[ $( which ant ) == $HOME/archived/* ]]; then
