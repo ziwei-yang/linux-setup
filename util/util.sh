@@ -371,7 +371,7 @@ function setup_basic_ruby_env {
 	assert_path "ruby"
 	[[ $@ == *FASTRUBY* ]] && return # FASTRUBY skip checking gems and libs.
 	assert_path "gem"
-	check_gem 'mail' || gem install 'mail' || abort "Gem mail installation failed."
+	check_gem 'mail' || gem install 'mail' || log_red "Gem mail installation failed. Alert mail could not be sent"
 	_mail_script=$APD_HOME/bin/mail_task.rb
 	if [[ -f $_mail_script ]]; then
 		# Try to pull latest version in background if no diff exists.
@@ -385,6 +385,7 @@ function setup_basic_ruby_env {
 	fi
 	log "$_mail_script is missing, cloning aphrodite ruby repo: $APD_HOME"
 	USER_ARCHIVED="$HOME/archived"
+	mkdir -p $USER_ARCHIVED || abort "Could not create $USER_ARCHIVED to clone repo"
 	cd $USER_ARCHIVED
 	status_exec rm -rf $USER_ARCHIVED/aphrodite
 	status_exec git clone "git@github.com:celon/aphrodite.git" || \

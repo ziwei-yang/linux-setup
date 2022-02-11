@@ -204,8 +204,10 @@ log_green "-------- Checking RVM --------"
 check_path "rvm" $HOME/.rvm/bin/rvm && \
 	log_blue "Skip RVM." || (
 	log_green "-------- Installing RVM --------"
-	status_exec gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
-	status_exec gpg --keyserver hkp://pgp.mit.edu --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+	status_exec gpg2 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB || \
+	status_exec gpg --keyserver hkp://pool.sks-keyservers.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB || \
+	( command curl -sSL https://rvm.io/mpapis.asc | gpg --import - ) || \
+	( command curl -sSL https://rvm.io/pkuczynski.asc | gpg --import - )
 	curl -sSL https://get.rvm.io | bash -s stable
 	if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
 		log_blue "source $HOME/.rvm/scripts/rvm"
@@ -257,32 +259,28 @@ APD_HOME="$DIR/../../aphrodite"
 )
 [[ -d $APD_HOME ]] || abort "Failed in initialize aphrodite"
 
-log_green "-------- Checking PhantomJS --------"
-check_path "phantomjs" $USER_INSTALL/bin/phantomjs && \
-	log_blue "Skip PhantomJS" || (
-	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/phantomjs-* | head -n1 )) && (
-		rm -rf $USER_ARCHIVED/phantomjs-*
-		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
-		cd $USER_ARCHIVED
-		status_exec tar -xf $filename
-		dirname=${filename%.tar.bz2}
-		cd $USER_ARCHIVED/$dirname
-		log_blue "cp bin/phantomjs $USER_INSTALL/bin/phantomjs"
-		cp bin/phantomjs $USER_INSTALL/bin/phantomjs
-		rm -rf $USER_ARCHIVED/phantomjs-*
-		assert_path "phantomjs"
-	) || log_red "File does not exist"
-)
+# Legacy support on Linux server only: PhantomJS Python2.7 Python3
+is_linux
+if [[ $? == 0 ]]; then
+	log_green "-------- Checking PhantomJS --------"
+	check_path "phantomjs" $USER_INSTALL/bin/phantomjs && \
+		log_blue "Skip PhantomJS" || (
+			filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/phantomjs-* | head -n1 )) && (
+			rm -rf $USER_ARCHIVED/phantomjs-*
+			status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
+			cd $USER_ARCHIVED
+			status_exec tar -xf $filename
+			dirname=${filename%.tar.bz2}
+			cd $USER_ARCHIVED/$dirname
+			log_blue "cp bin/phantomjs $USER_INSTALL/bin/phantomjs"
+			cp bin/phantomjs $USER_INSTALL/bin/phantomjs
+			rm -rf $USER_ARCHIVED/phantomjs-*
+			assert_path "phantomjs"
+			) || log_red "File does not exist"
+		)
 
-log_green "-------- Checking Python 2.7 --------"
-PYTHON_VER="2.7"
-is_mac && (
-	log_blue "Skip legacy python $PYTHON_VER for macos"
-# 	check_version "python" $PYTHON_VER && \
-# 		log_blue "Skip python $PYTHON_VER" || \
-# 		status_exec brew install python
-)
-is_linux && (
+	log_green "-------- Checking Python 2.7 --------"
+	PYTHON_VER="2.7"
 	check_path "python" $USER_INSTALL/bin/python && \
 	log_blue "Python $PYTHON_VER is exist." || (
 		filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/Python-2* | head -n1 )) && (
@@ -304,8 +302,6 @@ is_linux && (
 			echo "OK"
 		) || log_red "Python 2 files does not exist"
 	)
-)
-if [[ is_linux ]]; then
 	check_version "python" $PYTHON_VER || abort "Python $PYTHON_VER is not in bin path."
 
 	log_green "-------- Checking legacy Python pip --------"
@@ -315,12 +311,9 @@ if [[ is_linux ]]; then
 			status_exec python $LINUX_SETUP_HOME/archived/get-pip.py || \
 			log_red "File $LINUX_SETUP_HOME/archived/get-pip.py does not exist"
 	)
-fi
 
-log_green "-------- Checking Python 3.X --------"
-PYTHON3_VER="3."
-is_mac && log_blue "Skip python3"
-is_linux && (
+	log_green "-------- Checking Python 3.X --------"
+	PYTHON3_VER="3."
 	check_path "python3" $USER_INSTALL/bin/python3 && \
 	log_blue "Python $PYTHON_VER is exist." || (
 		filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/Python-3* | head -n1 )) && (
@@ -342,18 +335,18 @@ is_linux && (
 		) || log_red "Python 3 files does not exist"
 	)
 	check_version "python3" $PYTHON3_VER || abort "Python $PYTHON3_VER is not in bin path."
-)
-check_version "python3" $PYTHON3_VER || abort "Python $PYTHON3_VER is not in bin path."
+fi
 
 log_green "-------- Checking Python pip3 --------"
-is_linux && (
+is_linux
+if [[ $? == 0 ]]; then
 	check_path "pip3" $USER_INSTALL/bin/pip3 && \
 	log_blue "pip for Python $PYTHON_VER is exist." || (
 		[ -f $LINUX_SETUP_HOME/archived/get-pip.py ] && \
 			status_exec python3 $LINUX_SETUP_HOME/archived/get-pip.py || \
 			log_red "File $LINUX_SETUP_HOME/archived/get-pip.py does not exist"
 	)
-)
+fi
 
 # Use installConda.sh instead of pyenv
 # log_green "-------- Checking pyenv --------"
@@ -434,150 +427,14 @@ log_blue "Current ANT:$ANT_VER" || (
 	) || log_red "Ant file does not exist."
 )
 
-log_green "-------- Checking libsodium --------"
-(
-	[[ -f $USER_INSTALL/lib/libsodium.dylib && is_mac ]] || \
-	[[ -f $USER_INSTALL/lib/libsodium.so && is_linux ]]
-) && \
-log_blue "Skip libsodium." || (
-	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/libsodium-* | head -n1 )) && (
-		rm -rf $USER_ARCHIVED/libsodium-*
-		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
-		cd $USER_ARCHIVED
-		status_exec tar -xf $filename
-		rm $filename
-		dirname=${filename%.tar.gz}
-		cd $USER_ARCHIVED/$dirname
-		status_exec $USER_ARCHIVED/$dirname/configure \
-			--prefix=$USER_INSTALL \
-			--exec-prefix=$USER_INSTALL || \
-			abort "configure failed"
-		status_exec make install -j $CPU_CORE || \
-			status_exec make install || \
-			abort "make failed"
-		rm -rf $USER_ARCHIVED/libsodium-*
-		echo "OK"
-	) || log_red "libsodium file does not exist."
-)
-(
-	[[ -f $USER_INSTALL/lib/libsodium.dylib && is_mac ]] || \
-	[[ -f $USER_INSTALL/lib/libsodium.so && is_linux ]]
-) || abort "libsodium does not exist."
-
-log_green "-------- Checking ZeroMQ --------"
-(
-	[[ -f $USER_INSTALL/lib/libzmq.dylib && is_mac ]] || \
-	[[ -f $USER_INSTALL/lib/libzmq.so && is_linux ]]
-) && \
-log_blue "Skip ZeroMQ." || (
-	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/zeromq-* | head -n1 )) && (
-		rm -rf $USER_ARCHIVED/zeromq-*
-		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
-		cd $USER_ARCHIVED
-		status_exec tar -xf $filename
-		rm $filename
-		dirname=${filename%.tar.gz}
-		cd $USER_ARCHIVED/$dirname
-		export sodium_CFLAGS="-I$USER_INSTALL/include"
-		export sodium_LIBS="-L$USER_INSTALL/lib"
-		export CFLAGS=$(pkg-config --cflags libsodium)
-		export LDFLAGS=$(pkg-config --libs libsodium)
-		status_exec $USER_ARCHIVED/$dirname/autogen.sh || \
-			abort "autogen failed"
-		status_exec $USER_ARCHIVED/$dirname/configure \
-			--prefix=$USER_INSTALL \
-			--exec-prefix=$USER_INSTALL || \
-			abort "configure failed"
-		status_exec make install -j $CPU_CORE || \
-			status_exec make install || \
-			abort "make failed"
-		rm -rf $USER_ARCHIVED/zeromq-*
-		echo "OK"
-	) || log_red "ZeroMQ file does not exist."
-)
-(
-	[[ -f $USER_INSTALL/lib/libzmq.dylib && is_mac ]] || \
-	[[ -f $USER_INSTALL/lib/libzmq.so && is_linux ]]
-) || abort "libzmq does not exist."
-
-log_green "-------- Checking jzmq --------"
-# JAVA 10 dropped javah
-(
-	[[ -f $USER_INSTALL/lib/libjzmq.dylib && is_mac ]] || \
-	[[ ! -f $JAVA_HOME/bin/javah ]] || \
-	[[ -f $USER_INSTALL/lib/libjzmq.so && is_linux ]]
-) && \
-log_blue "Skip jzmq" || (
-	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/jzmq-* | head -n1 )) && (
-		rm -rf $USER_ARCHIVED/jzmq-*
-		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
-		cd $USER_ARCHIVED
-		status_exec unzip -o $filename || abort "unzip $filename failed"
-		rm $filename
-		dirname=${filename%.zip}/jzmq-jni
-		cd $USER_ARCHIVED/$dirname
-		export CFLAGS=$(pkg-config --cflags libsodium)
-		export LDFLAGS=$(pkg-config --libs libsodium)
-		status_exec $USER_ARCHIVED/$dirname/autogen.sh || \
-			abort "autogen failed"
-		status_exec $USER_ARCHIVED/$dirname/configure \
-			--prefix=$USER_INSTALL \
-			--exec-prefix=$USER_INSTALL \
-			--with-zeromq=$USER_INSTALL || \
-			abort "configure failed"
-		status_exec make install -j $CPU_CORE || \
-			status_exec make install || \
-			abort "make failed"
-		rm -rf $USER_ARCHIVED/jzmq-*
-		echo "OK"
-	) || log_red "jzmq file does not exist."
-)
-(
-	[[ -f $USER_INSTALL/lib/libjzmq.dylib && is_mac ]] || \
-	[[ ! -f $JAVA_HOME/bin/javah ]] || \
-	[[ -f $USER_INSTALL/lib/libjzmq.so && is_linux ]]
-) || abort "JZMQ does not exist."
-
-log_green "-------- Installing Nanomsg --------"
-find_path "nanocat" && \
-log_blue "Skip nanomsg" || (
-	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/nanomsg-* | head -n1 )) && (
-		rm -rf $USER_ARCHIVED/nanomsg-*
-		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
-		cd $USER_ARCHIVED
-		status_exec unzip -o $filename || abort "unzip failed"
-		rm $filename
-		dirname=${filename%.zip}
-		cd $USER_ARCHIVED/$dirname
-		builddir=$USER_ARCHIVED/$dirname/build
-		mkdir $builddir
-		cd $builddir
-		status_exec cmake $USER_ARCHIVED/$dirname || \
-			abort "cmake configure failed"
-		status_exec cmake --build $builddir || \
-			abort "cmake build failed"
-		status_exec ctest $builddir || \
-			abort "ctest failed"
-		status_exec cmake \
-			-DCMAKE_INSTALL_PREFIX:PATH=$USER_INSTALL $builddir || \
-			abort "cmake install failed"
-		status_exec make all install || \
-			abort "make install failed"
-		ln -v -sf $USER_INSTALL/lib64/libnanomsg* $USER_INSTALL/lib/
-		rm -rf $USER_ARCHIVED/nanomsg-*
-		echo "OK"
-	) || log_red "nanomsg file does not exist."
-)
-find_path "nanocat" || abort "nanocat does not exist."
-
-log_green "-------- Checking wkhtmltox --------"
+log_green "-------- Checking wkhtmltox for CentOS --------"
 # https://wkhtmltopdf.org/downloads.html
 find_path "wkhtmltopdf" && (
 	is_centos6 && sudo yum localinstall -y 'https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox-0.12.5-1.centos6.x86_64.rpm'
 	is_centos7 && sudo yum localinstall -y 'https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox-0.12.5-1.centos7.x86_64.rpm'
 )
 
-log_green "-------- Checking pdftk --------"
+log_green "-------- Checking pdftk for CentOS --------"
 find_path "pdftk" && \
 log_blue "Skip pdftk" || (
 	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/pdftk-* | head -n1 )) && (
@@ -603,25 +460,6 @@ log_blue "Skip pdftk" || (
 )
 is_centos && is_failed find_path "pdftk" && log_red "pdftk does not exist."
 
-# log_green "-------- Checking MongoDB --------"
-# find_path "mongod" && \
-# log_blue "Skip MongoDB" || (
-# 	filename=$(basename $( ls -1t $LINUX_SETUP_HOME/archived/mongodb-* | head -n1 )) && (
-# 		rm -rf $USER_ARCHIVED/mongodb-*
-# 		status_exec cp $LINUX_SETUP_HOME/archived/$filename $USER_ARCHIVED/
-# 		cd $USER_ARCHIVED
-# 		status_exec tar -zxf $USER_ARCHIVED/$filename || \
-# 			abort "Extract mongodb failed"
-# 		rm $USER_ARCHIVED/$filename
-# 		dirname=$(basename $USER_ARCHIVED/mongodb-*)
-# 		cp -v $USER_ARCHIVED/$dirname/bin/* $USER_INSTALL/bin/ || \
-# 			abort "Extract mongodb failed"
-# 		rm -rf $USER_ARCHIVED/$dirname
-# 		echo "OK"
-# 	) || log_red "MongoDB file does not exist."
-# )
-# find_path "mongod" || abort "mongod does not exist"
-
 log_green "-------- Checking aha Ansi HTML Adapter --------"
 find_path "aha" && \
 log_blue "Skip aha" || (
@@ -633,7 +471,7 @@ log_blue "Skip aha" || (
 )
 find_path "aha" || abort "aha does not exist"
 
-log_green "-------- FFmpeg --------"
+log_green "-------- FFmpeg for Linux --------"
 find_path "ffmpeg" && \
 log_blue "Skip ffmpeg" || (
 	is_centos6 && can_sudo && (

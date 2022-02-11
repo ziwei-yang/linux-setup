@@ -1,7 +1,7 @@
 #!/bin/bash --login
 declare -F status_exec && [[ $LINUX_SETUP_LOAD == '1' ]] && echo "Skip loading linux-setup again." && return
-source $HOME/.bash_profile
-source $HOME/.bashrc
+[ -f $HOME/.bash_profile ] && source $HOME/.bash_profile
+[ -f $HOME/.bashrc ] && source $HOME/.bashrc
 
 export HOSTNAME=`hostname`
 echo "HOST:$HOSTNAME"
