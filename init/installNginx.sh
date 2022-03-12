@@ -6,26 +6,23 @@ source $DIR/../common/bootstrap.sh NORUBY
 
 os=$( osinfo )
 USER=$( whoami )
-if [[ $USER != 'root' ]]; then
-	echo Current user must be root.
-	exit -1
-fi
+can_sudo || abort "Current user can not sudo"
 
 if [[ $os == "CentOS Linux release 7"* ]]; then
 	if [[ ! -f /etc/yum.repos.d/nginx.repo ]]; then
-		echo "[nginx]" > /etc/yum.repos.d/nginx.repo
-		echo "name=nginx repo" >> /etc/yum.repos.d/nginx.repo
-		echo "baseurl=http://nginx.org/packages/centos/7/\$basearch/" >> /etc/yum.repos.d/nginx.repo
-		echo "gpgcheck=0" >> /etc/yum.repos.d/nginx.repo
-		echo "enabled=1" >> /etc/yum.repos.d/nginx.repo
+		sudo echo "[nginx]" > /etc/yum.repos.d/nginx.repo
+		sudo echo "name=nginx repo" >> /etc/yum.repos.d/nginx.repo
+		sudo echo "baseurl=http://nginx.org/packages/centos/7/\$basearch/" >> /etc/yum.repos.d/nginx.repo
+		sudo echo "gpgcheck=0" >> /etc/yum.repos.d/nginx.repo
+		sudo echo "enabled=1" >> /etc/yum.repos.d/nginx.repo
 	fi
 elif [[ $os == "CentOS Linux release 6"* ]]; then
 	if [[ ! -f /etc/yum.repos.d/nginx.repo ]]; then
-		echo "[nginx]" > /etc/yum.repos.d/nginx.repo
-		echo "name=nginx repo" >> /etc/yum.repos.d/nginx.repo
-		echo "baseurl=http://nginx.org/packages/centos/6/\$basearch/" >> /etc/yum.repos.d/nginx.repo
-		echo "gpgcheck=0" >> /etc/yum.repos.d/nginx.repo
-		echo "enabled=1" >> /etc/yum.repos.d/nginx.repo
+		sudo echo "[nginx]" > /etc/yum.repos.d/nginx.repo
+		sudo echo "name=nginx repo" >> /etc/yum.repos.d/nginx.repo
+		sudo echo "baseurl=http://nginx.org/packages/centos/6/\$basearch/" >> /etc/yum.repos.d/nginx.repo
+		sudo echo "gpgcheck=0" >> /etc/yum.repos.d/nginx.repo
+		sudo echo "enabled=1" >> /etc/yum.repos.d/nginx.repo
 	fi
 fi
 
@@ -33,11 +30,9 @@ for app in nginx
 do
 	find_path $app && continue
 	if [[ $os == CentOS* ]]; then
-		can_sudo || abort "Must be allowed"
-		status_exec yum -y install $app
+		status_exec sudo yum -y install $app
 	elif [[ $os == Ubuntu* ]]; then
-		can_sudo || abort "Must be allowed"
-		status_exec apt-get -y install $app
+		status_exec sudo apt-get -y install $app
 	elif [[ $os == "Darwin" ]]; then
 		status_exec brew install $app
 	fi

@@ -6,8 +6,12 @@ source $DIR/../common/bootstrap.sh NORUBY NOPYTHON
 
 can_sudo || abort "no sudo privilege without password"
 
-is_centos7 || abort "Unsupport OS $os"
+is_centos7 || is_ubuntu || abort "Unsupport OS $os"
 
+#################################################
+# Step 1 install VirtualBox
+#################################################
+is_centos7 && (
 # Install normal dependency.
 sudo yum -y groupinstall 'Development Tools' SDL kernel-devel kernel-headers dkms
 sudo yum -y install binutils gcc make patch libgomp glibc-headers glibc-devel kernel-headers kernel-devel dkms
@@ -55,22 +59,39 @@ echo export KERN_DIR=$KERN_DIR
 	echo "Run sudo /sbin/vboxconfig to setup"
 	sudo /sbin/vboxconfig || abort 'Error in vboxdrv setup'
 )
+)
+is_ubuntu && (
+echo "Download deb file from https://www.virtualbox.org/wiki/Linux_Downloads"
+echo "After deb file is installed, press enter"
+read
+)
 [[ -f /sbin/vboxconfig ]] || abort 'Error in installing virtualbox'
 
+#################################################
+# Step 2 setup user and group
+#################################################
 user='vbox'
 [[ -d /home/$user ]] || (
 	# group 'vboxusers'. VM users must be member of that group!
 	# Add user to vboxusers Group for web interface.
-	status_exec sudo useradd $user || echoRed  "Error in adding user $user, it might be existed."
-	# echo "=========================="
-	# echo "Set user($user) passwd here"
-	# echo "=========================="
-	# sudo passwd $user
+	status_exec sudo useradd $user
+	echo "=========================="
+	echo "Set linux-user($user) passwd here"
+	echo "=========================="
+	sudo passwd $user
 	status_exec sudo usermod -a -G vboxusers $user
 	status_exec sudo usermod -a -G daemon $user
+	is_ubuntu && (
+		sudo mkdir /home/vbox
+		sudo chown vbox /home/vbox
+		sudo chgrp vbox /home/vbox
+	)
 )
 [[ -d /home/$user ]] || abort "No user home dir /home/$user"
 
+#################################################
+# Step 2 setup virtualbox conf, install extpack, enable service
+#################################################
 # Create the file /etc/default/virtualbox and put the line VBOXWEB_USER=vbox in it
 # (so that the VirtualBox SOAP API which is called vboxwebsrv runs as the user vbox):
 if [[ ! -f /etc/default/virtualbox ]]; then
@@ -95,8 +116,12 @@ status_exec sudo systemctl restart vboxautostart-service
 status_exec sudo systemctl enable vboxweb-service
 status_exec sudo systemctl restart vboxweb-service
 
+#################################################
+# Step 3 Setup HTTP server and web-service
+#################################################
 # Download VBox web interface and put into apache service
-sudo yum -y install httpd php php-devel php-common php-soap php-gd
+is_centos7 && status_exec sudo yum -y install httpd php php-devel php-common php-soap php-gd
+is_ubuntu && status_exec sudo apt -y install apache2 php libapache2-mod-php php-xml php-soap php-gd
 cd /tmp
 rm -rf phpvirtualbox_latest.zip phpvirtualbox_latest_dir phpvirtualbox
 git clone 'https://github.com/phpvirtualbox/phpvirtualbox.git'
@@ -114,11 +139,14 @@ sed s/password\ =\ \'pass\'/password\ =\ \'$vboxPswd\'/g ./phpvirtualbox/config.
 sed s/\#var\ \$noAuth\ =\ true/var\ \$noAuth\ =\ true/g ./phpvirtualbox/config.php.2 > phpvirtualbox/config.php
 # Install web gui.
 sudo cp -r phpvirtualbox /var/www/html
-sudo chown -R apache /var/www/html/phpvirtualbox
-sudo chgrp -R apache /var/www/html/phpvirtualbox
+is_centos7 && sudo chown -R apache /var/www/html/phpvirtualbox
+is_centos7 && sudo chgrp -R apache /var/www/html/phpvirtualbox
 sudo chmod -R 755 /var/www/html/phpvirtualbox
 
 # Start service
 is_centos7 && \
 	status_exec sudo systemctl enable httpd.service && \
 	status_exec sudo systemctl restart httpd.service
+is_ubuntu && \
+	status_exec sudo systemctl enable apache2.service && \
+	status_exec sudo systemctl restart apache2.service
