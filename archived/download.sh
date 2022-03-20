@@ -65,7 +65,7 @@ status_exec dl $redis_url
 phantomjs_url="http://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2"
 status_exec dl $phantomjs_url
 
-maven_url="https://downloads.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz"
+maven_url="https://dlcdn.apache.org/maven/maven-3/3.8.5/binaries/apache-maven-3.8.5-bin.tar.gz"
 rm -f apache-maven-3.5*.gar.gz # Delete old version
 status_exec dl $maven_url
 
