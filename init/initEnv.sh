@@ -204,10 +204,10 @@ log_green "-------- Checking RVM --------"
 check_path "rvm" $HOME/.rvm/bin/rvm && \
 	log_blue "Skip RVM." || (
 	log_green "-------- Installing RVM --------"
-	status_exec gpg2 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB || \
-	status_exec gpg --keyserver hkp://pool.sks-keyservers.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB || \
-	( command curl -sSL https://rvm.io/mpapis.asc | gpg --import - ) || \
-	( command curl -sSL https://rvm.io/pkuczynski.asc | gpg --import - )
+	gpg2 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+	gpg --keyserver hkp://pool.sks-keyservers.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+	curl -sSL https://rvm.io/mpapis.asc | gpg --import -
+	curl -sSL https://rvm.io/pkuczynski.asc | gpg --import -
 	curl -sSL https://get.rvm.io | bash -s stable
 	if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
 		log_blue "source $HOME/.rvm/scripts/rvm"
