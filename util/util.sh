@@ -344,6 +344,8 @@ function setup_sys_env {
 		find_path "brew" && log_blue "Skip install brew." || (
 			log_blue "Installing brew."
 			ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+			echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.bash_profile
+			eval "$(/opt/homebrew/bin/brew shellenv)"
 		)
 	)
 	is_unknown_os && abort "Error: OS is not CentOS/Ubuntu/MacOSX."
