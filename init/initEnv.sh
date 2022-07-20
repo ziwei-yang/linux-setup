@@ -337,6 +337,15 @@ if [[ $? == 0 ]]; then
 	check_version "python3" $PYTHON3_VER || abort "Python $PYTHON3_VER is not in bin path."
 fi
 
+is_mac
+if [[ $? == 0 ]]; then
+	log_green "-------- Checking Python 2.7 --------"
+	PYTHON_VER="2.7"
+	check_path "python" $USER_INSTALL/bin/python && \
+	log_blue "Python $PYTHON_VER is exist. macOS might ditch it. Please install manually from https://www.python.org/ftp/python/2.7.18/python-2.7.18-macosx10.9.pkg"
+fi
+check_version "python" $PYTHON_VER || abort "Python $PYTHON_VER is not in bin path."
+
 log_green "-------- Checking Python pip3 --------"
 is_linux
 if [[ $? == 0 ]]; then
