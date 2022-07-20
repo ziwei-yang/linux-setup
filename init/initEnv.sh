@@ -374,6 +374,7 @@ type nvm > /dev/null || abort "Failed in installing NVM"
 
 NODE_VER="12"
 is_centos6 && NODE_VER='10'
+is_mac_arm && NODE_VER='16' # from V16, npm supports macos arm
 log_green "-------- Checking Node.js $NODE_VER --------"
 nvm use $NODE_VER && \
 	log_blue "Skip installing Node.js $NODE_VER" || (

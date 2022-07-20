@@ -258,6 +258,11 @@ function is_mac {
 	return 1
 }
 export -f is_mac 
+function is_mac_arm {
+	[[ $OS == Darwin ]] && [[ $UNAMEA == *arm64 ]] && return 0
+	return 1
+}
+export -f is_mac_arm
 function is_ubuntu {
 	[[ $OS == Ubuntu* ]] && return 0
 	[[ $OS == "Linux Mint"* ]] && return 0
@@ -334,6 +339,7 @@ function setup_sys_env {
 	
 	# Check OS
 	OS=$( osinfo )
+	UNAMEA=$( uname -a )
 	log_blue "Current OS: $OS"
 	is_centos && (
 		assert_path "yum"
