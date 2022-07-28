@@ -340,9 +340,9 @@ fi
 is_mac
 if [[ $? == 0 ]]; then
 	log_green "-------- Checking Python 2.7 --------"
+	log_blue "macOS might ditch python 2.7. Please install manually from https://www.python.org/ftp/python/2.7.18/python-2.7.18-macosx10.9.pkg"
 	PYTHON_VER="2.7"
-	check_path "python" $USER_INSTALL/bin/python && \
-	log_blue "Python $PYTHON_VER is exist. macOS might ditch it. Please install manually from https://www.python.org/ftp/python/2.7.18/python-2.7.18-macosx10.9.pkg"
+	check_path "python" $USER_INSTALL/bin/python
 fi
 check_version "python" $PYTHON_VER || abort "Python $PYTHON_VER is not in bin path."
 
