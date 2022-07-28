@@ -171,7 +171,7 @@ hi! link ShowMarksHLu DiffChange
 
 " status line
 " hi StatusLine ctermbg=darkgrey ctermfg=grey
-hi StatusLine ctermbg=lightred ctermfg=white
+hi StatusLine ctermbg=black ctermfg=grey
 
 set statusline=%<%F\%h%m%r%k\ Encoding:[%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}]%=\%-14.(%l/%L,%c%V%)\ %P
 set laststatus=2   " Always show the status line - use 2 lines for the status bar
