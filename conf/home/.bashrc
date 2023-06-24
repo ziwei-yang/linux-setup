@@ -109,6 +109,14 @@ export CONDA_HOME=$HOME/miniconda
 
 [ -z $GEM_HOME ] || PATH=$GEM_HOME/bin:$PATH
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+function activate_nvm {
+	nvm_type=$( type -t nvm )
+	# Below code makes bash costs long time to start. TODO investigation
+	if [[ $nvm_type != function ]]; then
+		echo "Activating NVM"
+		export NVM_DIR="$HOME/.nvm"
+		[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+		[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+	fi
+}
+export activate_nvm
