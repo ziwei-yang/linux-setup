@@ -43,8 +43,20 @@ if [[ $os == CentOS* ]]; then
 	status_exec yum -y install nginx-module-*
 	echo "Installing certbot"
 	status_exec yum -y install python2-certbot-nginx
+
+	# Turnoff SELinux
+	sudo setenforce 0
+	sudo sed -i 's/SELINUX=enabled/SELINUX=disabled/g' /etc/selinux/config
+
+	# Turnoff Firewall
+	sudo iptables -F
 elif [[ $os == Ubuntu* ]]; then
 	:
 elif [[ $os == "Darwin" ]]; then
 	:
 fi
+
+[ ! -d /var/nginx/www ] && \
+	sudo mkdir -p /var/nginx/www && \
+	sudo chown -R nginx /var/nginx && \
+	sudo chgrp -R nginx /var/nginx
