@@ -120,3 +120,4 @@ function activate_nvm {
 	fi
 }
 export activate_nvm
+ulimit -n 65535
